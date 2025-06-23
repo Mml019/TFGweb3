@@ -127,7 +127,7 @@ class Respondant(models.Model):
     speciality =        models.CharField(max_length=20, blank=True, null=True)
     
     # if i change the name to reply or answer don't works but Resposta sí.
-    questions =     models.ManyToManyField(Question, through='Answer', related_name='respondant_answer_to_question')
+    questions =     models.ManyToManyField(Question, through='Respuesta', related_name='respondant_answer_to_question')
     profesions =    models.ManyToManyField(Profesion, through='Resprofs', related_name='profesional_area_user')
     
     def __str__(self):
@@ -140,7 +140,7 @@ class Resprofs(models.Model):
 
 # ------------- ANSWER CLASS --------------
 # The class name is in spanish cause django don't permit other
-class Answer(models.Model):
+class Respuesta(models.Model):
     answer = models.CharField(max_length=25, editable=False, blank=False)
     time = models.TimeField(editable=False, blank=False)
     date = models.DateTimeField(auto_now_add=True)
