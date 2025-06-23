@@ -215,23 +215,23 @@ class  Profesional(models.Model):
     dedicationW =   models.PositiveSmallIntegerField(default=0)
     years =         models.PositiveSmallIntegerField(default=0)
     
-    # activities =  models.ManyToManyField(Activity, through='Dedication', related_name='activities_by_profesional')
-    # sectors =     models.ManyToManyField(Sector, through='Secprof', related_name='sectors_on_works')
-    # enviroments = models.ManyToManyField(Enviroment, through='Envprof', related_name='enviroments_on_works')
+    activities =  models.ManyToManyField(Activity, through='Dedication', related_name='activities_by_profesional')
+    sectors =     models.ManyToManyField(Sector, through='Secprof', related_name='sectors_on_works')
+    enviroments = models.ManyToManyField(Enviroment, through='Envprof', related_name='enviroments_on_works')
 
 # Intermediate class between activity and profesional to show pecentatge of time that a profesional takes to do an activity
-# class Dedication(models.Model):
-#     profesional = models.ForeignKey(Profesional, models.CASCADE, related_name='id_between_activity_profesional')
-#     activity =    models.ForeignKey(Activity, models.CASCADE)
-#     percentatge = models.PositiveSmallIntegerField(default=0)
-#     pk =          models.CompositePrimaryKey('profesional','activity')
+class Dedication(models.Model):
+    profesional = models.ForeignKey(Profesional, models.CASCADE, related_name='id_between_activity_profesional')
+    activity =    models.ForeignKey(Activity, models.CASCADE)
+    percentatge = models.PositiveSmallIntegerField(default=0)
+    pk =          models.CompositePrimaryKey('profesional','activity')
         
-# class  Envprof(models.Model):
-#     profesional = models.ForeignKey(Profesional, on_delete=models.CASCADE)
-#     enviroment =  models.ForeignKey(Enviroment, on_delete=models.CASCADE)
-#     pk =          models.CompositePrimaryKey('profesional','enviroment')
+class  Envprof(models.Model):
+    profesional = models.ForeignKey(Profesional, on_delete=models.CASCADE)
+    enviroment =  models.ForeignKey(Enviroment, on_delete=models.CASCADE)
+    pk =          models.CompositePrimaryKey('profesional','enviroment')
 
-# class  Secprof(models.Model): 
-#     profesional = models.ForeignKey(Profesional, on_delete=models.CASCADE)
-#     sector =      models.ForeignKey(Sector, on_delete=models.CASCADE)
-#     pk =          models.CompositePrimaryKey('profesional','sector')
+class  Secprof(models.Model): 
+    profesional = models.ForeignKey(Profesional, on_delete=models.CASCADE)
+    sector =      models.ForeignKey(Sector, on_delete=models.CASCADE)
+    pk =          models.CompositePrimaryKey('profesional','sector')
