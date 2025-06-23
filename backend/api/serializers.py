@@ -21,7 +21,42 @@ class QuestionSerializer(serializers.ModelSerializer):
         model = Question
         fields = '__all__'
 
-class Option(serializers.ModelSerializer):
+class OptionSerializer(serializers.ModelSerializer):
+    # question = QuestionSerializer
+
     class Meta:
         model = Option
-        field
+        field = '__all__'
+
+class OptionsSerializer(serializers.ModelSerializer):
+    question = QuestionSerializer
+    option = OptionSerializer
+
+    class Meta:
+        model = Options
+        field = [
+            'pk',
+            'question',
+            'option'
+        ]
+
+# User Serializer
+class MyUserSerializer():
+    class Meta:
+        model = MyUser
+        field = [
+            'id',
+            'username',
+            'password'
+        ]
+
+class InterviewerSerializer():
+    class Meta:
+        model = Interviewer
+        field = '__all__'
+
+class InterviewerSerializer():
+    class Meta:
+        model = Interviewer
+        field = '__all__'
+        
