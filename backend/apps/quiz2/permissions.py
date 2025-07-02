@@ -1,6 +1,6 @@
 from django.contrib.auth.models import Group, Permission
 from django.contrib.contenttypes.models import ContentType
-from .models import *
+from .models import Respuesta, Question
 
 # permissions are created before running the server 
 # with python manage.py shell or in readys method apps.py config
