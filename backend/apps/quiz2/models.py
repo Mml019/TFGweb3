@@ -1,7 +1,9 @@
 import uuid
 from django.db import models
-from django.contrib.auth.models import AbstractUser, User
+from django.contrib.auth.models import AbstractUser
+from .permissions import *
 from .utils import *
+
 
 
 # Create your models here.
@@ -9,19 +11,25 @@ from .utils import *
 # ------------- QUESTION CLASS --------------
 class Dimension(models.Model):
     idD =       models.PositiveSmallIntegerField(default=1, primary_key=True)
+    orden =     models.CharField(max_length=4) 
     dimension = models.CharField(max_length=30)
+
+    class Meta:
+        indexes = [models.Index(fields=['dimension'])]
+        ordering = ['orden']
 
     def __str__(self):
         return str("ID " + self.id + " Dimension " + self.dimension)
 
 class InterestArea(models.Model):
     idA =       models.PositiveSmallIntegerField(primary_key=True)
-    orden =     models.PositiveSmallIntegerField(default=1)
+    orden =     models.CharField(max_length=4)
     int_area =  models.CharField(max_length=30)
     dimension = models.ForeignKey(Dimension, on_delete=models.CASCADE, blank=True, null=True)
 
     class Meta:
         indexes = [models.Index(fields=['int_area'])]
+        ordering = ['orden']
 
     def __str__(self):
         return str("ID " + self.id + " Orden "+ self.orden + " Área de Interés " + self.int_area + " Dimension " + self.dimension)
@@ -32,22 +40,18 @@ class CoreContent(models.Model):
     int_area =  models.ForeignKey(InterestArea, on_delete=models.CASCADE, blank=True, null=True)
 
     class Meta:
-        indexes = [models.Index(fields=['core_cont'])]
+        ordering = ['core_cont']
     
     def __str__(self):
         return str("ID " + self.id + " Contenido Nuclear " + self.core_cont + " Área de interés " + self.int_area)
 
 class Question(models.Model):  
-    idP =                models.PositiveIntegerField(default=1, primary_key=True)
+    idP =               models.PositiveIntegerField(default=1, primary_key=True)
     statement =         models.CharField(max_length= 50, unique=True)  
     time =              models.TimeField()
     difficult_level =   models.PositiveSmallIntegerField(default=0)
     dimension =         models.ForeignKey(Dimension, on_delete=models.CASCADE, null=True)
     solution =          models.ForeignKey('Option', on_delete=models.CASCADE, related_name='solution')
-
-    class QuestManager(models.Manager):
-        def get_queryset(self):
-            return super().get_queryset()
 
     class Meta:
         indexes = [models.Index(fields=['statement'])]
@@ -57,6 +61,7 @@ class Question(models.Model):
 
 # Class that represents the solution at all the options, relathinship many to one with question
 class Option(models.Model):
+    idO =               models.PositiveIntegerField(default=1, primary_key=True)
     option =            models.CharField(max_length=25)
     motive =            models.TextField(max_length=250, blank=True, null=True)
     question =          models.ManyToManyField(Question, through='Options', related_name='option_values')
@@ -74,22 +79,35 @@ class Options(models.Model):
 
     def __str__(self):
         return str("Pregunta " + self.question + " Respuesta " + self.option)
-    
+# ------------- QUIZ CLASS --------------------
+class Quiz(models.Model):
+    idQ = models.PositiveIntegerField(default=1)
+    fechaC = models.DateTimeField(auto_now_add=True)
+    fechaA = models.DateTimeField(auto_now=True)
+  
 # ------------- RESPONDANT AND INTERVIEWER CLASS --------------
 
 # AbstractUser to adapt default User Django Class
 class MyUser(AbstractUser):
     id =        models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False, max_length=12)
-    username =  models.CharField(max_length=20, unique=True)
-    password =  models.CharField(max_length=20)
+    username = models.CharField(max_length=25, unique=True)
+    password = models.CharField(max_length=30)
 
-class Interviewer(models.Model):
+class Interviewer(MyUser):
     # As this relationship is OneToOne and primary key too shares id between interviewer and myuser class 
-    interviewer = models.OneToOneField(MyUser, on_delete=models.CASCADE, primary_key=True)
+    #interviewer = models.OneToOneField(MyUser, on_delete=models.CASCADE, primary_key=True) 
+    interviewer_id = MyUser.id
+    is_staff = True
+
+    def save(self, force_insert = ..., force_update = ..., using = ..., update_fields = ...):
+        group = create_group('interviewer')
+        user = self
+        user.groups.add(group)
+        return super().save(force_insert, force_update, using, update_fields)
     
     def __str__(self):
-       return str("ID: "+ self.id + "usuario: " + self.username)
-         
+       return str("ID: "+ + self.id + "usuario: " + self.username)    
+            
 class Profesion(models.Model):
     profesion = models.CharField(max_length=30, primary_key=True)
     
@@ -118,7 +136,7 @@ class Respondant(models.Model):
     nationality =       models.CharField(max_length=15)
     city =              models.CharField(max_length=25)
     region =            models.CharField(max_length=25)
-    level_PBE =         models.PositiveSmallIntegerField()
+    level_PBE =         models.PositiveSmallIntegerField(validators=[between1_5])
     title =             models.CharField(choices=Tittle)
     # blank True permits set blank in forms and null True permits set null in a database field
     year_title =        models.PositiveSmallIntegerField(blank=True, null=True, validators=[year])
@@ -129,6 +147,12 @@ class Respondant(models.Model):
     # if i change the name to reply or answer don't works but Resposta sí.
     questions =     models.ManyToManyField(Question, through='Respuesta', related_name='respondant_answer_to_question')
     profesions =    models.ManyToManyField(Profesion, through='Resprofs', related_name='profesional_area_user')
+    
+    def save(self, force_insert = ..., force_update = ..., using = ..., update_fields = ...):
+        group = create_group('respondant')
+        user = self.respondant
+        user.groups.add(group)        
+        return super().save(force_insert, force_update, using, update_fields)
     
     def __str__(self):
        return str("ID: "+ self.id)

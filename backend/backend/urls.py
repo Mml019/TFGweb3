@@ -15,9 +15,22 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import path, include , re_path
+from django.views.generic import TemplateView
+from django.conf.urls.static import static
+from django.conf import settings
+from .settings import *
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('quiz/', include('apps.quiz2.urls'))
-]
+    path('quiz/', include('apps.quiz2.urls')),
+    path('quiz-admin/', include('apps.quiz2.urls_admin'))
+] 
+
+# include this is you want see static files(images, etc) content in development
+#  static(STATIC_URL, document_root=STATIC_ROOT)
+#
+#
+
+# to put react into Django
+#urlpatterns += [re_path(r'^.*', TemplateView.as_view(template_name='frontend/index.html'))]

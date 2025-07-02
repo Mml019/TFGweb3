@@ -74,7 +74,7 @@ ROOT_URLCONF = 'backend.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [], # to put react into django [os.path.join(BASEDIR, frontend/build)]
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -162,19 +162,14 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Django CORS HEADERS
 CORS_ALLOWED_ORIGINS = env.list('CORS_ALLOWED_ORIGINS_DEV')# env.list('CORS_ALLOWED_ORIGINS_DEV')
-
-CORS_ALLOW_METHODS = (
-    'GET',
-    'POST',
-)
-CRSF_TRUSTED_ORIGINS = env.list('CRSF_TRUSTED_ORIGINS_DEV')
+CSRF_TRUSTED_ORIGINS = env.list('CSRF_TRUSTED_ORIGINS_DEV')
 
 # Programming when use variables in production and when in development
 if not DEBUG:
     
     ALLOWED_HOSTS = env.list('ALLOWED_HOSTS_DEPLOY')
     CORS_ALLOWED_ORIGINS = env.list('CORS_ALLOWED_ORIGINS_DEPLOY')
-    CRSF_TRUSTED_ORIGINS = env.list('CRSF_TRUSTED_ORIGINS_DEPLOY')
+    CSRF_TRUSTED_ORIGINS = env.list('CSRF_TRUSTED_ORIGINS_DEPLOY')
     
     DATABASES = {
         'default': env.db('DATABASE_URL'),
