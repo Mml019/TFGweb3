@@ -13,7 +13,11 @@ admin.site.register(Option)
 admin.site.register(Quiz)
 
 admin.site.register(MyUser)
-admin.site.register(Interviewer)
+# class InterviewerAdmin(admin.ModelAdmin):
+#   list_display = ("username", "password", "is_staff",)
+  
+# admin.site.register(Interviewer, InterviewerAdmin)
+# admin.site.register(Interviewer)
 admin.site.register(Respondant)
 admin.site.register(Profesion)
 admin.site.register(Profesional)

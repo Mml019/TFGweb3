@@ -49,7 +49,7 @@ DJANGO_APPS = [
 ]
 
 MY_APPS = [
-    'apps.quiz2',
+    'apps.quiz',
 ]
 
 PLUS_APPS = [
@@ -90,7 +90,7 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 
 # Django API REST Rest Framework
 REST_FRAMEWORK ={
-
+    
 }
 
 # Database
@@ -108,7 +108,7 @@ DATABASES = {
 }
 
 # Custom Authentication model
-AUTH_USER_MODEL = 'quiz2.MyUser'
+AUTH_USER_MODEL = 'quiz.MyUser'
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators

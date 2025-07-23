@@ -23,8 +23,8 @@ from .settings import *
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('quiz/', include('apps.quiz2.urls')),
-    path('quiz-admin/', include('apps.quiz2.urls_admin'))
+    path('uib/PEBquiz/', include('apps.quiz.urls')),
+    path('uib/PEBquiz-admin/', include('apps.quiz.urls_admin'))
 ] 
 
 # include this is you want see static files(images, etc) content in development
