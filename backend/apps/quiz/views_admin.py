@@ -10,8 +10,6 @@ from django.contrib.auth import login, logout, authenticate
 from api.serializers import *
 from apps.quiz.permissions import *
 
-
-
 class LoginView(APIView):
 
     # login
@@ -56,11 +54,11 @@ class Registration(CreateAPIView):
 class Password(APIView):
 
     # change password
-    def put(self, request):
-        try: 
-
-            user = MyUser.objects.get_(username=request.data['username'])
-
+    def put(self, request, user_id):
+        
+        user = MyUser.objects.get(user_id)
+        # if user.DoesNotExist:
+        try:         
             serializer = MyUserSerializerRegistration(user, request.data)
             if serializer.is_valid():
                 serializer.save()

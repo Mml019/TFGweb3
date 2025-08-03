@@ -5,8 +5,6 @@ import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
 
 
-
-
 function Layout({ children }) {
 
     const items = [
@@ -18,7 +16,10 @@ function Layout({ children }) {
         <>
             <MyNavbar items={items}></MyNavbar>
             <div className='main'>
-                {children}
+                <Container>
+                     {children}
+                </Container>
+               
             </div>
             <div className='footer'></div>
         </>

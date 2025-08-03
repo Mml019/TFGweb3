@@ -20,6 +20,8 @@ export default function StartQuiz() {
     return (
         <LayoutUser>
             StartQuiz
+            <div>Hola1</div>
+            <div>Hola2</div>
             <div>Hola</div>
             <div>Hola</div>
             <div>Hola</div>
@@ -57,9 +59,8 @@ export default function StartQuiz() {
             <div>Hola</div>
             <div>Hola</div>
             <div>Hola</div>
-            <div>Hola</div>
-            <div>Hola</div>
-            {/* <MyNavbar  style={{backgroundColor:'#0065BD'}} type='user' items={[]}></MyNavbar>
+            </LayoutUser>
+            /* <MyNavbar  style={{backgroundColor:'#0065BD'}} type='user' items={[]}></MyNavbar>
             <Container fluid>
                 <Row>
                     <Col></Col>
@@ -80,58 +81,59 @@ export default function StartQuiz() {
                     <Col></Col>
                 </Row>
 
-            </Container> */}
-        </LayoutUser>
-        //      <Container fluid>
-        //             <h1>¡Bienvenid@!</h1>
-        //             <p> Esta apunto de empezar un cuestionario creado por el equipo de
-        //                 profesionales sanitarios expertos en las Prácticas Basadas en la Evidencia. </p>
+            </Container> */
+            /*<Container fluid>
+                    <h1>¡Bienvenid@!</h1>
+                    <p> Esta apunto de empezar un cuestionario creado por el equipo de
+                        profesionales sanitarios expertos en las Prácticas Basadas en la Evidencia. </p>
 
-        //             <Button variant='primary' size='lg' >
-        //                 Empezar
-        //             </Button>
+                    <Button variant='primary' size='lg' >
+                        Empezar
+                    </Button>
 
-        //         </Container> 
+                </Container> 
 
 
-        //    
-        //          <Navigate to='quiz/' replace></Navigate> 
+           
+                 <Navigate to='quiz/' replace></Navigate> 
 
-        //         <Container fluid>
-        //             <h1>¡Bienvenid@!</h1>
-        //             <p> Esta apunto de empezar un cuestionario creado por el equipo de
-        //                 profesionales sanitarios expertos en las Prácticas Basadas en la Evidencia. </p>
+                <Container fluid>
+                    <h1>¡Bienvenid@!</h1>
+                    <p> Esta apunto de empezar un cuestionario creado por el equipo de
+                        profesionales sanitarios expertos en las Prácticas Basadas en la Evidencia. </p>
 
-        //             <Button variant='primary' size='lg' >
-        //                 Empezar
-        //             </Button>
+                    <Button variant='primary' size='lg' >
+                        Empezar
+                    </Button>
 
-        //         </Container>
-        //         <Container fluid>
-        //             <Col xs={8}>
-        //                 <Image src='../../../assets/img/logo portada uib.png'></Image> 
-        //                 <image src='../../../assets/img/logo portada uib.png'></image>
-        //                 <h1>¡Bienvenid@!</h1>
-        //                 <p> Esta apunto de empezar un cuestionario creado por el equipo de
-        //                     profesionales sanitarios expertos en las Prácticas Basadas en la Evidencia. </p>
+                </Container>
+                <Container fluid>
+                    <Col xs={8}>
+                        <Image src='../../../assets/img/logo portada uib.png'></Image> 
+                        <image src='../../../assets/img/logo portada uib.png'></image>
+                        <h1>¡Bienvenid@!</h1>
+                        <p> Esta apunto de empezar un cuestionario creado por el equipo de
+                            profesionales sanitarios expertos en las Prácticas Basadas en la Evidencia. </p>
 
-        //                 <Button variant='primary' size='lg' >
-        //                     Empezar
-        //                 </Button>
-        //             </Col>
-        //         </Container>
-        //         ------------------
-        //  <Container fluid>
-        //     <Col xs={8}>
-        //         <Image src='../assets/img/logo portada uib.png'></Image>
-        //         <h1>¡Bienvenid@!</h1>
-        //         <p> Esta apunto de empezar un cuestionario creado por el equipo de
-        //             profesionales sanitarios expertos en las Prácticas Basadas en la Evidencia. </p>
+                        <Button variant='primary' size='lg' >
+                            Empezar
+                        </Button>
+                    </Col>
+                </Container>
+                ------------------
+         <Container fluid>
+            <Col xs={8}>
+                <Image src='../assets/img/logo portada uib.png'></Image>
+                <h1>¡Bienvenid@!</h1>
+                <p> Esta apunto de empezar un cuestionario creado por el equipo de
+                    profesionales sanitarios expertos en las Prácticas Basadas en la Evidencia. </p>
 
-        //         <Button variant='primary' size='lg' >
-        //             Empezar
-        //         </Button>
-        //     </Col>
-        // </Container> 
+                <Button variant='primary' size='lg' >
+                    Empezar
+                </Button>
+            </Col>
+        </Container> */
+        
+
     )
 }

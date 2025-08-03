@@ -1,0 +1,47 @@
+    .navbar-expand-lg .navbar-nav {
+        flex-direction: row;
+        justify-content: space-evenly;
+        width: 100%;
+        color: white
+    }
+
+    /* Default style for a navbar item */
+    .navbar-item {
+        display: inline-block;
+        padding: 10px;
+        text-decoration: none;
+        color: #333;
+    }
+
+    /* Style on mouseover */
+    .navbar-item:hover {
+        background-color: #eee;
+    }
+
+    /* Click style */
+    .navbar-item.active {
+        background-color: #007bff;
+        color: white;
+    }
+
+    /*Styles for a scroll bar*/
+    /* Works on Firefox */
+* {
+  scrollbar-width: 0.5em;
+  scrollbar-color: rgb(41, 144, 235) rgb(46, 46, 46);
+}
+
+/* Works on Chrome, Edge, and Safari */
+*::-webkit-scrollbar {
+  width: 0.5em
+}
+
+*::-webkit-scrollbar-track {
+  background: rgb(41, 144, 235) rgb(46, 46, 46);
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: rgb(41, 144, 235);
+  border-radius: 20px;
+  border: 3px solid  rgb(46, 46, 46);
+}

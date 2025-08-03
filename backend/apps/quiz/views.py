@@ -10,3 +10,5 @@ def index(request):
 
 def QuestionViewSet():
     pass
+
+class Quiz()

@@ -107,7 +107,7 @@ DATABASES = {
     }
 }
 
-# Custom Authentication model
+# # Custom Authentication model
 AUTH_USER_MODEL = 'quiz.MyUser'
 
 # Password validation
