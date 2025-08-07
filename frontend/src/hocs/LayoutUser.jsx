@@ -5,24 +5,20 @@ import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
 
 
-function Layout({ children }) {
 
+function Layout({ children }) {
     const items = [
         { value: 'Usuarios', path: 'usuarios/' },
         { value: 'Formularios', path: 'formularios/' },
         { value: 'Resultados', path: 'resultados/' }
     ]
     return (
-        <>
+        <div id="layoutUser">
             <MyNavbar items={items}></MyNavbar>
-            <div className='main'>
-                <Container>
-                     {children}
-                </Container>
-               
+            <div id="content" >
+                {children}
             </div>
-            <div className='footer'></div>
-        </>
+        </div>
     );
 
 }

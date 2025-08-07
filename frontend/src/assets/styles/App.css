@@ -1,9 +1,23 @@
 body{
     background: lightblue;
-
+    overflow-y: hidden;
+    overflow-x: auto;
     font-family: Arial, Helvetica, sans-serif;
     font-size: 1.25em;
     font: optional; /*to charge system fonts if is too slow render*/
+}    
+
+#layoutUser{
+    overflow-y: hidden;
+    overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+#content{
+    overflow-y: scroll;
+    /* overflow-x: auto; */
 }
 
 /*------------- tittles--------------- */
@@ -33,17 +47,4 @@ h6{
     font-weight: 700; 
 }
 /*-----------------------*/
-.myNav{
-    height: 40px;
-    font-size: 0.5;
-}
 
-/* .myNavbrand{
-    width: 150px;
-    height: 40px;
-}
-
-#imageBrand{
-    width: 100px;
-    padding-right: 0.25%;
-} */

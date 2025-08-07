@@ -1,47 +1,79 @@
-    .navbar-expand-lg .navbar-nav {
-        flex-direction: row;
-        justify-content: space-evenly;
-        width: 100%;
-        color: white
-    }
-
-    /* Default style for a navbar item */
-    .navbar-item {
-        display: inline-block;
-        padding: 10px;
-        text-decoration: none;
-        color: #333;
-    }
-
-    /* Style on mouseover */
-    .navbar-item:hover {
-        background-color: #eee;
-    }
-
-    /* Click style */
-    .navbar-item.active {
-        background-color: #007bff;
-        color: white;
-    }
-
-    /*Styles for a scroll bar*/
-    /* Works on Firefox */
-* {
-  scrollbar-width: 0.5em;
-  scrollbar-color: rgb(41, 144, 235) rgb(46, 46, 46);
+/* Navbar Brand*/
+#imageBrand {
+    margin-right: 5px;
+    margin-left: 5px;
 }
+
+/* Navbar*/
+.navbar-expand-lg {
+    flex-direction: row;
+    display: flex;
+
+}
+
+.navbar-expand-lg .navbar-collapse {
+    overflow-x: auto;
+}
+
+.navbar-expand-lg .navbar-nav {
+    justify-content: space-evenly;
+    align-items: center;
+    color: white;
+}
+
+/* Default style for a navbar item */
+.navbar-item {
+    display: inline-block;
+    color: white;
+}
+
+/* Click style */
+.navbar-item.active {
+    background-color: #007bff;
+    color: white;
+}
+
+/* Style on mouseover */
+a.nav-link:hover {
+    background-color: #02549b;
+    color: white;
+}
+
+a.nav-link {
+    color: white;
+}
+
+/*Styles for a scroll bar*/
+/* Works on Firefox */
+/* body {
+    scrollbar-width: 0.5em;
+    scrollbar-color: rgb(226, 213, 255);
+} */
 
 /* Works on Chrome, Edge, and Safari */
-*::-webkit-scrollbar {
-  width: 0.5em
-}
+/* ::-webkit-scrollbar {
+    width: 10px;
+} */
 
-*::-webkit-scrollbar-track {
-  background: rgb(41, 144, 235) rgb(46, 46, 46);
-}
+/* ::-webkit-scrollbar-track {
+    background: rgb(226, 213, 255);
+} */
 
-*::-webkit-scrollbar-thumb {
-  background-color: rgb(41, 144, 235);
-  border-radius: 20px;
-  border: 3px solid  rgb(46, 46, 46);
-}
+/*::-webkit-scrollbar-thumb {
+    background-color: #02549b;
+    border-radius: 1em;
+} */
+
+/* Estilos para la flecha superior */
+/* ::-webkit-scrollbar-button:vertical:decrement {
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='10'><path d='M0 5 L5 0 L10 5 Z' fill='black'/></svg>");
+    background-repeat: no-repeat;
+    background-position: center;
+} */
+
+/* Estilos para la flecha inferior */
+/* ::-webkit-scrollbar-button:vertical:increment {
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='10'><path d='M0 0 L5 5 L10 0 Z' fill='black'/></svg>");
+    background-repeat: no-repeat;
+    background-position: center;
+} */

@@ -1,17 +1,20 @@
-import Container from 'react-bootstrap/esm/Container'
 import NavbarBrand from 'react-bootstrap/NavbarBrand'
 
 export default function NavBrand({ nameBrand, srcImg, width, height, alt }) {
     return (
-            <NavbarBrand href='#'>
+            
+            <NavbarBrand style={{color: 'white', alignItems: 'center'}}>
+                
                 <img id='imageBrand'
                     alt={alt}
                     src={srcImg}
                     width={width}
                     height={height}
-                    className='d-inline-block align-text-top'
-                />
-                {nameBrand}
+                    className='d-inline-block align-text-center'
+                />{' '}
+               
+                <span >{nameBrand}</span>
             </NavbarBrand>
+            
     )
 }

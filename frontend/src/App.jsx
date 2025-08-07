@@ -1,4 +1,5 @@
 import './assets/styles/App.css'
+import './assets/styles/MyNavbar.css'
 import {BrowserRouter, Routes, Route} from 'react-router-dom'
 import {Navigate, useNavigate} from 'react-router-dom';
 
