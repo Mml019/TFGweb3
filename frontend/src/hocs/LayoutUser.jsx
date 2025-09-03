@@ -1,3 +1,4 @@
+import '../assets/styles/MyNavbar.css'
 import MyNavbar from '../components/navigation/MyNavbar'
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
@@ -20,7 +21,6 @@ function Layout({ children }) {
             </div>
         </div>
     );
-
 }
 
 export default Layout;

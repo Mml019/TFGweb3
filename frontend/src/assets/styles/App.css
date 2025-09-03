@@ -47,4 +47,14 @@ h6{
     font-weight: 700; 
 }
 /*-----------------------*/
+/* Start Quiz styles */
+#logo{
+    width: 75px;
+    height: 100px;
+}
 
+.col-10{
+    display: flex;
+    align-content: center;
+    justify-content: center;
+}

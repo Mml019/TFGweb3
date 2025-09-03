@@ -1,7 +1,5 @@
 import './assets/styles/App.css'
-import './assets/styles/MyNavbar.css'
 import {BrowserRouter, Routes, Route} from 'react-router-dom'
-import {Navigate, useNavigate} from 'react-router-dom';
 
 
 import StartQuiz from  './containers/pages/users/StartQuiz'
@@ -19,15 +17,10 @@ import Questions from './containers/pages/admin/Questions'
 import Users from './containers/pages/admin/Users'
 import Results from './containers/pages/admin/Results' 
 
-export function UseNavigation(destino){
-  const navigate = useNavigate()
-  navigate({destino})
-}
+
 
 
 function App() {
-  const pathAdmin = 'quizAdmin'
-  const pathUser = 'quiz'
 
   return (
     <BrowserRouter>
@@ -35,7 +28,7 @@ function App() {
         <Route path='/' element= {<Navigate to='quiz/' replace></Navigate>}/>
         <Route path='quiz/' element={<StartQuiz/>} />
 
-        <Route path='quiz-admin/' element={<AdminForm/>} />
+        <Route path='quiz-admin/' element={<AdminPage/>} />
       </Routes>
     </BrowserRouter>
   );
