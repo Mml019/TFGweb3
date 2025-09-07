@@ -5,7 +5,7 @@ from .views_admin import *
 urlpatterns = [
     path('login/', LoginView.as_view(), name='login-admin'),
     path('logout/', LogoutView.as_view(), name='logoutn-admin'),
-    path('register/', Registration.as_view(), name='register-admin'),
-    path('quizes/', QuizView.as_view(), name='show-quizes')
-
+    # path('register/', Registration.as_view(), name='register-admin'),
+    # path('quizes/', QuizView.as_view(), name='show-quizes')
+    path('quizes/', QuizByQuestionsView.as_view(), name='show-quizes')
 ]

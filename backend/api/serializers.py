@@ -90,6 +90,7 @@ class QuizSerializer(serializers.ModelSerializer):
         model = Quiz
         fields = [
             'idQ',
+            'file'
             'fechaC',
             'fechaA',
             'question' 
