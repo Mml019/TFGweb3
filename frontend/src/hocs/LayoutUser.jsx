@@ -14,11 +14,11 @@ function Layout({ children }) {
         { value: 'Resultados', path: 'resultados/' }
     ]
     return (
-        <div id="layoutUser">
+        
+        <div  id="layoutUser">
             <MyNavbar items={items}></MyNavbar>
-            <div id="content" >
                 {children}
-            </div>
+           
         </div>
     );
 }
