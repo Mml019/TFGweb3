@@ -8,7 +8,7 @@ import { Link } from 'react-router-dom';
 import NavBrand from './NavBrand';
 
 
-export default function MyNavbar({ style = { backgroundColor: '#0065BD' }, type = 'user', items = [] }) {
+export default function MyNavbar({ style = { backgroundColor: '#0065BD', height:'55px' }, type = 'user', items = [] }) {
 
     return (
         <Navbar collapseOnSelect expand='lg' style={style} >

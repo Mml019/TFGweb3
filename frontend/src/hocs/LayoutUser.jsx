@@ -1,10 +1,6 @@
 import '../assets/styles/MyNavbar.css'
 import MyNavbar from '../components/navigation/MyNavbar'
 import Container from 'react-bootstrap/Container';
-import Nav from 'react-bootstrap/Nav';
-import Navbar from 'react-bootstrap/Navbar';
-import NavDropdown from 'react-bootstrap/NavDropdown';
-
 
 
 function Layout({ children }) {
@@ -15,8 +11,7 @@ function Layout({ children }) {
     ]
     return (
         
-        <div  id="layoutUser">
-            <MyNavbar items={items}></MyNavbar>
+        <div id="layoutUser">
                 {children}
            
         </div>
