@@ -12,8 +12,9 @@ function Layout({ children }) {
     return (
         
         <div id="layoutUser">
+            <Container fluid>
                 {children}
-           
+            </Container> 
         </div>
     );
 }

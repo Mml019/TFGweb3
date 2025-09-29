@@ -5,6 +5,7 @@ html, body, root{
     font: optional;/*to charge system fonts if is too slow render*/
     width: 100%;
     height: 100vh;
+    /* background: lightblue; */
 }
 
 #layoutUser{
@@ -25,6 +26,16 @@ html, body, root{
 #footer{
     height: 15%;
 }
+
+.row{
+    margin: 0%;
+    padding: 0%;
+}
+
+.col-10{
+    justify-content: center;
+}
+
 /*------------- tittles--------------- */
 h1 {
     font-size: 2.25rem;

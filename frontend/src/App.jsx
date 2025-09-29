@@ -18,6 +18,7 @@ import AdminForm from './containers/pages/admin/AdminForm'
 import Questions from './containers/pages/admin/Questions'
 import Users from './containers/pages/admin/Users'
 import Results from './containers/pages/admin/Results' 
+import EticCondition from './containers/pages/users/EticCondition'
 
 
 
@@ -27,8 +28,12 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path='/' element={<Navigate to='quiz/' replace></Navigate>}/>
-        <Route path='quiz/' element={<StartQuiz/>} />
+        <Route path='/' element={<Navigate to='/quiz' replace></Navigate>}/>
+        <Route path='/quiz' element={<StartQuiz/>} />
+        <Route path='/quiz/conditions/' element={<EticCondition/>} />
+        <Route path='/quiz/form/' element={<UserForm/>} />
+        <Route path='/quiz/questions/' element={<UserQuiz/>} />
+        <Route path='/quiz/results/' element={<UserResult/>} />
         {/* <Route path='quiz-admin/' element={<AdminPage/>} /> */}
       </Routes>
     </BrowserRouter>

@@ -85,7 +85,7 @@ class OptionQuestion(serializers.ModelSerializer):
         ]
 
 class QuizSerializer(serializers.ModelSerializer):
-    question = QuestionSerializer
+    # question = QuestionSerializer
     class Meta:
         model = Quiz
         fields = [

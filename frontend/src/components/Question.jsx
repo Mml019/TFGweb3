@@ -1,15 +1,30 @@
-export default function Question() {
+import Button from 'react-bootstrap/Button';
+import Card from 'react-bootstrap/Card';
+
+function CardHeaderAndFooter() {
+    // request data from question
+    const questions = await();
+
     return (
-        
+        <Card className="text-center"
+            bg='green'
+            key={questions.idP}
+            text={questions.statement}
+            style={{ width: '18rem' }}
+            border='green'
+        >
 
-        <div class="card">
-            <h5 class="card-header">Featured</h5>
-            <div class="card-body">
-                <h5 class="card-title">Special title treatment</h5>
-                <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                <a href="#" class="btn btn-primary">Go somewhere</a>
-            </div>
-        </div>
-    )
-
+            <Card.Header as="h1">Pregunta {}</Card.Header>
+            <Card.Body>
+                <Card.Title>Special title treatment</Card.Title>
+                <Card.Text>
+                    With supporting text below as a natural lead-in to additional content.
+                </Card.Text>
+                <Button variant="primary">Go somewhere</Button>
+            </Card.Body>
+            <Card.Footer className="text-muted">2 days ago</Card.Footer>
+        </Card>
+    );
 }
+
+
