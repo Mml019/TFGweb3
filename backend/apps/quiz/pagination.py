@@ -1,8 +1,7 @@
 from rest_framework.pagination import PageNumberPagination
 '''
 i don't put page_size_param and max_page_size because by default
-is None and don't permits user to make request to decide ´
-page_size
+is None and users can't make request to decide page_size
 '''
 class SmallQuestionNumberPagination(PageNumberPagination):
     page_query_param = 'p'

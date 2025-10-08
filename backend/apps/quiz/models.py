@@ -1,4 +1,5 @@
 import uuid
+import datetime
 
 from django.contrib.auth.models import AbstractUser, AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.db.models import Q
@@ -53,7 +54,7 @@ class Question(models.Model):
     idP =               models.BigAutoField(primary_key=True)
     numero =            models.PositiveIntegerField(default=1)
     statement =         models.CharField(max_length= 50, unique=True)  
-    time =              models.TimeField()
+    time =              models.TimeField(format='%m:%s')
     difficult_level =   models.PositiveSmallIntegerField()
     version =           models.PositiveIntegerField(default=0)
     date =              models.DateTimeField(auto_now=True)
@@ -191,13 +192,13 @@ class  AcademicLevel(models.Model):
     academic_lvl =  models.CharField(max_length=10, choices=AcademicLevelTypes) #academic_lvl
     description =   models.CharField(max_length=50, null=True)
     # null True permits set null in a database field
-    year =          models.PositiveSmallIntegerField(null=True)
+    year =          models.PositiveSmallIntegerField()
            
 class Respondant(models.Model):
 
     class Sex(models.TextChoices):
-        F = 'Femenino'
-        M = 'Masculino'  
+        "F" = 'Femenino'
+        "M" = 'Masculino'  
 
     respondant =        models.OneToOneField(MyUser, on_delete=models.CASCADE)
     age =               models.PositiveSmallIntegerField()
@@ -224,8 +225,8 @@ class Respondant(models.Model):
     
     def __str__(self):
        return str('ID: '+ self.respondant.id+ ' Edad: '+self.age+ ' Sexo: '+ self.sex + ' Nacionalidad: '+ self.nationality + ' Ciudad: '+ self.city + 
-                  ' Región: ' + self.region +  ' Título: '+ self.title + ' Año de titulación: '+ self.year_title + ' Area profesional/estudio: '+ 
-                  self.areaprof.values_list(flat=True)+ ' Nivel de PBE: ' + self.level_PBE +' Conocimiento en PBE '+ self.PBE_knownledge + ' Especialidad: '+ self.speciality)
+                  ' Región: ' + self.region +  ' Nivel académico: '+ self.academic_level.academic_lvl + ' Año del nivel académico: '+ self.academic_level.year + ' Area profesional/estudio: '+ 
+                  self.profarea.values_list(flat=True)+ ' Nivel de PBE: ' + self.level_PBE +' Conocimiento en PBE '+ self.PBE_knownledge + ' Especialidad: '+ self.speciality)
     
 class SatisfationRes(models.Model):
     idS =   models.ForeignKey(Satisfation, on_delete=models.CASCADE)

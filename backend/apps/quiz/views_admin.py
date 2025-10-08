@@ -1,13 +1,17 @@
 import io
-import random
 import re
-from unicodedata import normalize
+import environ
 
 # imports to Normalize and clean data
 import openpyxl as xl
 import pandas as pd
+
+from .models import *
 from api.serializers import *
 from apps.quiz.permissions import *
+
+from django.db import transaction
+from django.core.exceptions import ValidationError
 from django.contrib.auth import authenticate, login, logout
 from django.http.response import HttpResponse
 from rest_framework.generics import *
@@ -18,7 +22,6 @@ from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 
 from .pagination import SmallPageNumberPagination
-
 
 # -------- USER FUNTIONS -----------
 class LoginView(APIView):
@@ -99,29 +102,12 @@ class LogoutView(APIView):
 
 
 # ----------- QUIZ APP----------------
-class QuizByQuestionsView(APIView):
+class QuizViews(APIView):
     parser_classes = [MultiPartParser]
 
-    """Get a random list of ids from Quiz model and the  first quiz"""
-
-    def getRandomQuizzes(self, request):
-        # obtain all the ids, id list
-        ids = Quiz.objects.values_list("idQ", flat=True)
-
-        if ids is None:
-            return Response({"error": "Any Quiz exits to get one of them random"})
-
-        ids_list = random.shuffle(ids)
-        quiz = Quiz.objects.get(ids_list[0])
-
-        # quit id from the list
-        ids_list.pop(0)
-        return Response({"success": (ids_list, quiz)}, status=HTTP_200_OK)
-
     """ To get a quiz by id"""
-
     def get(self, request, id):
-        id = request.query_params
+        # id = request.query_params.get('quiz')
 
         quiz = Quiz.objects.get(id)
         if quiz is None:
@@ -130,8 +116,7 @@ class QuizByQuestionsView(APIView):
 
         return Response({"success": quiz_serial.data}, status=HTTP_200_OK)
 
-    """ To show all quizzes paginated by 20 size to teh admin"""
-
+    """ To show all quizzes paginated by 20 size to the admin"""
     def get(self, request):
         if Quiz.objects.exists() is False:
             return Response({"error": "There are any quizzes"}, status=HTTP_204_NO_CONTENT)
@@ -146,7 +131,7 @@ class QuizByQuestionsView(APIView):
         return paginator.get_paginated_response({"quizzes": quiz_serial_paginated.data})
 
     def post(self, request):
-
+        env = environ.Env()
         try:
             file = request.FILES.get("file")
         except:
@@ -178,75 +163,120 @@ class QuizByQuestionsView(APIView):
             )
 
         df_normal = normalizeFile(df)
-        
+
         question_BD = []
         apperance_BD = []
-        quiz = Quiz.objects.create(file = df_normal.name)
+        # dimension_BD = []
+        # areaInt_BD = []
+        # coreCont_BD = []
+        quiz = Quiz.objects.create(file=df_normal.name)
 
-        for i in len(df_normal):
-            # try: 
-            #     question = Question(
-            #         numero = i+1,
-            #         statement=df_normal.iloc[i]["enunciado"],
-            #         time=datetime.time(00, 00, 30),
-            #         difficult_level=df_normal.iloc[i]["dificultad"],
-            #         version=i,
-            #     )
-                
-            #     apperance = AppearanceQuiz(
-            #         quiz = quiz,
-            #         question = question
-            #     )
-                
-            #     question.full_clean
-            #     apperance.full_clean
+        for i in range(len(df_normal)):
+            try:
+                dimensionN = Dimension.objects.get_or_create(
+                    orden=df_normal[i]["ordenD"], dimension=df_normal[i]["dimension"]
+                )
 
-            #     # insert into the array to make a batch of objects
-            #     question_BD.append(question)
-            #     apperance_BD.append(apperance)
-            # except ValidationError as ve:
-            #     return Response(f"Error al insertar la pregunta de la fila {i+1}, Error: {ve}")
-            
+                print(dimensionN)
+                print(dimensionN.idD)
+
+                areaIntN = InterestArea.objects.get_or_create(
+                    orden=df_normal[i]["ordenA"],
+                    int_area=df_normal[i]["area"],
+                    idD=dimensionN.idD,
+                    # idD =  df_normal[i]["ordenD"]
+                )
+
+                coreCont = CoreContent.objects.get_or_create(
+                    core_cont=df_normal[i]["contenido"],
+                    idA=areaIntN.idA,
+                    # idA = df_normal[i]["ordenA"]
+                )
+
+            except ValidationError as ve:
+                return Response(
+                    {
+                        "error": f"Error al insertar la fila {i+1} la dimensión, área de interés o contenido nuclear. Error: {ve}"
+                    },
+                    status=HTTP_400_BAD_REQUEST,
+                )
+            try:
+                question = Question(
+                    numero=i + 1,
+                    statement=df_normal.iloc[i]["enunciado"],
+                    time=datetime.time(00, 00, 30),
+                    difficult_level=df_normal.iloc[i]["dificultad"],
+                    version=i,
+                    idD=dimensionN.idD,
+                )
+
+                apperance = AppearanceQuiz(quiz=quiz, question=question)
+
+                question.full_clean
+                apperance.full_clean
+
+                # insert into the array to make a batch of objects
+                question_BD.append(question)
+                apperance_BD.append(apperance)
+
+            except ValidationError as ve:
+                return Response(
+                    {"error": f"Error al insertar la pregunta de la fila {i+1}, Error: {ve}"},
+                    status=HTTP_400_BAD_REQUEST,
+                )
+
             optionQ_BD = []
             option_BD = []
             for op in df_normal.iloc[i]["opciones"]:
                 try:
-                    op2, opType = mapping(op, Opciones) 
-                    print(op2 + opType)               
-                    # option = Option(option=op2)
+                    op2, opType = mapping(op, Opciones)
+                    print(op2 + opType)
+                    option = Option(option=op2)
 
-                    # # Create only one kind of option per quetsion in Option Table
-                    # if not Option.objects.get(option=op2).exists():
-                    #     option_BD.append(option)
-                    
-                    # optionQ = OptionQuestion(
-                    #     option=option,
-                    #     question=question,
-                    #     motive=None
-                    # )
+                    # Create only one kind of option per quetsion in Option Table
+                    if not Option.objects.get(option=op2).exists():
+                        option_BD.append(option)
 
-                    # if op == df_normal["solucion"]:
-                    #     optionQ.motive = df_normal.iloc[i]["motivo"]
-                    # optionQ_BD.append(optionQ)
+                    optionQ = OptionQuestion(option=option, question=question, motive=None)
+
+                    if op == df_normal["solucion"]:
+                        optionQ.motive = df_normal.iloc[i]["motivo"]
+
                 except ValidationError as ve:
-                    return Response(f" Corrija la opción {opType} del campo de opciones de la fila {i+1}")
+                    return Response(
+                        {
+                            "error": f" Corrija la opción {opType} del campo de opciones de la fila {i+1}"
+                        },
+                        status=HTTP_400_BAD_REQUEST,
+                    )
 
+                if i >= env("batch_size"):
+                    Question.objects.bulk_create(question_BD, batch_size=env("batch_size"))
+                    AppearanceQuiz.objects.create(apperance_BD, batch_size=env("batch_size"))
+                    Option.objects.bulk_create(option_BD, batch_size=env("batch_size"))
+                    OptionQuestion.objects.bulk_create(optionQ_BD, batch_size=env("batch_size"))
+
+            # if i have still some objects to create
+            Question.objects.bulk_create(question_BD)
+            AppearanceQuiz.objects.bulk_create(apperance_BD)
+            Option.objects.bulk_create(option_BD)
+            OptionQuestion.objects.bulk_create(optionQ_BD)
 
         return Response({"success"}, status=HTTP_200_OK)
 
     # --------- other funtions ---------
 Opciones = {
-        "Verdadero": "Verdadero",
-        "True": "Verdadero",
-        "Vertader": "Verdadero",
-        "Falso": "Falso",
-        "False": "Falso",
-        "Fals": "Falso",
-        "No lo sé": "No lo sé",
-        "No ho sé": "No lo sé",
-        "No en sé": "No lo sé",
-        "No sé": "No lo sé",
-    }
+    "Verdadero": "Verdadero",
+    "True": "Verdadero",
+    "Vertader": "Verdadero",
+    "Falso": "Falso",
+    "False": "Falso",
+    "Fals": "Falso",
+    "No lo sé": "No lo sé",
+    "No ho sé": "No lo sé",
+    "No en sé": "No lo sé",
+    "No sé": "No lo sé",
+}
 
 """
     Ensures right decode to CSV if is not a UTF-8 CSV, because accents can't be resolved corrected.
@@ -257,6 +287,7 @@ def ensureDecode(file):
     # To read text and not bytes in memory we need io library
     archivo_en_memoria = io.StringIO(contenido_str)
     return archivo_en_memoria
+
 
 def normalizeFile(df):
     NEW_header = [
@@ -317,7 +348,8 @@ def mapping(op):
 
 # ModeliViewSet has already implemented to use create, retrieve, partial_update, update, destroy and list methods.
 class QuestionView(ModelViewSet):
-    pass
+    queryset = Question.objects.all()
+    serializer_class = QuestionSerializer()
 
 
 class ShowAnswersByRespondant(APIView):
