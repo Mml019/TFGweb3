@@ -5,13 +5,14 @@ import Stack from "react-bootstrap/Stack";
 import Image from "react-bootstrap/Image";
 import { useState } from "react"
 import { Link } from "react-router-dom"
+import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
+
 
 // onw components
 import CheckButton from "../../../components/forms/CheckButton"
 import MyVerticallyCenteredModal, { ModalButton } from "../../../components/Modal"
-import '../../../assets/styles/MyNavbar.css'
 import MyNavbar from '../../../components/navigation/MyNavbar'
-import { UseNavigation } from "../../../assets/utils/functions/UseNavigation"
 import LayoutUser from "../../../hocs/LayoutUser"
 import logoPortada from "/img/logoPortadaUib.png"
 
@@ -21,15 +22,10 @@ export default function StartQuiz() {
         { nameGroup: "conditions", label: "Instrucciones", ariaLabelledby: "rules", ariaPlace: "Instrucciones" }
     ];
 
-    const itemsMenu = [
-        { value: 'Usuarios', path: 'usuarios/' },
-        { value: 'Formularios', path: 'formularios/' },
-        { value: 'Resultados', path: 'resultados/' }
-    ]
-
     // create ana array with the number of check box
     const [checkedList, setIsChecked] = useState(new Array(itemsChecks?.length).fill(false));
-    const [cookie, setCookie] = useState(true);
+    const [cookie, setCookie] = useState(false);
+    const navigate = useNavigate()
 
     const handleOnChange = (position) => {
         const newCheckedList = [...checkedList];
@@ -38,84 +34,69 @@ export default function StartQuiz() {
     };
 
     const isAcceptedCookie = () => { return setCookie(!cookie) };
+    const acceptedCookie = () => {
+        setCookie(true)
+    };
+    const notAcceptedCookie = () => setCookie(false);
 
-    const footerButtons = [
-        {
-            label: "Rechazar",
-            type: "button",
-            variant: "secondary",
-            onClick: isAcceptedCookie,
-            size: "sm"
-        },
-        {
-            label: "Aceptar cookies",
-            type: "button",
-            variant: "primary",
-            onClick: isAcceptedCookie,
-            size: "sm"
-        }]
-
-    function handleClick() {
-        // First checked if all checkbuttons and cookies are accepted.
-        const allCheck = checkedList.every((element) => (element==true))
-        if (allCheck == true & cookie){
-        // Then show it userform 
-        <UseNavigation destino="/quiz/conditions" />
-        }else{
-            
+    function handleClick() {   
+        const allCheck = checkedList.every((element) => (element == true))
+        console.log(allCheck)
+        if ((allCheck == true) & cookie) {
+            // Then show it userform 
+            navigate("/quiz/conditions/instructions")
+        } else {
+            navigate("#")
+            toast.error("Debes aceptar las cookies y las instrucciones, para continuar")
         }
-        
     }
 
     return (
 
         <LayoutUser>
-            <MyNavbar items={itemsMenu}></MyNavbar>
             <div id="header">
-                <h1>StartQuiz</h1>
-                <span>Inicio</span>
+                <MyNavbar></MyNavbar>
             </div>
             <div id="content" >
-                <MyVerticallyCenteredModal show={cookie} onHide={isAcceptedCookie} footerButtons={footerButtons} >
+                <MyVerticallyCenteredModal show={!cookie} onHide={isAcceptedCookie}>
                     <h2>Uso de cookies 🍪</h2>
                     <p>Utilizamos cookies para asegurarnos de que tengas la mejor experiencia en nuestro sitio web.
                         Al continuar navegando, aceptas nuestro uso de cookies.
-                        <Link to={"/quiz/conditions/"}>Política de cookies</Link>
+                        <Link to={"/quiz/conditions/etic"}>Política de cookies</Link>
                     </p>
                     <ModalButton
-                        label= {"Rechazar"}
-                        type= {"button"}
-                        variant= {"secondary"}
-                        onClick= {isAcceptedCookie}
-                        size= {"sm"}> 
+                        label={"Aceptar"}
+                        type={"button"}
+                        variant={"secondary"}
+                        onClick={acceptedCookie}
+                        size={"sm"}>
                     </ModalButton>
                 </MyVerticallyCenteredModal>
                 <Row>
                     <Col />
                     <Col xs={10}>
-                        <h2>Bienvenid@</h2>
-                        <Image id="logo" src={logoPortada} alt="LogoUniversidad" />
-                        <p>Esta apunto de empezar un cuestionario creado por el
-                            equipo de profesionales sanitarios expertos en las
-                            Prácticas Basadas en la Evidencia.
-                        </p>
                         <Stack direction="vertical" gap={2} className="mx-auto centered">
-                            <Button onClick={handleClick} variant="primary">Empezar Test</Button>
+                            <h2>Bienvenid@</h2>
+                            <Image id="logo" src={logoPortada} alt="LogoUniversidad" />
+                            <p className="center-text">
+                                Está a punto de empezar un cuestionario para evaluar sus conocimientos sobre práctica basada en la evidencia, muchas gracias por su dedicación y tiempo.
+                            </p>
+                            <Button id="StartQuiz" onClick={handleClick} variant="primary">Empezar Test</Button>
                             <div className="mb-3">
                                 {itemsChecks.map((item, index) => (
                                     //<CheckButton key={index} type="checkbox" item={item} index={index} ></CheckButton>
-                                    <CheckButton key={index} type="checkbox" item={item} index={index} checked={checkedList[index]} handleOnChange={handleOnChange}></CheckButton>
+                                    <CheckButton inline inicio={true} key={index} type="checkbox" item={item} index={index} checked={checkedList[index]} handleOnChange={handleOnChange}></CheckButton>
                                 ))}
                             </div>
                         </Stack>
                     </Col>
                     <Col />
-                </Row>🍪
+                </Row>
             </div>
             <div id="footer">
                 <div id="cookie-banner">
-                    <p>Este sitio web utiliza cookies, para mejorar su experiencia.Al continuar navegando, aceptas nuestro uso de cookies.
-                        <Link to="/politica-cookies">Más información</Link>
+                    <p>🍪Este sitio web utiliza cookies, para mejorar su experiencia.Al continuar navegando, aceptas nuestro uso de cookies.
+                        {/* <Link to="/politica-cookies">Más información</Link> */}
                     </p>
                 </div>
             </div>

@@ -2,9 +2,6 @@ import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 
 export default function MyVerticallyCenteredModal( props) {
-  let person = props.person
-  let button = props.button
-
   return (
     <Modal
       //{...props}
@@ -12,16 +9,19 @@ export default function MyVerticallyCenteredModal( props) {
       onHide={props.onHide}
       backdrop="static"
       keyboard={false}
-    // aria-labelledby={children[0]}
+      aria-labelledby={props.children[0]}
     >
       <Modal.Header closeButton>
-        <Modal.Title>Modal title</Modal.Title>
+        <Modal.Title>{props.children[0]}</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        {props.children}
+        {props.children[1]}
       </Modal.Body>
       <Modal.Footer>
-        {props.footerButtons.map((btn, index) => (
+        
+        {props.footerButtons && props.footerButtons.length > 0  
+        ? 
+        props.footerButtons.map((btn, index) => (
           <ModalButton
             key={`btn-${index}`}
             label={btn.label}
@@ -30,15 +30,9 @@ export default function MyVerticallyCenteredModal( props) {
             size={btn.size}
             onClick={btn.onClick}
           />
-        ))}
-
-        {/* <ModalButton
-          key="hola"
-            label="2"
-            type='button'
-            variant="primary"
-            size="sm"
-        ></ModalButton> */}
+        ))
+        :
+        props.children[2]}
       </Modal.Footer>
     </Modal>
   );

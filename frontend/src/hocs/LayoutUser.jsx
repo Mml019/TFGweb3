@@ -10,11 +10,11 @@ function Layout({ children }) {
         { value: 'Resultados', path: 'resultados/' }
     ]
     return (
-        
+
         <div id="layoutUser">
             <Container fluid>
                 {children}
-            </Container> 
+            </Container>
         </div>
     );
 }

@@ -1,28 +1,44 @@
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
+import Row from 'react-bootstrap/esm/Row';
+import CheckButtonInline from './forms/CheckButton';
+import { IoMdArrowDropright } from "react-icons/io";
+import { IoMdArrowDropleft} from "react-icons/io";
+import Timer from './Timer';
 
-function CardHeaderAndFooter() {
-    // request data from question
-    const questions = await();
 
+function CardHeaderAndFooter(item, opciones, bg, border) {
+       
     return (
         <Card className="text-center"
-            bg='green'
-            key={questions.idP}
-            text={questions.statement}
+            bg={bg}
+            key={item.idP}
             style={{ width: '18rem' }}
-            border='green'
+            border={border}
         >
 
-            <Card.Header as="h1">Pregunta {}</Card.Header>
+            <Card.Header>
+                <h1>Pregunta {item.numero}</h1>
+                <Timer time={}></Timer>
+            </Card.Header>
             <Card.Body>
-                <Card.Title>Special title treatment</Card.Title>
+                <Card.Title>
+                    {item.statement}
+                </Card.Title>
                 <Card.Text>
-                    With supporting text below as a natural lead-in to additional content.
+                    <Row>
+                        <Col xs={2}></Col>
+                        <Col xs={8}> 
+                        {opciones.map((op, ind)=>(
+                            <CheckButtonInline type='radio' item={op} index={ind} checked={false} handleOnChange={handleOnChange}/>                        
+                        ))}
+                        </Col>
+                        <Col xs={2}></Col>
+                    </Row>
+                   
                 </Card.Text>
-                <Button variant="primary">Go somewhere</Button>
             </Card.Body>
-            <Card.Footer className="text-muted">2 days ago</Card.Footer>
+            <Card.Footer></Card.Footer>
         </Card>
     );
 }

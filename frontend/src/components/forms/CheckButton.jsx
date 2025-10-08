@@ -1,35 +1,47 @@
 import { useState } from 'react';
 import Form from 'react-bootstrap/Form';
+import { Link } from 'react-router-dom';
 
 // this class is used to create radio or check buttons without validations
-export default function CheckButton({ type = 'checkbox', item, index, checked, handleOnChange }) { 
-    
-   return (<>
+export default function CheckButtonInline(props) {
+
+    return (<>
 
         <Form.Check
-            inline
-            type={type}
-            id={`checkbox-id-${index}`}
-            name={item.nameGroup}
-            value={item.value}
-            label={item.label}
+            {...props}
+            type={props.type}
+            id={`checkbox-id-${props.index}`}
+            name={props.item.nameGroup}
+            value={props.item.value}
+            // label={item.label}
 
-            checked={checked !== undefined ? checked : false}//{() => {checked[index] !== undefined ? checked[index] : false}}
+            checked={props.checked !== undefined ? props.checked : false}//{() => {checked[index] !== undefined ? checked[index] : false}}
             // not to call directly a funtion in render only referenced
-            onChange={() => handleOnChange(index)}
+            onChange={() => props.handleOnChange(index)}
             // isInvalid={checkedList[index] === false}
 
             // accesibility
             aria-labelledby='conditions'
-            aria-placeholder={item.ariaPlace}
-            aria-checked={checked !== undefined ? checked[index] : false}//{() => {checked[index] !== undefined ? checked[index] : false}}
-            tabIndex={0}
+            aria-placeholder={props.item.ariaPlace}
+            aria-checked={props.checked !== undefined ? props.checked[props.index] : false}//{() => {checked[index] !== undefined ? checked[index] : false}}
+            tabIndex={0}>
 
-        />
-        <Form.Control.Feedback type="invalid">
-            {item.invalidFeedback}
-        </Form.Control.Feedback>
+            <Form.Check.Input type={props.type} />
+            {
+                props.inicio !== undefined ?
+                    (props.index == 0 ?
+                        <Form.Check.Label><Link to="/quiz/conditions/instructions">{props.item.label}</Link></Form.Check.Label>
+                        :
+                        <Form.Check.Label><Link to="/quiz/conditions/etic">{props.item.label}</Link></Form.Check.Label>
+                    ) :
+                    <Form.Check.Label>{props.item.label}</Form.Check.Label>
+            }
+            <Form.Control.Feedback type="invalid">
+                {props.item.invalidFeedback}
+            </Form.Control.Feedback>
+        </Form.Check>
     </>
 
     );
 }
+
