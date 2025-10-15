@@ -3,11 +3,12 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { Navigate } from 'react-router-dom'
 import { Toaster } from 'react-hot-toast'
 
-
 import StartQuiz from './containers/pages/users/StartQuiz'
 import UserForm from './containers/pages/users/UserForm'
 import UserQuiz from './containers/pages/users/UserQuiz'
 import UserResult from './containers/pages/users/UserResult'
+import EticCondition from './containers/pages/users/EticCondition'
+import Instructions from './containers/pages/users/Instructions'
 // if i use export direct into funtion statement (exportación nombrada) 
 // with {} and the component name equal funtion name
 //import {AdminForm} from './containers/AdminForm'
@@ -19,16 +20,10 @@ import AdminForm from './containers/pages/admin/AdminForm'
 import Questions from './containers/pages/admin/Questions'
 import Users from './containers/pages/admin/Users'
 import Results from './containers/pages/admin/Results'
-import EticCondition from './containers/pages/users/EticCondition'
-import Instructions from './containers/pages/users/Instructions'
-
-
-
 
 function App() {
 
   return (
-
     <BrowserRouter>
       <Toaster />
       <Routes>

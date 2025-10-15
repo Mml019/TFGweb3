@@ -1,5 +1,6 @@
-import Container from "react-bootstrap/esm/Container"
-import { Link } from "react-router-dom"
+import Container from "react-bootstrap/Container"
+import MyButton from "../../../components/MyButton"
+
 
 export default function EticCondition() {
     return (
@@ -7,18 +8,16 @@ export default function EticCondition() {
             <div className="header">
                 <h1>Información para participantes</h1>
             </div>
-
-            <hr />
             <div id="content">
                 <nav>
                     <ul>
-                        <li><Link to="#section1">Título del estudio</Link></li>
-                        <li><Link to="#section2">Riesgos y beneficios</Link></li>
-                        <li><Link to="#section3">Anonimato y gestión de los datos</Link></li>
-                        <li><Link to="#section4">Participación voluntaria</Link></li>
-                        <li><Link to="#section5">Publicación de los resultados</Link></li>
-                        <li><Link to="#section6">Contacto</Link></li>
-                        <li><Link to="#section7">Consentimiento</Link></li>
+                        <li><a href="#section1">Título del estudio</a></li>
+                        <li><a href="#section2">Riesgos y beneficios</a></li>
+                        <li><a href="#section3">Anonimato y gestión de los datos</a></li>
+                        <li><a href="#section4">Participación voluntaria</a></li>
+                        <li><a href="#section5">Publicación de los resultados</a></li>
+                        <li><a href="#section6">Contacto</a></li>
+                        <li><a href="#section7">Consentimiento</a></li>
                     </ul>
                 </nav>
                 <hr />
@@ -46,7 +45,8 @@ export default function EticCondition() {
                     <li><strong>Duración aproximada:</strong> 55 minutos en una única sesión en línea.</li>
                 </ul>
 
-                {/* <summary>¿Quién coordina el estudio?</summary>
+                {/* details con flechas
+                <summary>¿Quién coordina el estudio?</summary>
             <details>Equipo investigador de la Universitat de les Illes Balears (UIB).</details>
             <br />
             <summary>¿Cuál es el objetivo?</summary>
@@ -96,6 +96,24 @@ export default function EticCondition() {
                 <p>
                     El envío del cuestionario implica que ha leído esta información y acepta participar de forma voluntaria y anónima.
                 </p>
+                <div className="mx-auto d-flex flex-row-reverse ">
+                    <MyButton
+                        label={"Aceptar"}
+                        type={"button"}
+                        variant={"primary"}
+                        // onClick={}
+                        size={"sm"}>
+                        Aceptar
+                    </MyButton>
+                    <MyButton
+                        label={"Atrás"}
+                        type={"button"}
+                        variant={"secondary"}
+                        // onClick={}
+                        size={"sm"}>
+                        Atrás
+                    </MyButton>
+                </div>
             </div>
         </Container >
     )

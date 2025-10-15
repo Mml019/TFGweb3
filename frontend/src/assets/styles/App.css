@@ -25,8 +25,6 @@ root {
     color: white;
     height: 10%;
     width: 100%;
-    position: absolute;
-    top: 0;
 }
 
 #header {
@@ -34,10 +32,8 @@ root {
 }
 
 #content {
-    margin: 2rem;
     overflow: auto;
-    height: 100vh;
-    /* padding-bottom: 60px; */
+    height: 90%;
 }
 
 #footer {
@@ -57,6 +53,7 @@ root {
 .container-fluid {
     padding: 0%;
     --bs-gutter-x: 0;
+    height: 100vh;
 }
 
 .col-10 {
@@ -65,11 +62,6 @@ root {
     align-content: center;
     justify-content: center;
     align-items: center;
-}
-
-.p {
-    margin-bottom: 1rem;
-    margin-inline-start: 0.5rem;
 }
 
 .center-text {
@@ -89,21 +81,38 @@ root {
 h1 {
     font-size: 2.25rem;
     font-weight: 700;
+    margin-inline-start: 0.5rem;
+    margin-inline-end: 0.5rem;
 }
 
 h2 {
     font-size: 2rem;
     font-weight: 700;
+    margin-inline-start: 0.5rem;
+    margin-inline-end: 0.5rem;
 }
 
 h3 {
     font-size: 1.75rem;
     font-weight: 700;
+    margin-inline-start: 0.5rem;
+    margin-inline-end: 0.5rem;
 }
 
 h4 {
     font-size: 1.5rem;
     font-weight: 700;
+    margin-inline-start: 0.5rem;
+    margin-inline-end: 0.5rem;
+}
+
+p , text, textarea{
+    margin-bottom: 1rem;
+    margin-inline-start: 0.5rem;
+}
+
+.btn{
+    margin-left:  0.2rem;
 }
 
 /*-----------------------*/

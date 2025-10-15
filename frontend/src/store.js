@@ -1,19 +1,13 @@
-// pointed to our reductor class
-import {createStore, applyMiddleare} from 'redux'
+import {configureStore} from '@reduxjs/toolkit'
 import thunk from 'redux-thunk'
-import rootReducer from './redux/reducers'
-import {composeWithDevTools} from 'redux-devtools-extension'
+// import combinedReducers from './reduxToolkit/reducers/combinedReducers'
 
-const initialState = {};
+const store = configureStore(
+    {
+    reducer: combinedReducers,
+    middleware: (getDefaultMiddleware) => 
+    getDefaultMiddleware().concat(thunk), 
+    devTools: process.env.devTools !== 'production',
+});
 
-const middleware = [thunk];
-
-const store = createStore(
-    rootReducer,
-    initialState,
-    // if you can't permit to see react devtools
-    applyMiddleare(...middleware),
-    // to see react dev tools recomended only in development
-    composeWithDevTools(applyMiddleare(...middleware))
-
-);
+export default store

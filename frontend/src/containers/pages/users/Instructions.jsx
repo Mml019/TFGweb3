@@ -1,17 +1,15 @@
-import Button from "react-bootstrap/esm/Button"
 import Container from "react-bootstrap/esm/Container"
-import { ModalButton } from "../../../components/Modal"
-import { useNavigation } from "react-router-dom"
+import MyButton from "../../../components/MyButton"
+import { useNavigate} from "react-router-dom"
 
 export default function Instructions() {
-    const nav = useNavigation()
+    const nav = useNavigate()
     return (
         <Container fluid>
             <div className="header">
                 <h1>Instrucciones del cuestionario</h1>
             </div>
-            <div id="content">
-                <hr />
+            <div id="content" className="pt-2 pb-2">
                 <ul>
                     <li>
                         <p><b>Duración 30 segundos</b><br />
@@ -26,8 +24,11 @@ export default function Instructions() {
                         {/* Solo se le guardará durante  20 primeros minutos desde donde se quedó, apsado ese intervalo de tiempo volverá a empezar con nuevas preguntas*/}
                     </p></li>
                 </ul>
-                <ModalButton type="button" variant="primary" onClick={()=>(nav("/quiz/form"))}>Aceptar y continuar</ModalButton>
-                <ModalButton type="button" variant="secondary" onClick={()=>(nav(-1))}>Atrás</ModalButton>
+                <div className="mx-auto p-2">
+                    <MyButton type="button" variant="secondary" onClick={()=>(nav(-1))}>Atrás</MyButton> 
+                    <MyButton type="button" variant="primary" onClick={()=>(nav("/quiz/form"))}>Aceptar y continuar</MyButton>
+                </div>
+                
             </div>
 
         </Container>

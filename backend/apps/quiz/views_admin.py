@@ -1,11 +1,13 @@
 import io
 import re
 import environ
+from datetime import datetime, time
 
 # imports to Normalize and clean data
 import openpyxl as xl
 import pandas as pd
 
+from .models import OptionQuestion as oqm
 from .models import *
 from api.serializers import *
 from apps.quiz.permissions import *
@@ -132,11 +134,13 @@ class QuizViews(APIView):
 
     def post(self, request):
         env = environ.Env()
+
         try:
             file = request.FILES.get("file")
         except:
             return Response({"error": "Not file in request.FILES"}, status=HTTP_400_BAD_REQUEST)
-
+        print(file)
+        # print(file.name.endswith)
         if file is None:
             return Response({"error": "Not file added"}, status=HTTP_400_BAD_REQUEST)
 
@@ -149,7 +153,9 @@ class QuizViews(APIView):
         # Dataframe to read and normalize
         if file.name.endswith("csv"):
             try:
+             
                 df = pd.read_csv(file, encoding="utf-8", delimiter=";")
+               
             except:
                 # Garantizes CSV UTF-8 because accents interpreted errors
                 memo_file = ensureDecode(file)
@@ -157,110 +163,115 @@ class QuizViews(APIView):
         elif file.name.endswith("xlsx"):
             df = pd.read_excel(file)
         else:
+            print("else")
             return Response(
                 {"error": "Incorrect Format, only CSV or XLSX files permited"},
                 status=HTTP_400_BAD_REQUEST,
             )
-
+        
         df_normal = normalizeFile(df)
-
-        question_BD = []
-        apperance_BD = []
-        # dimension_BD = []
-        # areaInt_BD = []
-        # coreCont_BD = []
-        quiz = Quiz.objects.create(file=df_normal.name)
-
-        for i in range(len(df_normal)):
-            try:
-                dimensionN = Dimension.objects.get_or_create(
-                    orden=df_normal[i]["ordenD"], dimension=df_normal[i]["dimension"]
-                )
-
-                print(dimensionN)
-                print(dimensionN.idD)
-
-                areaIntN = InterestArea.objects.get_or_create(
-                    orden=df_normal[i]["ordenA"],
-                    int_area=df_normal[i]["area"],
-                    idD=dimensionN.idD,
-                    # idD =  df_normal[i]["ordenD"]
-                )
-
-                coreCont = CoreContent.objects.get_or_create(
-                    core_cont=df_normal[i]["contenido"],
-                    idA=areaIntN.idA,
-                    # idA = df_normal[i]["ordenA"]
-                )
-
-            except ValidationError as ve:
-                return Response(
-                    {
-                        "error": f"Error al insertar la fila {i+1} la dimensión, área de interés o contenido nuclear. Error: {ve}"
-                    },
-                    status=HTTP_400_BAD_REQUEST,
-                )
-            try:
-                question = Question(
-                    numero=i + 1,
-                    statement=df_normal.iloc[i]["enunciado"],
-                    time=datetime.time(00, 00, 30),
-                    difficult_level=df_normal.iloc[i]["dificultad"],
-                    version=i,
-                    idD=dimensionN.idD,
-                )
-
-                apperance = AppearanceQuiz(quiz=quiz, question=question)
-
-                question.full_clean
-                apperance.full_clean
-
-                # insert into the array to make a batch of objects
-                question_BD.append(question)
-                apperance_BD.append(apperance)
-
-            except ValidationError as ve:
-                return Response(
-                    {"error": f"Error al insertar la pregunta de la fila {i+1}, Error: {ve}"},
-                    status=HTTP_400_BAD_REQUEST,
-                )
-
-            optionQ_BD = []
-            option_BD = []
-            for op in df_normal.iloc[i]["opciones"]:
+        with transaction.atomic():
+            quiz = Quiz.objects.create(file=file.name)
+            '''question_BD = []
+            appearance_BD = []'''
+            
+            for i in range(len(df_normal)):
+            
                 try:
-                    op2, opType = mapping(op, Opciones)
-                    print(op2 + opType)
-                    option = Option(option=op2)
+                    dimensionN, create = Dimension.objects.get_or_create(
+                        orden=df_normal.iloc[i]["ordenD"], 
+                        dimension=df_normal.iloc[i]["dimension"]
+                    )             
 
-                    # Create only one kind of option per quetsion in Option Table
-                    if not Option.objects.get(option=op2).exists():
-                        option_BD.append(option)
-
-                    optionQ = OptionQuestion(option=option, question=question, motive=None)
-
-                    if op == df_normal["solucion"]:
-                        optionQ.motive = df_normal.iloc[i]["motivo"]
-
+                    areaIntN, create = InterestArea.objects.get_or_create(
+                        orden=df_normal.iloc[i]["ordenA"],
+                        int_area=df_normal.iloc[i]["area"],
+                        idD=dimensionN,
+                    )
+                    
+                    coreCont = CoreContent.objects.get_or_create(
+                        core_cont=df_normal.iloc[i]["contenido"],
+                        idA=areaIntN,
+                    )
                 except ValidationError as ve:
                     return Response(
                         {
-                            "error": f" Corrija la opción {opType} del campo de opciones de la fila {i+1}"
+                            "error": f"Error al insertar la fila {i+1} la dimensión, área de interés o contenido nuclear. Error: {ve}"
                         },
                         status=HTTP_400_BAD_REQUEST,
                     )
+                try:
+                    question = Question.objects.create(
+                        numero=i + 1,
+                        statement=df_normal.iloc[i]["enunciado"],
+                        time=time(0,0,30),
+                        difficult_level=df_normal.iloc[i]["dificultad"],
+                        version=i,
+                        idD=dimensionN,
+                    )
+                    '''
+                    question_BD.append(question)
+                    appearance = AppearanceQuiz(quiz=quiz, question=question)
+                    question.full_clean
+                    appearance.full_clean
+                    question_BD.append(question)
+                    appearance_BD.append(appearance)
+                    '''
+                    # Apperance model is through many to many field quiz question
+                    quiz.question.add(question)
 
-                if i >= env("batch_size"):
-                    Question.objects.bulk_create(question_BD, batch_size=env("batch_size"))
-                    AppearanceQuiz.objects.create(apperance_BD, batch_size=env("batch_size"))
-                    Option.objects.bulk_create(option_BD, batch_size=env("batch_size"))
-                    OptionQuestion.objects.bulk_create(optionQ_BD, batch_size=env("batch_size"))
+                except ValidationError as ve:
+                    return Response(
+                        {"error": f"Error al insertar la pregunta de la fila {i+1}, Error: {ve}"},
+                        status=HTTP_400_BAD_REQUEST,
+                    )
+                '''option_BD = []
+                optionQ_BD = []'''
+                for op in df_normal.iloc[i]["opciones"]:
+                    try:
 
-            # if i have still some objects to create
-            Question.objects.bulk_create(question_BD)
-            AppearanceQuiz.objects.bulk_create(apperance_BD)
-            Option.objects.bulk_create(option_BD)
-            OptionQuestion.objects.bulk_create(optionQ_BD)
+                        valor_op_mapeado = Opciones[op]
+                        print(valor_op_mapeado)
+                        '''
+                        option = Option(valor_op_mapeado)
+                        option.full_clean
+                        # Create only one kind of option per quetsion in Option Table
+                        if option not in option_BD:
+                            option_BD.append(option)
+                        '''
+                            
+                        # Create only one kind of option per quetsion in Option Table
+                        option, create = Option.objects.get_or_create(option=valor_op_mapeado)
+                        
+                        '''optionQ = OptionQuestion(idO=option, idP=question, motive=None)
+                        optionQ.full_clean'''
+                        
+                        optionQ = oqm.objects.create(idP=question, idO=option, motive=None)
+                        if op == df_normal.iloc[i]["solucion"]:
+                            optionQ.motive = df_normal.iloc[i]["motivo"]
+                            optionQ.save
+                       
+                        # optionQ_BD.append(optionQ)
+
+                    except ValidationError as ve:
+                        return Response(
+                            {
+                                "error": f" Corrija la opción {valor_op_mapeado} del campo de opciones de la fila {i+1}"
+                            },
+                            status=HTTP_400_BAD_REQUEST,
+                        )
+                    
+            #     if i >= env("batch_size"):
+            #         Question.objects.bulk_create(question_BD, batch_size=env("batch_size"))
+            #         AppearanceQuiz.objects.create(appearance_BD, batch_size=env("batch_size"))
+            #         Option.objects.bulk_create(option_BD, batch_size=env("batch_size"))
+            #         OptionQuestion.objects.bulk_create(optionQ_BD, batch_size=env("batch_size"))
+
+            # # if i have still some objects to create
+            # Question.objects.bulk_create(question_BD)
+            # AppearanceQuiz.objects.bulk_create(appearance_BD)
+            # Option.objects.bulk_create(option_BD)
+            # OptionQuestion.objects.bulk_create(optionQ_BD)
 
         return Response({"success"}, status=HTTP_200_OK)
 
@@ -306,9 +317,20 @@ def normalizeFile(df):
 
     # set data types
     df = df.astype("string")
-    df["dificultad"].astype("int")
+    df["dificultad"] = df["dificultad"].astype("int")
+   
+    # NA values
+    df["dificultad"] = df["dificultad"].fillna(0)
 
-    #    df = df.apply(lambda x: )
+    # Guardar orden
+    df["ordenD"] = df["dimension"].str.extract(r"(\d+)\.").astype(int)
+    
+    df["dimension"] = df["dimension"].str.extract(r"([a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+)")
+    df["ordenA"] = df["area"].str.extract(r"(?<=\d\.)(\d+)").astype(int)
+    df["area"] = df["area"].str.extract(r"([a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+)")
+    df["solucion"] = df["solucion"].map(Opciones).astype("string")
+    df["opciones"] = df["opciones"].str.split(";")
+
     # determine separator
     signos = ",;:?!.-_¨´+*^`[]¿¡'&%()$#·@!º\ª{} "
     signos_f = ",;:-_¨´+*^`[¿'&%($#·@º\ª{ "
@@ -319,18 +341,6 @@ def normalizeFile(df):
         df[i] = df[i].str.rstrip(signos_f)
         df[i] = df[i].str.capitalize()
         df[i] = df[i].fillna(" ")
-    # NA values
-    df["dificultad"].fillna(0)
-
-    # Guardar orden
-    df["ordenD"] = df["dimension"].str.extract(r"(\d+\.)")
-    ordenD = df["ordenD"].str.strip(".")
-    df["ordenD"] = ordenD[1]
-    df["dimension"] = df["dimension"].str.extract(r"([a-zA-Z\s])")
-    df["ordenA"] = df["area"].str.extract(r"(?<=\d\.)(\d+)")
-    df["area"] = df["area"].str.extract(r"([a-zA-Z\s])")
-    df["solucion"] = df["solucion"].map(Opciones)
-    df["opciones"] = df["opciones"].str.split(";")
 
     return pd.DataFrame(df)
 

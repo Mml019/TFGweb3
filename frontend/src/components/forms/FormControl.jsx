@@ -1,20 +1,26 @@
 import Form from 'react-bootstrap/Form';
 import FloatingLabel from 'react-bootstrap/FloatingLabel';
 
-export default function FormControlFloatingLabel(label, sizeCol, type = text, placeholder = label, error) {
+export default function FormControlFloatingLabel({ label, type = "text", placeholder = label, name, register, errors, ...rest }) {
   return (
     <FloatingLabel
-      as={Col}
-      xs={sizeCol}
-      controlId={`form-${label}`}
+      controlId={name}
       label={label}>
       <Form.Control
         type={type}
+        value={value}
         placeholder={placeholder}
-        isInvalid={!!error} />
-      <Form.Control.Feedback type="invalid">
-        {error}
-      </Form.Control.Feedback>
+        {...register(name)}
+        //isInvalid={!!error}
+        isInvalid={!!errors[name]}
+        aria-invalid={!!errors[name]}
+        {...rest}
+      />
+      {errors[name] && 
+        <Form.Control.Feedback type="invalid">
+          {errors[name].message}
+          {/* {errors[name] && errors[name]?.message}  */}
+        </Form.Control.Feedback>}
     </FloatingLabel>
   )
 }

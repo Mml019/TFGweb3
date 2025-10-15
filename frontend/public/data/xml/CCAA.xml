@@ -1,0 +1,436 @@
+<response>
+    <row>
+        <row _id="row-wdic_f3re~tujr" _uuid="00000000-0000-0000-AE62-C2544A99C664" _position="0"
+            _address="https://analisi.transparenciacatalunya.cat/resource/wkyq-jzxq/row-wdic_f3re~tujr">
+            <codi>01</codi>
+            <nom_en_catal>Àlaba</nom_en_catal>
+            <nom_oficial>Araba/Álava</nom_oficial>
+            <ccaa_codi>16</ccaa_codi>
+            <ccaa_nom_en_catal>País Basc</ccaa_nom_en_catal>
+        </row>
+        <row _id="row-ywbc-spjr~uwwu" _uuid="00000000-0000-0000-A778-1139773148C3" _position="0"
+            _address="https://analisi.transparenciacatalunya.cat/resource/wkyq-jzxq/row-ywbc-spjr~uwwu">
+            <codi>02</codi>
+            <nom_en_catal>Albacete</nom_en_catal>
+            <nom_oficial>Albacete</nom_oficial>
+            <ccaa_codi>08</ccaa_codi>
+            <ccaa_nom_en_catal>Castella - la Manxa</ccaa_nom_en_catal>
+        </row>
+        <row _id="row-xyi8.bawe_kdk9" _uuid="00000000-0000-0000-0122-DDDE7EC0E080" _position="0"
+            _address="https://analisi.transparenciacatalunya.cat/resource/wkyq-jzxq/row-xyi8.bawe_kdk9">
+            <codi>03</codi>
+            <nom_en_catal>Alacant</nom_en_catal>
+            <nom_oficial>Alacant/Alicante</nom_oficial>
+            <ccaa_codi>10</ccaa_codi>
+            <ccaa_nom_en_catal>Comunitat Valenciana</ccaa_nom_en_catal>
+        </row>
+        <row _id="row-4bgf~8u86~g9t8" _uuid="00000000-0000-0000-9696-D3F63FC361C4" _position="0"
+            _address="https://analisi.transparenciacatalunya.cat/resource/wkyq-jzxq/row-4bgf~8u86~g9t8">
+            <codi>04</codi>
+            <nom_en_catal>Almeria</nom_en_catal>
+            <nom_oficial>Almería</nom_oficial>
+            <ccaa_codi>01</ccaa_codi>
+            <ccaa_nom_en_catal>Andalusia</ccaa_nom_en_catal>
+        </row>
+        <row _id="row-jv4n.jd4t_m3p4" _uuid="00000000-0000-0000-745F-B274B880B58D" _position="0"
+            _address="https://analisi.transparenciacatalunya.cat/resource/wkyq-jzxq/row-jv4n.jd4t_m3p4">
+            <codi>05</codi>
+            <nom_en_catal>Àvila</nom_en_catal>
+            <nom_oficial>Ávila</nom_oficial>
+            <ccaa_codi>07</ccaa_codi>
+            <ccaa_nom_en_catal>Castella i Lleó</ccaa_nom_en_catal>
+        </row>
+        <row _id="row-teuh_r2uv.kecx" _uuid="00000000-0000-0000-DD2E-B99079D66259" _position="0"
+            _address="https://analisi.transparenciacatalunya.cat/resource/wkyq-jzxq/row-teuh_r2uv.kecx">
+            <codi>06</codi>
+            <nom_en_catal>Badajoz</nom_en_catal>
+            <nom_oficial>Badajoz</nom_oficial>
+            <ccaa_codi>11</ccaa_codi>
+            <ccaa_nom_en_catal>Extremadura</ccaa_nom_en_catal>
+        </row>
+        <row _id="row-h7ea~77u3.he5b" _uuid="00000000-0000-0000-1BBE-A91AC7D57C3C" _position="0"
+            _address="https://analisi.transparenciacatalunya.cat/resource/wkyq-jzxq/row-h7ea~77u3.he5b">
+            <codi>07</codi>
+            <nom_en_catal>Illes Balears</nom_en_catal>
+            <nom_oficial>Illes Balears</nom_oficial>
+            <ccaa_codi>04</ccaa_codi>
+            <ccaa_nom_en_catal>Illes Balears</ccaa_nom_en_catal>
+        </row>
+        <row _id="row-wd32_fty2-6xn2" _uuid="00000000-0000-0000-3A1D-EF6D17FF9BA7" _position="0"
+            _address="https://analisi.transparenciacatalunya.cat/resource/wkyq-jzxq/row-wd32_fty2-6xn2">
+            <codi>08</codi>
+            <nom_en_catal>Barcelona</nom_en_catal>
+            <nom_oficial>Barcelona</nom_oficial>
+            <ccaa_codi>09</ccaa_codi>
+            <ccaa_nom_en_catal>Catalunya</ccaa_nom_en_catal>
+        </row>
+        <row _id="row-h9xp~cc6d_ik7i" _uuid="00000000-0000-0000-1208-21974A291490" _position="0"
+            _address="https://analisi.transparenciacatalunya.cat/resource/wkyq-jzxq/row-h9xp~cc6d_ik7i">
+            <codi>09</codi>
+            <nom_en_catal>Burgos</nom_en_catal>
+            <nom_oficial>Burgos</nom_oficial>
+            <ccaa_codi>07</ccaa_codi>
+            <ccaa_nom_en_catal>Castella i Lleó</ccaa_nom_en_catal>
+        </row>
+        <row _id="row-wa78.u98j-tk6v" _uuid="00000000-0000-0000-89BE-1C8118434B94" _position="0"
+            _address="https://analisi.transparenciacatalunya.cat/resource/wkyq-jzxq/row-wa78.u98j-tk6v">
+            <codi>10</codi>
+            <nom_en_catal>Càceres</nom_en_catal>
+            <nom_oficial>Cáceres</nom_oficial>
+            <ccaa_codi>11</ccaa_codi>
+            <ccaa_nom_en_catal>Extremadura</ccaa_nom_en_catal>
+        </row>
+        <row _id="row-fbmr_hmmf_tiga" _uuid="00000000-0000-0000-31C3-5D0A0BE5328C" _position="0"
+            _address="https://analisi.transparenciacatalunya.cat/resource/wkyq-jzxq/row-fbmr_hmmf_tiga">
+            <codi>11</codi>
+            <nom_en_catal>Cadis</nom_en_catal>
+            <nom_oficial>Cádiz</nom_oficial>
+            <ccaa_codi>01</ccaa_codi>
+            <ccaa_nom_en_catal>Andalusia</ccaa_nom_en_catal>
+        </row>
+        <row _id="row-bps5_bpnw.q43t" _uuid="00000000-0000-0000-C747-9276DDF82A28" _position="0"
+            _address="https://analisi.transparenciacatalunya.cat/resource/wkyq-jzxq/row-bps5_bpnw.q43t">
+            <codi>12</codi>
+            <nom_en_catal>Castelló de la Plana</nom_en_catal>
+            <nom_oficial>Castelló/Castellón</nom_oficial>
+            <ccaa_codi>10</ccaa_codi>
+            <ccaa_nom_en_catal>Comunitat Valenciana</ccaa_nom_en_catal>
+        </row>
+        <row _id="row-7kvz_7snp~gvc8" _uuid="00000000-0000-0000-4C8B-65CC0A9A1EE8" _position="0"
+            _address="https://analisi.transparenciacatalunya.cat/resource/wkyq-jzxq/row-7kvz_7snp~gvc8">
+            <codi>13</codi>
+            <nom_en_catal>Ciudad Real</nom_en_catal>
+            <nom_oficial>Ciudad Real</nom_oficial>
+            <ccaa_codi>08</ccaa_codi>
+            <ccaa_nom_en_catal>Castella - la Manxa</ccaa_nom_en_catal>
+        </row>
+        <row _id="row-qj5g_d86q-spjv" _uuid="00000000-0000-0000-1269-3EFEE1B9D4FE" _position="0"
+            _address="https://analisi.transparenciacatalunya.cat/resource/wkyq-jzxq/row-qj5g_d86q-spjv">
+            <codi>14</codi>
+            <nom_en_catal>Còrdova</nom_en_catal>
+            <nom_oficial>Córdoba</nom_oficial>
+            <ccaa_codi>01</ccaa_codi>
+            <ccaa_nom_en_catal>Andalusia</ccaa_nom_en_catal>
+        </row>
+        <row _id="row-ju7e-jjau_3yqc" _uuid="00000000-0000-0000-C301-84EABC61BE03" _position="0"
+            _address="https://analisi.transparenciacatalunya.cat/resource/wkyq-jzxq/row-ju7e-jjau_3yqc">
+            <codi>15</codi>
+            <nom_en_catal>Corunya, la</nom_en_catal>
+            <nom_oficial>Coruña, A</nom_oficial>
+            <ccaa_codi>12</ccaa_codi>
+            <ccaa_nom_en_catal>Galícia</ccaa_nom_en_catal>
+        </row>
+        <row _id="row-yz63-3nak_a5k3" _uuid="00000000-0000-0000-2C44-6E4B0AF1FFC8" _position="0"
+            _address="https://analisi.transparenciacatalunya.cat/resource/wkyq-jzxq/row-yz63-3nak_a5k3">
+            <codi>16</codi>
+            <nom_en_catal>Conca</nom_en_catal>
+            <nom_oficial>Cuenca</nom_oficial>
+            <ccaa_codi>08</ccaa_codi>
+            <ccaa_nom_en_catal>Castella - la Manxa</ccaa_nom_en_catal>
+        </row>
+        <row _id="row-6r6n-96dh~s9s4" _uuid="00000000-0000-0000-BCD6-14791F251283" _position="0"
+            _address="https://analisi.transparenciacatalunya.cat/resource/wkyq-jzxq/row-6r6n-96dh~s9s4">
+            <codi>17</codi>
+            <nom_en_catal>Girona</nom_en_catal>
+            <nom_oficial>Girona</nom_oficial>
+            <ccaa_codi>09</ccaa_codi>
+            <ccaa_nom_en_catal>Catalunya</ccaa_nom_en_catal>
+        </row>
+        <row _id="row-hk4a.z9uc-k92i" _uuid="00000000-0000-0000-3D29-510FF328E6DD" _position="0"
+            _address="https://analisi.transparenciacatalunya.cat/resource/wkyq-jzxq/row-hk4a.z9uc-k92i">
+            <codi>18</codi>
+            <nom_en_catal>Granada</nom_en_catal>
+            <nom_oficial>Granada</nom_oficial>
+            <ccaa_codi>01</ccaa_codi>
+            <ccaa_nom_en_catal>Andalusia</ccaa_nom_en_catal>
+        </row>
+        <row _id="row-rvga_vyui.257x" _uuid="00000000-0000-0000-8D69-73E54AE1128C" _position="0"
+            _address="https://analisi.transparenciacatalunya.cat/resource/wkyq-jzxq/row-rvga_vyui.257x">
+            <codi>19</codi>
+            <nom_en_catal>Guadalajara</nom_en_catal>
+            <nom_oficial>Guadalajara</nom_oficial>
+            <ccaa_codi>08</ccaa_codi>
+            <ccaa_nom_en_catal>Castella - la Manxa</ccaa_nom_en_catal>
+        </row>
+        <row _id="row-yjvb.gsjy.xd4c" _uuid="00000000-0000-0000-BD71-812631753ACE" _position="0"
+            _address="https://analisi.transparenciacatalunya.cat/resource/wkyq-jzxq/row-yjvb.gsjy.xd4c">
+            <codi>20</codi>
+            <nom_en_catal>Guipúscoa</nom_en_catal>
+            <nom_oficial>Gipuzkoa</nom_oficial>
+            <ccaa_codi>16</ccaa_codi>
+            <ccaa_nom_en_catal>País Basc</ccaa_nom_en_catal>
+        </row>
+        <row _id="row-sa6s-kwea~schq" _uuid="00000000-0000-0000-6A27-98D92025ABF6" _position="0"
+            _address="https://analisi.transparenciacatalunya.cat/resource/wkyq-jzxq/row-sa6s-kwea~schq">
+            <codi>21</codi>
+            <nom_en_catal>Huelva</nom_en_catal>
+            <nom_oficial>Huelva</nom_oficial>
+            <ccaa_codi>01</ccaa_codi>
+            <ccaa_nom_en_catal>Andalusia</ccaa_nom_en_catal>
+        </row>
+        <row _id="row-vwai~zs3r.fsyy" _uuid="00000000-0000-0000-CED3-92F982DF9039" _position="0"
+            _address="https://analisi.transparenciacatalunya.cat/resource/wkyq-jzxq/row-vwai~zs3r.fsyy">
+            <codi>22</codi>
+            <nom_en_catal>Osca</nom_en_catal>
+            <nom_oficial>Huesca</nom_oficial>
+            <ccaa_codi>02</ccaa_codi>
+            <ccaa_nom_en_catal>Aragó</ccaa_nom_en_catal>
+        </row>
+        <row _id="row-j4b4~ne46~pi42" _uuid="00000000-0000-0000-3295-D6D0372979AE" _position="0"
+            _address="https://analisi.transparenciacatalunya.cat/resource/wkyq-jzxq/row-j4b4~ne46~pi42">
+            <codi>23</codi>
+            <nom_en_catal>Jaén</nom_en_catal>
+            <nom_oficial>Jaén</nom_oficial>
+            <ccaa_codi>01</ccaa_codi>
+            <ccaa_nom_en_catal>Andalusia</ccaa_nom_en_catal>
+        </row>
+        <row _id="row-jpph~2wd3_ekpk" _uuid="00000000-0000-0000-BEFA-F10E18C8B4AA" _position="0"
+            _address="https://analisi.transparenciacatalunya.cat/resource/wkyq-jzxq/row-jpph~2wd3_ekpk">
+            <codi>24</codi>
+            <nom_en_catal>Lleó</nom_en_catal>
+            <nom_oficial>León</nom_oficial>
+            <ccaa_codi>07</ccaa_codi>
+            <ccaa_nom_en_catal>Castella i Lleó</ccaa_nom_en_catal>
+        </row>
+        <row _id="row-knuc.vq5w_n5gm" _uuid="00000000-0000-0000-C403-67AE8A8A832F" _position="0"
+            _address="https://analisi.transparenciacatalunya.cat/resource/wkyq-jzxq/row-knuc.vq5w_n5gm">
+            <codi>25</codi>
+            <nom_en_catal>Lleida</nom_en_catal>
+            <nom_oficial>Lleida</nom_oficial>
+            <ccaa_codi>09</ccaa_codi>
+            <ccaa_nom_en_catal>Catalunya</ccaa_nom_en_catal>
+        </row>
+        <row _id="row-ywhf-c4i2.kaud" _uuid="00000000-0000-0000-83AF-6629C4DE1E0D" _position="0"
+            _address="https://analisi.transparenciacatalunya.cat/resource/wkyq-jzxq/row-ywhf-c4i2.kaud">
+            <codi>26</codi>
+            <nom_en_catal>Rioja, La</nom_en_catal>
+            <nom_oficial>Rioja, La</nom_oficial>
+            <ccaa_codi>17</ccaa_codi>
+            <ccaa_nom_en_catal>Rioja, La</ccaa_nom_en_catal>
+        </row>
+        <row _id="row-hnv5_a8sq~dgab" _uuid="00000000-0000-0000-FF28-AA2161621AA4" _position="0"
+            _address="https://analisi.transparenciacatalunya.cat/resource/wkyq-jzxq/row-hnv5_a8sq~dgab">
+            <codi>27</codi>
+            <nom_en_catal>Lugo</nom_en_catal>
+            <nom_oficial>Lugo</nom_oficial>
+            <ccaa_codi>12</ccaa_codi>
+            <ccaa_nom_en_catal>Galícia</ccaa_nom_en_catal>
+        </row>
+        <row _id="row-56yz.jcw3.kdq4" _uuid="00000000-0000-0000-21D9-D5504E7C201D" _position="0"
+            _address="https://analisi.transparenciacatalunya.cat/resource/wkyq-jzxq/row-56yz.jcw3.kdq4">
+            <codi>28</codi>
+            <nom_en_catal>Madrid</nom_en_catal>
+            <nom_oficial>Madrid</nom_oficial>
+            <ccaa_codi>13</ccaa_codi>
+            <ccaa_nom_en_catal>Comunitat de Madrid</ccaa_nom_en_catal>
+        </row>
+        <row _id="row-t45k.mgwi-sv2k" _uuid="00000000-0000-0000-A95F-7977EB668561" _position="0"
+            _address="https://analisi.transparenciacatalunya.cat/resource/wkyq-jzxq/row-t45k.mgwi-sv2k">
+            <codi>29</codi>
+            <nom_en_catal>Màlaga</nom_en_catal>
+            <nom_oficial>Málaga</nom_oficial>
+            <ccaa_codi>01</ccaa_codi>
+            <ccaa_nom_en_catal>Andalusia</ccaa_nom_en_catal>
+        </row>
+        <row _id="row-qmhz~q8d9~j7kq" _uuid="00000000-0000-0000-7FC1-9CCB9D58671D" _position="0"
+            _address="https://analisi.transparenciacatalunya.cat/resource/wkyq-jzxq/row-qmhz~q8d9~j7kq">
+            <codi>30</codi>
+            <nom_en_catal>Múrcia</nom_en_catal>
+            <nom_oficial>Murcia</nom_oficial>
+            <ccaa_codi>14</ccaa_codi>
+            <ccaa_nom_en_catal>Regió de Múrcia</ccaa_nom_en_catal>
+        </row>
+        <row _id="row-6cuj_k6k7~2dxt" _uuid="00000000-0000-0000-98F1-F65736A82E71" _position="0"
+            _address="https://analisi.transparenciacatalunya.cat/resource/wkyq-jzxq/row-6cuj_k6k7~2dxt">
+            <codi>31</codi>
+            <nom_en_catal>Navarra</nom_en_catal>
+            <nom_oficial>Navarra</nom_oficial>
+            <ccaa_codi>15</ccaa_codi>
+            <ccaa_nom_en_catal>Comunitat Foral de Navarra</ccaa_nom_en_catal>
+        </row>
+        <row _id="row-xe5h-53gb~rgvi" _uuid="00000000-0000-0000-D6C9-83ADEDE04138" _position="0"
+            _address="https://analisi.transparenciacatalunya.cat/resource/wkyq-jzxq/row-xe5h-53gb~rgvi">
+            <codi>32</codi>
+            <nom_en_catal>Ourense</nom_en_catal>
+            <nom_oficial>Ourense</nom_oficial>
+            <ccaa_codi>12</ccaa_codi>
+            <ccaa_nom_en_catal>Galícia</ccaa_nom_en_catal>
+        </row>
+        <row _id="row-vwz6_dwbt_9ic6" _uuid="00000000-0000-0000-FF46-E2D695E49B86" _position="0"
+            _address="https://analisi.transparenciacatalunya.cat/resource/wkyq-jzxq/row-vwz6_dwbt_9ic6">
+            <codi>33</codi>
+            <nom_en_catal>Astúries</nom_en_catal>
+            <nom_oficial>Asturias</nom_oficial>
+            <ccaa_codi>03</ccaa_codi>
+            <ccaa_nom_en_catal>Principat d'Astúries</ccaa_nom_en_catal>
+        </row>
+        <row _id="row-bjfb.etvn.u8c2" _uuid="00000000-0000-0000-2180-06747E7318BC" _position="0"
+            _address="https://analisi.transparenciacatalunya.cat/resource/wkyq-jzxq/row-bjfb.etvn.u8c2">
+            <codi>34</codi>
+            <nom_en_catal>Palència</nom_en_catal>
+            <nom_oficial>Palencia</nom_oficial>
+            <ccaa_codi>07</ccaa_codi>
+            <ccaa_nom_en_catal>Castella i Lleó</ccaa_nom_en_catal>
+        </row>
+        <row _id="row-mui5~esp6~7unz" _uuid="00000000-0000-0000-A986-34FC02FC17BB" _position="0"
+            _address="https://analisi.transparenciacatalunya.cat/resource/wkyq-jzxq/row-mui5~esp6~7unz">
+            <codi>35</codi>
+            <nom_en_catal>Palmas, Las</nom_en_catal>
+            <nom_oficial>Palmas, Las</nom_oficial>
+            <ccaa_codi>05</ccaa_codi>
+            <ccaa_nom_en_catal>Canàries</ccaa_nom_en_catal>
+        </row>
+        <row _id="row-yat6~ft8a-kvu7" _uuid="00000000-0000-0000-0CF0-E35257DFED7E" _position="0"
+            _address="https://analisi.transparenciacatalunya.cat/resource/wkyq-jzxq/row-yat6~ft8a-kvu7">
+            <codi>36</codi>
+            <nom_en_catal>Pontevedra</nom_en_catal>
+            <nom_oficial>Pontevedra</nom_oficial>
+            <ccaa_codi>12</ccaa_codi>
+            <ccaa_nom_en_catal>Galícia</ccaa_nom_en_catal>
+        </row>
+        <row _id="row-jc2c_fipf.4hcw" _uuid="00000000-0000-0000-08CC-ABDAB6EE8608" _position="0"
+            _address="https://analisi.transparenciacatalunya.cat/resource/wkyq-jzxq/row-jc2c_fipf.4hcw">
+            <codi>37</codi>
+            <nom_en_catal>Salamanca</nom_en_catal>
+            <nom_oficial>Salamanca</nom_oficial>
+            <ccaa_codi>07</ccaa_codi>
+            <ccaa_nom_en_catal>Castella i Lleó</ccaa_nom_en_catal>
+        </row>
+        <row _id="row-jav6-p2v8-dtcf" _uuid="00000000-0000-0000-3F67-DC517405B921" _position="0"
+            _address="https://analisi.transparenciacatalunya.cat/resource/wkyq-jzxq/row-jav6-p2v8-dtcf">
+            <codi>38</codi>
+            <nom_en_catal>Santa Cruz de Tenerife</nom_en_catal>
+            <nom_oficial>Santa Cruz de Tenerife</nom_oficial>
+            <ccaa_codi>05</ccaa_codi>
+            <ccaa_nom_en_catal>Canàries</ccaa_nom_en_catal>
+        </row>
+        <row _id="row-z6yg.eta2.ykzz" _uuid="00000000-0000-0000-EED3-01B205E37FE0" _position="0"
+            _address="https://analisi.transparenciacatalunya.cat/resource/wkyq-jzxq/row-z6yg.eta2.ykzz">
+            <codi>39</codi>
+            <nom_en_catal>Cantàbria</nom_en_catal>
+            <nom_oficial>Cantabria</nom_oficial>
+            <ccaa_codi>06</ccaa_codi>
+            <ccaa_nom_en_catal>Cantàbria</ccaa_nom_en_catal>
+        </row>
+        <row _id="row-4j7c~t3ha_kydw" _uuid="00000000-0000-0000-D7AD-66C52ABBCE42" _position="0"
+            _address="https://analisi.transparenciacatalunya.cat/resource/wkyq-jzxq/row-4j7c~t3ha_kydw">
+            <codi>40</codi>
+            <nom_en_catal>Segòvia</nom_en_catal>
+            <nom_oficial>Segovia</nom_oficial>
+            <ccaa_codi>07</ccaa_codi>
+            <ccaa_nom_en_catal>Castella i Lleó</ccaa_nom_en_catal>
+        </row>
+        <row _id="row-ea3z~n9ht~vbic" _uuid="00000000-0000-0000-0019-7F7E5D6A51E4" _position="0"
+            _address="https://analisi.transparenciacatalunya.cat/resource/wkyq-jzxq/row-ea3z~n9ht~vbic">
+            <codi>41</codi>
+            <nom_en_catal>Sevilla</nom_en_catal>
+            <nom_oficial>Sevilla</nom_oficial>
+            <ccaa_codi>01</ccaa_codi>
+            <ccaa_nom_en_catal>Andalusia</ccaa_nom_en_catal>
+        </row>
+        <row _id="row-9thm~nhse.tki3" _uuid="00000000-0000-0000-B21C-C54588C28E65" _position="0"
+            _address="https://analisi.transparenciacatalunya.cat/resource/wkyq-jzxq/row-9thm~nhse.tki3">
+            <codi>42</codi>
+            <nom_en_catal>Sòria</nom_en_catal>
+            <nom_oficial>Soria</nom_oficial>
+            <ccaa_codi>07</ccaa_codi>
+            <ccaa_nom_en_catal>Castella i Lleó</ccaa_nom_en_catal>
+        </row>
+        <row _id="row-qf9n~vzs4-6uxj" _uuid="00000000-0000-0000-CD2C-0E45854B9491" _position="0"
+            _address="https://analisi.transparenciacatalunya.cat/resource/wkyq-jzxq/row-qf9n~vzs4-6uxj">
+            <codi>43</codi>
+            <nom_en_catal>Tarragona</nom_en_catal>
+            <nom_oficial>Tarragona</nom_oficial>
+            <ccaa_codi>09</ccaa_codi>
+            <ccaa_nom_en_catal>Catalunya</ccaa_nom_en_catal>
+        </row>
+        <row _id="row-btzs_x4v4_haq5" _uuid="00000000-0000-0000-8B0F-AFF886DFD637" _position="0"
+            _address="https://analisi.transparenciacatalunya.cat/resource/wkyq-jzxq/row-btzs_x4v4_haq5">
+            <codi>44</codi>
+            <nom_en_catal>Terol</nom_en_catal>
+            <nom_oficial>Teruel</nom_oficial>
+            <ccaa_codi>02</ccaa_codi>
+            <ccaa_nom_en_catal>Aragó</ccaa_nom_en_catal>
+        </row>
+        <row _id="row-ck3f-njbi.39qw" _uuid="00000000-0000-0000-626A-8D3D9396A935" _position="0"
+            _address="https://analisi.transparenciacatalunya.cat/resource/wkyq-jzxq/row-ck3f-njbi.39qw">
+            <codi>45</codi>
+            <nom_en_catal>Toledo</nom_en_catal>
+            <nom_oficial>Toledo</nom_oficial>
+            <ccaa_codi>08</ccaa_codi>
+            <ccaa_nom_en_catal>Castella - la Manxa</ccaa_nom_en_catal>
+        </row>
+        <row _id="row-iymn.bseb~nwmk" _uuid="00000000-0000-0000-C777-C9A91F799BE3" _position="0"
+            _address="https://analisi.transparenciacatalunya.cat/resource/wkyq-jzxq/row-iymn.bseb~nwmk">
+            <codi>46</codi>
+            <nom_en_catal>València</nom_en_catal>
+            <nom_oficial>València/Valencia</nom_oficial>
+            <ccaa_codi>10</ccaa_codi>
+            <ccaa_nom_en_catal>Comunitat Valenciana</ccaa_nom_en_catal>
+        </row>
+        <row _id="row-chpz~pxaz_b7tp" _uuid="00000000-0000-0000-7F85-933F227FDBCD" _position="0"
+            _address="https://analisi.transparenciacatalunya.cat/resource/wkyq-jzxq/row-chpz~pxaz_b7tp">
+            <codi>47</codi>
+            <nom_en_catal>Valladolid</nom_en_catal>
+            <nom_oficial>Valladolid</nom_oficial>
+            <ccaa_codi>07</ccaa_codi>
+            <ccaa_nom_en_catal>Castella i Lleó</ccaa_nom_en_catal>
+        </row>
+        <row _id="row-j7mi-j7f8_4vs6" _uuid="00000000-0000-0000-AC97-25A0A7CA0874" _position="0"
+            _address="https://analisi.transparenciacatalunya.cat/resource/wkyq-jzxq/row-j7mi-j7f8_4vs6">
+            <codi>48</codi>
+            <nom_en_catal>Biscaia</nom_en_catal>
+            <nom_oficial>Bizkaia</nom_oficial>
+            <ccaa_codi>16</ccaa_codi>
+            <ccaa_nom_en_catal>País Basc</ccaa_nom_en_catal>
+        </row>
+        <row _id="row-gyn4_mwmv-86gq" _uuid="00000000-0000-0000-3F04-53D6AED59C16" _position="0"
+            _address="https://analisi.transparenciacatalunya.cat/resource/wkyq-jzxq/row-gyn4_mwmv-86gq">
+            <codi>49</codi>
+            <nom_en_catal>Zamora</nom_en_catal>
+            <nom_oficial>Zamora</nom_oficial>
+            <ccaa_codi>07</ccaa_codi>
+            <ccaa_nom_en_catal>Castella i Lleó</ccaa_nom_en_catal>
+        </row>
+        <row _id="row-wnw2-7gs9.8jj9" _uuid="00000000-0000-0000-F2FA-27A093ED0D39" _position="0"
+            _address="https://analisi.transparenciacatalunya.cat/resource/wkyq-jzxq/row-wnw2-7gs9.8jj9">
+            <codi>50</codi>
+            <nom_en_catal>Saragossa</nom_en_catal>
+            <nom_oficial>Zaragoza</nom_oficial>
+            <ccaa_codi>02</ccaa_codi>
+            <ccaa_nom_en_catal>Aragó</ccaa_nom_en_catal>
+        </row>
+        <row _id="row-3bp3-5xua_694n" _uuid="00000000-0000-0000-E70A-859536D3976A" _position="0"
+            _address="https://analisi.transparenciacatalunya.cat/resource/wkyq-jzxq/row-3bp3-5xua_694n">
+            <codi>51</codi>
+            <nom_en_catal>Ceuta</nom_en_catal>
+            <nom_oficial>Ceuta</nom_oficial>
+            <ccaa_codi>18</ccaa_codi>
+            <ccaa_nom_en_catal>Ceuta</ccaa_nom_en_catal>
+        </row>
+        <row _id="row-sv9w.g3t7-ggnp" _uuid="00000000-0000-0000-35A2-158A8A2ADC7E" _position="0"
+            _address="https://analisi.transparenciacatalunya.cat/resource/wkyq-jzxq/row-sv9w.g3t7-ggnp">
+            <codi>52</codi>
+            <nom_en_catal>Melilla</nom_en_catal>
+            <nom_oficial>Melilla</nom_oficial>
+            <ccaa_codi>19</ccaa_codi>
+            <ccaa_nom_en_catal>Melilla</ccaa_nom_en_catal>
+        </row>
+        <row _id="row-932s_wxr5~q49i" _uuid="00000000-0000-0000-E325-1789D8502761" _position="0"
+            _address="https://analisi.transparenciacatalunya.cat/resource/wkyq-jzxq/row-932s_wxr5~q49i">
+            <codi>98</codi>
+            <nom_en_catal>No consta</nom_en_catal>
+            <nom_oficial>No consta</nom_oficial>
+            <ccaa_codi>98</ccaa_codi>
+            <ccaa_nom_en_catal>No consta</ccaa_nom_en_catal>
+        </row>
+        <row _id="row-vdmn-jt4t~4s6r" _uuid="00000000-0000-0000-6877-666B67575FA7" _position="0"
+            _address="https://analisi.transparenciacatalunya.cat/resource/wkyq-jzxq/row-vdmn-jt4t~4s6r">
+            <codi>99</codi>
+            <nom_en_catal>Altres/Diversos</nom_en_catal>
+            <nom_oficial>Altres/Diversos</nom_oficial>
+            <ccaa_codi>99</ccaa_codi>
+            <ccaa_nom_en_catal>Altres/Diversos</ccaa_nom_en_catal>
+        </row>
+    </row>
+</response>

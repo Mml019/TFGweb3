@@ -1,3 +1,4 @@
+from enum import Enum
 import uuid
 import datetime
 
@@ -13,38 +14,38 @@ from .permissions import create_group
 class Dimension(models.Model):
     idD =       models.SmallAutoField(primary_key=True)
     orden =     models.PositiveSmallIntegerField() 
-    dimension = models.CharField(max_length=30)
+    dimension = models.CharField(max_length=125)
 
     class Meta:
         indexes = [models.Index(fields=['dimension'])]
         ordering = ['orden']
 
     def __str__(self):
-        return str('ID ' + self.id + ' Dimension ' + self.dimension)
+        return (f'ID {self.idD} Dimension {self.dimension}')
 
 class InterestArea(models.Model):
     idA =       models.SmallAutoField(primary_key=True)
-    orden =     models.CharField()
-    int_area =  models.CharField(max_length=30)
-    idD = models.ForeignKey(Dimension, on_delete=models.CASCADE, null=True)
+    orden =     models.PositiveSmallIntegerField()
+    int_area =  models.CharField(max_length=125)
+    idD =       models.ForeignKey(Dimension, on_delete=models.CASCADE, null=True)
 
     class Meta:
         indexes = [models.Index(fields=['int_area'])]
         ordering = ['orden']
 
     def __str__(self):
-        return str('ID ' + self.id + ' Orden '+ self.orden + ' Área de Interés ' + self.int_area + ' Dimension ' + self.dimension)
+        return ('ID ' + str(self.idA) + ' Orden '+ str(self.orden) + ' Área de Interés ' + self.int_area + ' Dimension ' + self.idD.dimension)
       
 class CoreContent(models.Model):
     idC =       models.SmallAutoField(primary_key=True)
-    core_cont = models.CharField(max_length=30)
+    core_cont = models.CharField(max_length=125)
     idA =       models.ForeignKey(InterestArea, on_delete=models.CASCADE, null=True)
 
     class Meta:
         ordering = ['core_cont']
     
     def __str__(self):
-        return str('ID ' + self.id + ' Contenido Nuclear ' + self.core_cont + ' Área de interés ' + self.int_area)
+        return (f'ID {self.idC}, Contenido Nuclear {self.core_cont }, Área de interés  {self.idA.int_area}')
 
 class Question(models.Model): 
     class QuestionManager(models.Manager):
@@ -53,8 +54,8 @@ class Question(models.Model):
         
     idP =               models.BigAutoField(primary_key=True)
     numero =            models.PositiveIntegerField(default=1)
-    statement =         models.CharField(max_length= 50, unique=True)  
-    time =              models.TimeField(format='%m:%s')
+    statement =         models.CharField(max_length= 500, unique=True)  
+    time =              models.TimeField()
     difficult_level =   models.PositiveSmallIntegerField()
     version =           models.PositiveIntegerField(default=0)
     date =              models.DateTimeField(auto_now=True)
@@ -76,7 +77,7 @@ class Option(models.Model):
         indexes = [models.Index(fields=['option'])]    
 
     def __str__(self):
-        return str('ID ' + self.id + ' Opción ' + self.option)
+        return ('ID ' + str(self.idO) + ' Opción ' + self.option)
 
 class OptionQuestion(models.Model): 
     
@@ -94,18 +95,18 @@ class OptionQuestion(models.Model):
     solutions=  OptionQuestionManager() 
         
     def __str__(self):
-        return str('Pregunta ' + self.idP + ' Valor ' + self.idO)
+        return (f'Pregunta {self.idP} Valor {self.idO}')
     
 # ------------- QUIZ CLASS --------------------
 class Quiz(models.Model):
     idQ =       models.AutoField(primary_key=True)
-    file =      models.CharField(max_length=20)
+    file =      models.CharField(max_length=125)
     fechaC =    models.DateTimeField(auto_now_add=True)
     fechaA =    models.DateTimeField(auto_now=True)
     question =  models.ManyToManyField('Question', through='AppearanceQuiz', related_name='question_in_each_quiz')
 
     def __str__(self):
-       return str('ID: '+  self.idQ + ' fecha creación: ' + self.fechaC + ' fecha actualización:' + self.fechaA)
+       return (f'ID: {str(self.idQ)} fecha creación: {self.fechaC} fecha actualización: {self.fechaA}')
     
 class AppearanceQuiz(models.Model):
     quiz =      models.ForeignKey(Quiz, on_delete=models.CASCADE)
@@ -155,18 +156,18 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
         return super().save(force_insert, force_update, using, update_fields)
 
     def __str__(self):
-       return str('ID: '+ + self.id + ' usuario: ' + self.username + ' password:' + self.password)  
+       return ('ID: '+ + str(self.id) + ' usuario: ' + self.username + ' password:' + self.password)  
     
  # ------------- RESPONDANT --------------------
 class ProfesionalArea(models.Model):
     idA      =  models.AutoField(primary_key=True)
-    profarea =  models.CharField(max_length=30)
+    profarea =  models.CharField(max_length=125)
     
     class Meta:
             ordering = ['profarea']
     
     def __str__(self):
-        return str('ID: '+ self.idA +' Area Profesional: ' + self.profarea)
+        return ('ID: '+ str(self.idA) +' Area Profesional: ' + self.profarea)
 
 class Satisfation(models.Model):
 
@@ -180,7 +181,7 @@ class Satisfation(models.Model):
     }     
 
     idSas =     models.AutoField(primary_key=True)
-    questionS =  models.CharField(max_length=200)
+    questionS =  models.CharField(max_length=250)
     value =     models.PositiveSmallIntegerField(choices=RANKING_INDIVIUAL)
     
 class  AcademicLevel(models.Model):
@@ -190,26 +191,26 @@ class  AcademicLevel(models.Model):
         Doctorado = 'Doctorado'
 
     academic_lvl =  models.CharField(max_length=10, choices=AcademicLevelTypes) #academic_lvl
-    description =   models.CharField(max_length=50, null=True)
+    description =   models.CharField(max_length=125, null=True)
     # null True permits set null in a database field
     year =          models.PositiveSmallIntegerField()
            
 class Respondant(models.Model):
 
     class Sex(models.TextChoices):
-        "F" = 'Femenino'
-        "M" = 'Masculino'  
+        FEMENINO = 'F', 'Femenino'
+        MASCULINO = 'M', 'Masculino'
 
     respondant =        models.OneToOneField(MyUser, on_delete=models.CASCADE)
     age =               models.PositiveSmallIntegerField()
     sex =               models.CharField(choices=Sex)
-    nationality =       models.CharField(max_length=15)
-    city =              models.CharField(max_length=25)
-    region =            models.CharField(max_length=25)
+    nationality =       models.CharField(max_length=25)
+    city =              models.CharField(max_length=125)
+    region =            models.CharField(max_length=125)
     level_PBE =         models.PositiveSmallIntegerField()
     PBE_knownledge =    models.BooleanField(default=False)
-    PBE_training =      models.CharField(max_length=30)
-    speciality =        models.CharField(max_length=20, null=True)
+    PBE_training =      models.CharField(max_length=125)
+    speciality =        models.CharField(max_length=50, null=True)
     academic_level =    models.ForeignKey(AcademicLevel, on_delete=models.CASCADE, null=True)
     
     
@@ -224,9 +225,7 @@ class Respondant(models.Model):
         return super().save(force_insert, force_update, using, update_fields)
     
     def __str__(self):
-       return str('ID: '+ self.respondant.id+ ' Edad: '+self.age+ ' Sexo: '+ self.sex + ' Nacionalidad: '+ self.nationality + ' Ciudad: '+ self.city + 
-                  ' Región: ' + self.region +  ' Nivel académico: '+ self.academic_level.academic_lvl + ' Año del nivel académico: '+ self.academic_level.year + ' Area profesional/estudio: '+ 
-                  self.profarea.values_list(flat=True)+ ' Nivel de PBE: ' + self.level_PBE +' Conocimiento en PBE '+ self.PBE_knownledge + ' Especialidad: '+ self.speciality)
+       return (f'ID: {self.respondant.id} Edad: {str(self.age)} Sexo: {self.sex} Nacionalidad: {self.nationality } Ciudad: {self.city} Región:  {self.region} Nivel académico: {self.academic_level.academic_lvl} Año del nivel académico: {self.academic_level.year} Area profesional/estudio:{self.profarea.values_list(flat=True)} Nivel de PBE: {self.level_PBE} Conocimiento en PBE {self.PBE_knownledge}  Especialidad: {self.speciality}')
     
 class SatisfationRes(models.Model):
     idS =   models.ForeignKey(Satisfation, on_delete=models.CASCADE)
@@ -257,29 +256,29 @@ class Respuesta(models.Model):
         ordering = ['-date']
     
     def __str__(self):
-        return str('ID ' + self.pk + ' Enunciado ' + self.answer)
+        return (f'ID {self.pk} Enunciado  {self.answer}')
 
 # ------------------- PROFESIONALS --------------------          
 class Enviroment(models.Model):
     idEnv = models.AutoField(primary_key=True)
-    enviroment = models.CharField(max_length=25)
+    enviroment = models.CharField(max_length=125)
 
     def __str__(self):
-        return str('ID: '+self.idEnv + ' environ ' + self.environ)
+        return (f'ID: {self.idEnv}, environ {self.environ}')
     
 class Sector(models.Model):
     idSec = models.AutoField(primary_key=True)
-    sector = models.CharField(max_length=15)
+    sector = models.CharField(max_length=125)
 
     def __str__(self):
-        return str('ID: '+self.idSec + ' sector ' + self.sector)
+        return (f'ID: {self.idSec}, sector: {self.sector}')
 
 class Activity(models.Model):
     idAct = models.AutoField(primary_key=True)
-    activity = models.CharField(max_length=20)
+    activity = models.CharField(max_length=125)
 
     def __str__(self):
-        return str('ID: '+self.idAct + ' activity ' + self.activity)
+        return (f'ID:  {self.idAct}, activity: {self.activity}')
     
 class  Profesional(models.Model):
     profesional =   models.OneToOneField(Respondant, on_delete=models.CASCADE, primary_key=True)

@@ -1,5 +1,6 @@
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
+import MyButton from './MyButton';
 
 export default function MyVerticallyCenteredModal( props) {
   return (
@@ -22,7 +23,7 @@ export default function MyVerticallyCenteredModal( props) {
         {props.footerButtons && props.footerButtons.length > 0  
         ? 
         props.footerButtons.map((btn, index) => (
-          <ModalButton
+          <MyButton
             key={`btn-${index}`}
             label={btn.label}
             type={btn.type}
@@ -35,13 +36,5 @@ export default function MyVerticallyCenteredModal( props) {
         props.children[2]}
       </Modal.Footer>
     </Modal>
-  );
-}
-
-export function ModalButton( props ) {
-  return (
-    <Button {...props}>
-      {props.label}
-    </Button>
   );
 }
