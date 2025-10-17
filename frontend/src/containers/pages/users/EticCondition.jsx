@@ -1,8 +1,9 @@
 import Container from "react-bootstrap/Container"
 import MyButton from "../../../components/MyButton"
-
+import { useNavigate } from "react-router-dom"
 
 export default function EticCondition() {
+    const nav = useNavigate();
     return (
         <Container fluid>
             <div className="header">
@@ -101,7 +102,7 @@ export default function EticCondition() {
                         label={"Aceptar"}
                         type={"button"}
                         variant={"primary"}
-                        // onClick={}
+                         onClick={()=>(nav('/'))}
                         size={"sm"}>
                         Aceptar
                     </MyButton>
@@ -110,7 +111,8 @@ export default function EticCondition() {
                         type={"button"}
                         variant={"secondary"}
                         // onClick={}
-                        size={"sm"}>
+                        size={"sm"}
+                        onClick={()=>(nav(-1))}>
                         Atrás
                     </MyButton>
                 </div>

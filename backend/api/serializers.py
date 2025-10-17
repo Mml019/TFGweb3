@@ -54,11 +54,24 @@ class OptionSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Option
-        fields = '__all__'
+        fields = ['idO', 'option'] #without list of question
+                  
+class OptionQuestionSerializer(serializers.ModelSerializer):
+    idO = OptionSerializer
+   # idP = QuestionSerializer
+    class Meta:
+        model = Question
+        fields = [
+            'idP',
+            'idO',
+            'motive',
+            'pk' 
+        ]
 
 class QuestionSerializer(serializers.ModelSerializer):
     idD = DimensionSerializer
-
+    idO = OptionSerializer(source='question_values.all', many=True, read_only=True)
+    
     class Meta:
         model = Question
         fields = [
@@ -70,27 +83,16 @@ class QuestionSerializer(serializers.ModelSerializer):
             'version',
             'date',
             'idD',
-        ]
-                  
-class OptionQuestion(serializers.ModelSerializer):
-    idO = OptionSerializer
-    idP = QuestionSerializer
-    class Meta:
-        model = Question
-        fields = [
-            'idP',
-            'idO',
-            'motive',
-            'pk' 
+            'idO'
         ]
 
 class QuizSerializer(serializers.ModelSerializer):
-    # question = QuestionSerializer
+    question = QuestionSerializer(many=True)
     class Meta:
         model = Quiz
         fields = [
             'idQ',
-            'file'
+            'file',
             'fechaC',
             'fechaA',
             'question' 

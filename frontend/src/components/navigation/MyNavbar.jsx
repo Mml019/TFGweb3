@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 
 import NavBrand from './NavBrand';
 
-export default function MyNavbar({ style = { backgroundColor: '#0065BD' }, type = 'user', items = ["1", "2", "3", "hola"] }) {
+export default function MyNavbar({ style = { backgroundColor: '#0065BD' }, type = 'user', items = [] }) {
     return (
         <Navbar collapseOnSelect expand="lg" style={style} className="body-tertiary">
             <Container>
@@ -18,7 +18,7 @@ export default function MyNavbar({ style = { backgroundColor: '#0065BD' }, type 
                             items.map((item, index) => (
                                 <NavItem as="li" key={index}>
                                     <Nav.Link as={Link} to={item.path || '#'}>
-                                        {item.name || 'Adeu'}
+                                        {item.name}
                                     </Nav.Link>
                                 </NavItem>
                             ))

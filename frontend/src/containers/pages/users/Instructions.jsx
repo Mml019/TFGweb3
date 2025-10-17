@@ -1,12 +1,22 @@
 import Container from "react-bootstrap/esm/Container"
 import MyButton from "../../../components/MyButton"
-import { useNavigate} from "react-router-dom"
+import { useNavigate } from "react-router-dom"
+import MyNavbar from '../../../components/navigation/MyNavbar'
+import Image from "react-bootstrap/Image"
 
 export default function Instructions() {
     const nav = useNavigate()
+    const item = [{name:'Instrucciones del cuestionario'}]
     return (
         <Container fluid>
-            <div className="header">
+            {/* <div id="header">
+                <MyNavbar
+                    items={item}
+                >
+                </MyNavbar>
+            </div> */}
+            <div className="header ">
+                <Image src='/img/logoUib.png' alt='Logo de la Universidad' width={100} height={30}></Image>
                 <h1>Instrucciones del cuestionario</h1>
             </div>
             <div id="content" className="pt-2 pb-2">
@@ -25,10 +35,10 @@ export default function Instructions() {
                     </p></li>
                 </ul>
                 <div className="mx-auto p-2">
-                    <MyButton type="button" variant="secondary" onClick={()=>(nav(-1))}>Atrás</MyButton> 
-                    <MyButton type="button" variant="primary" onClick={()=>(nav("/quiz/form"))}>Aceptar y continuar</MyButton>
+                    <MyButton type="button" variant="secondary" onClick={() => (nav(-1))}>Atrás</MyButton>
+                    <MyButton type="button" variant="primary" onClick={() => (nav("/quiz/form/"))}>Aceptar y continuar</MyButton>
                 </div>
-                
+
             </div>
 
         </Container>

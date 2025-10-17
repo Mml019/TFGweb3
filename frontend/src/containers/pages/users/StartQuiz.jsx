@@ -47,12 +47,13 @@ export default function StartQuiz() {
         const allCheck = checkedList.every((element) => (element == true))
         console.log("all" + allCheck)
         console.log(cookie)
-        if ((allCheck == true) & cookie) {
+        if ((allCheck == true)) {
             // Then show it userform 
+            
             navigate("/quiz/conditions/instructions")
         } else {
             navigate("#")
-            toast.error("Debes aceptar las cookies y las instrucciones, para continuar")
+            toast.error("Debes aceptar los términos y condiciones y las instrucciones, para continuar")
         }
     }
 
@@ -63,7 +64,7 @@ export default function StartQuiz() {
                 <MyNavbar></MyNavbar>
             </div>
             <div id="content" >
-                <MyVerticallyCenteredModal show={!cookie} onHide={isAcceptedCookie}>
+                {/* <MyVerticallyCenteredModal show={!cookie} onHide={isAcceptedCookie}>
                     <h2>Uso de cookies 🍪</h2>
                     <p>Utilizamos cookies para asegurarnos de que tengas la mejor experiencia en nuestro sitio web.
                         Al continuar navegando, aceptas nuestro uso de cookies.
@@ -77,7 +78,7 @@ export default function StartQuiz() {
                         size={"sm"}>
                         Aceptar
                     </MyButton>
-                </MyVerticallyCenteredModal>
+                </MyVerticallyCenteredModal> */}
                 <Row>
                     <Col />
                     <Col xs={10}>

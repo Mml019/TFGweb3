@@ -1,13 +1,11 @@
 import {configureStore} from '@reduxjs/toolkit'
-import thunk from 'redux-thunk'
-// import combinedReducers from './reduxToolkit/reducers/combinedReducers'
+import {combinedReducers} from './reduxToolkit/reducers/combinedReducers'
 
-const store = configureStore(
+export const store = configureStore(
     {
     reducer: combinedReducers,
-    middleware: (getDefaultMiddleware) => 
-    getDefaultMiddleware().concat(thunk), 
-    devTools: process.env.devTools !== 'production',
+    middleware: (getDefaultMiddleware) => getDefaultMiddleware(), 
+    devTools: import.meta.env.DEVTOOLS !== 'production',
 });
 
-export default store
+export default store;

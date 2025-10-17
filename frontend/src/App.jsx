@@ -2,6 +2,8 @@ import './assets/styles/App.css'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { Navigate } from 'react-router-dom'
 import { Toaster } from 'react-hot-toast'
+import {Provider} from 'react-redux'
+import store from './store'
 
 import StartQuiz from './containers/pages/users/StartQuiz'
 import UserForm from './containers/pages/users/UserForm'
@@ -24,19 +26,21 @@ import Results from './containers/pages/admin/Results'
 function App() {
 
   return (
-    <BrowserRouter>
-      <Toaster />
-      <Routes>
-        <Route path='/' element={<Navigate to='/quiz' replace></Navigate>} />
-        <Route path='/quiz' element={<StartQuiz />} />
-        <Route path='/quiz/conditions/etic/' element={<EticCondition />} />
-        <Route path='/quiz/conditions/instructions/' element={<Instructions />} />
-        <Route path='/quiz/form/' element={<UserForm />} />
-        <Route path='/quiz/questions/' element={<UserQuiz />} />
-        <Route path='/quiz/results/' element={<UserResult />} />
-        {/* <Route path='quiz-admin/' element={<AdminPage/>} /> */}
-      </Routes>
-    </BrowserRouter>
+    <Provider store={store}>
+      <BrowserRouter>
+        <Toaster />
+        <Routes>
+          <Route path='/' element={<Navigate to='/quiz' replace></Navigate>} />
+          <Route path='/quiz' element={<StartQuiz />} />
+          <Route path='/quiz/conditions/etic/' element={<EticCondition />} />
+          <Route path='/quiz/conditions/instructions/' element={<Instructions />} />
+          <Route path='/quiz/form/' element={<UserForm />} />
+          <Route path='/quiz/questions/' element={<UserQuiz />} />
+          <Route path='/quiz/results/' element={<UserResult />} />
+          {/* <Route path='quiz-admin/' element={<AdminPage/>} /> */}
+        </Routes>
+      </BrowserRouter>
+    </Provider>
   );
 }
 

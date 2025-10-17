@@ -59,7 +59,7 @@ class Question(models.Model):
     difficult_level =   models.PositiveSmallIntegerField()
     version =           models.PositiveIntegerField(default=0)
     date =              models.DateTimeField(auto_now=True)
-    idD =               models.ForeignKey(Dimension, on_delete=models.SET_NULL, null=True)
+    idD =               models.ForeignKey(Dimension, on_delete=models.CASCADE, null=True)
 
     class Meta:
         indexes = [models.Index(fields=['statement', 'numero', 'version'])]
@@ -69,7 +69,7 @@ class Question(models.Model):
 
 # Class that represents the solution at all the options, relathinship many to one with question
 class Option(models.Model):
-    idO =               models.AutoField(default=1, primary_key=True)
+    idO =               models.AutoField(primary_key=True)
     option =            models.CharField(max_length=25)
     question =          models.ManyToManyField(Question, through='OptionQuestion', related_name='question_values')
 
@@ -191,7 +191,7 @@ class  AcademicLevel(models.Model):
         Doctorado = 'Doctorado'
 
     academic_lvl =  models.CharField(max_length=10, choices=AcademicLevelTypes) #academic_lvl
-    description =   models.CharField(max_length=125, null=True)
+    description =   models.CharField(max_length=250, null=True)
     # null True permits set null in a database field
     year =          models.PositiveSmallIntegerField()
            

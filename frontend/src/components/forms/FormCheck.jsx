@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { useState } from 'react';
 
 // this class is used to create radio or check buttons without validations
-export default function CheckBox({props, register, errors, ...rest}) {
+export default function CheckBox({label, value, name, id, tabIndex, register, errors, ...rest}) {
 
     const [isChecked, setIsChecked] = useState(false);
 
@@ -14,26 +14,27 @@ export default function CheckBox({props, register, errors, ...rest}) {
     return (
 
         <Form.Check
-            {...register(props.name)}
-            type='checkbox'
-            id={props.id}
-            name={props.name}
-            value={props.value}
-            label={props.label}
-            checked={isChecked} 
-            onChange={handleOnChange}
+            
+            type='checkbox' 
+            name={name}
+            value={value}
+            label={label}
+            id={id}
+            // checked={isChecked} 
+            // onChange={handleOnChange}
             //onChange={() => props.onChange(props.index)} 
-            aria-labelledby={props.label}
-            aria-placeholder={props.label}
-            aria-checked={isChecked}
-            tabIndex={props.tabIndex}
+            aria-labelledby={label}
+            aria-placeholder={label}
+            // aria-checked={isChecked}
+            tabIndex={tabIndex}
             role='checkbox'
+            {...register(name)}
             {...rest}
         
         >
-        {errors[props.name] &&
+        {errors[name] &&
         <Form.Control.Feedback>
-            {errors[props.name].message}
+            {errors[name].message}
         </Form.Control.Feedback>}
         </Form.Check>
         

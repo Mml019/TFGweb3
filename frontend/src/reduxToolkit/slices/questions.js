@@ -1,45 +1,76 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 
-const getQuestionsByQuiz = createAsyncThunk({
-  
-})
+// export const getQuestionsByQuiz = createAsyncThunk('quiz/getQuestions',
+//   async () =>{
+//     const response = await fetch(`${import.meta.env.REACT_API_URL}/questions`);
+//     if (!response.ok) throw new Error('Error fetching questions');
+//     const data = await response.json();
+//     console.log(data)
+//     return data;
+//   })
+
+  // Returns a json with a list of ids and random quiz with their questions and options
+export const getQuizUnOrderQuestions = createAsyncThunk('quiz/getQuestionsUnOrder',
+  async (idQ) =>{
+    const response = await fetch(`${import.meta.env.REACT_API_URL}/uib/PEBquiz/questions/listByQuiz/?quiz=${idQ}`);
+    if (!response.ok) throw new Error('Error fetching questions');
+    const data = await response.json();
+    console.log(data)
+    return data;
+  })
+
+
 // Slice
-const slice = createSlice({
+export const questionSlice = createSlice({
   name: 'questions',
   initialState: {
     questions: [],
-    currentquestion: null,
-    state: "",
+    questions_done: [],
+    currentQuestion: null,
+    currentQuestionIndex: 0,
+    status: 'idle', // 'idle', 'loading', 'succeeded', 'failed'
+    error: null,
   },
   reducers: {
-    loginSuccess: (state, action) => {
-      state.user = action.payload;
+    nextQuestion: (state) => {
+      if (state.currentQuestionIndex < state.questions.length){
+        state.currentQuestionIndex += 1;
+        
+        question_doned = state.questions.shift();
+        state.questions_done.append(question_doned);
+        
+        state.currentQuestion=state.questions[0]
+      }
     },
-    logoutSuccess: (state, action) =>  {
-      state.user = null;
-    },
-
+  },
+  extraReducers: (builder) => {
+    builder
+      // .addCase(getQuestionsByQuiz.pending, (state) => {
+      //   state.status = 'loading';
+      // })
+      // .addCase(getQuestionsByQuiz.fulfilled, (state, action) => {
+      //   state.status = 'succeeded';
+      //   state.questions = action.payload;
+      // })
+      // .addCase(getQuestionsByQuiz.rejected, (state, action) => {
+      //   state.status = 'failed';
+      //   state.error = action.error.message;
+      // })
+      .addCase(getQuizUnOrderQuestions.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(getQuizUnOrderQuestions.fulfilled, (state, action) => {
+        state.status = 'succeeded';
+        state.questions = action.payload;
+      })
+      .addCase(getQuizUnOrderQuestions.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.error.message;
+      });
   },
 });
 
-export default slice.reducer
+// export actions
+export const { nextQuestion } = questionSlice.actions;
 
-
-// Actions
-const { loginSuccess, logoutSuccess } = slice.actions
-export const login = ({ username, password }) => async dispatch => {
-  try {
-    // const res = await api.post('/api/auth/login/', { username, password })
-    dispatch(loginSuccess({username}));
-  } catch (e) {
-    return console.error(e.message);
-  }
-}
-export const logout = () => async dispatch => {
-  try {
-    // const res = await api.post('/api/auth/logout/')
-    return dispatch(logoutSuccess())
-  } catch (e) {
-    return console.error(e.message);
-  }
-}
+export default questionSlice.reducer

@@ -114,7 +114,7 @@ class QuizViews(APIView):
         quiz = Quiz.objects.get(id)
         if quiz is None:
             return Response({"error": "Not found or not exits"}, status=HTTP_404_NOT_FOUND)
-        quiz_serial = QuizSerializer(quiz, many=True)
+        quiz_serial = QuizSerializer(quiz)#, many=True)
 
         return Response({"success": quiz_serial.data}, status=HTTP_200_OK)
 

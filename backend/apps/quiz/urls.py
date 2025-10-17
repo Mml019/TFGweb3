@@ -10,6 +10,8 @@ router.register(r"", QuestionViewSet)
 # Django Endpoint is quiz/
 urlpatterns = [
     # path('quiz-part1/', view=part1, name='register-user')
-    path('questions/', include(router.urls))
+    path('questions/', include(router.urls)),
+    path('quiz/', QuizViews.as_view(), name='show-random-quiz'),
+    path('quiz/<int:pk>/', QuizDetailViews.as_view(), name='show-quiz')
     
 ]
