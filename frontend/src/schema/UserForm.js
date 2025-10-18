@@ -1,10 +1,14 @@
 import * as yup from 'yup';
 import toast from "react-hot-toast";
 
-export const enviroments = ["Atención especializada", "Atención Primaria/ domiciliaria", "Centro sociosanitario", "Sistema escolar", "Universidad", "Consulta propia"];
-export const sectors = ['Público', 'Privado', 'Centro concertado o mixto']
-export const activities = ['Asistencial', 'Investigacion', 'Docencia', 'Administracion']
-export const training = ['Bibliográfica', 'Bibliográfica, Metodológica', 'Bibliográfica, Metodológica, Investigación']
+export const enviroments = ["Atención especializada", "Atención Primaria/ domiciliaria", "Centro sociosanitario", "Sistema escolar", "Universidad", "Consulta propia", "Otras(por favor, especifique)"];
+export const sectors = ['Público', 'Privado', 'Centro concertado o mixto', "Otras(por favor, especifique)"]
+export const activities = ['Asistencial', 'Investigacion', 'Docencia', 'Administracion', "Otras(por favor, especifique)"]
+export const training = {
+"Bibliográfica": "Formación sobre búsqueda bibliográfica en bases de datos electrónicas o similar, y en general cursos introductorios.",
+"Metodológica":  "Además de lo anterior, formación en introducción a la metodología de investigación: formulación de la pregunta de investigación, lectura crítica de artículos científicos, e interpretación de resultados estadísticos.",
+"Investigación": "Además de lo anterior, formación avanzada en investigación: implementación de diseños de investigación, estadística y manejo de software informático, escritura de artículos científicos, etc.",
+}
 export const academic_levels = ['Grado', 'Máster', 'Doctorado']
 export const sexs = ['Femenino', 'Masculino']
 export const profareas = ['Psicología', 'Enfermería', 'Fisioterapia', 'Medicina', 'Terapia Ocupacional', 'Logopedia', 'Veterinaria', 'Farmacia', 'Biología', 'Dietética y Nutrición',]
@@ -17,7 +21,6 @@ export  function loadNacionalities(nameFile = 'nacionalidad_tipica.txt') {
         console.log('hola')
         return toast.error("El fichero debe ser un tipo txt")
         // return toast.error("El fichero debe ser un tipo txt")
-
     }
 
     let dirName = "/data"

@@ -1,5 +1,4 @@
-import { Form, FormCheck } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
+import { Form } from 'react-bootstrap';
 import { useState } from 'react';
 
 // this class is used to create radio or check buttons without validations
@@ -12,7 +11,6 @@ export default function CheckBox({label, value, name, id, tabIndex, register, er
         setIsChecked(!isChecked);
     };
     return (
-
         <Form.Check
             
             type='checkbox' 
@@ -37,7 +35,6 @@ export default function CheckBox({label, value, name, id, tabIndex, register, er
             {errors[name].message}
         </Form.Control.Feedback>}
         </Form.Check>
-        
     );
 }
 
