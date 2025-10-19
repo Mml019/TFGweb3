@@ -1,7 +1,7 @@
 import { Table } from "react-bootstrap"
 import CheckBox from "./FormCheck";
 
-export default function FormTable(register, errors) {
+export default function FormTable({register, errors}) {
     const RANKING_VALUES = {
         'Nunca': 0,
         'De vez en cuando': 1,
@@ -26,7 +26,7 @@ export default function FormTable(register, errors) {
                     <th>Durante las últimas semanas, ¿cuánto tiempo…?</th>
                     {Object.entries(RANKING_VALUES).map((e, ind) => (
                         <th key={`rank_val_${ind}`}>
-                            {e[1]}
+                            {e[0]}
                         </th>
                     ))}
                 </tr>
@@ -37,7 +37,7 @@ export default function FormTable(register, errors) {
                 {Object.keys(questions).map((q, ind) => (
                     <tr key={`row_${ind}`}>
                         <td key={`question_${ind}`}>{q}</td>
-                        {Array.from({ length: 5 }).map((_, index) => (
+                        {Array.from({ length: 6 }).map((_, index) => (
                             <td key={q[1]}>
                                 <CheckBox
                                     inline

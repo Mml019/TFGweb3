@@ -2,14 +2,19 @@ import { Form } from 'react-bootstrap';
 import { useState } from 'react';
 
 // this class is used to create radio or check buttons without validations
-export default function CheckBox({label, value, name, id, tabIndex, register, errors, ...rest}) {
+export default function CheckBox({label, onCheck, value, name, id, tabIndex, register, errors, ...rest}) {
 
     const [isChecked, setIsChecked] = useState(false);
 
-    const handleOnChange = () => {
-        console.log('cambio')
-        setIsChecked(!isChecked);
-    };
+    // const handleOnChange = (e) => {
+    //     // console.log('cambio')
+    //     // setIsChecked(!isChecked);
+    //     console.log('hijochange')
+    //     onCheck(label, e.target.checked)
+    //     // console.log(e.target.checked)
+    //     // console.log(e.target.type)
+    // };
+
     return (
         <Form.Check
             
@@ -19,7 +24,6 @@ export default function CheckBox({label, value, name, id, tabIndex, register, er
             label={label}
             id={id}
             // checked={isChecked} 
-            // onChange={handleOnChange}
             //onChange={() => props.onChange(props.index)} 
             aria-labelledby={label}
             aria-placeholder={label}
@@ -28,6 +32,9 @@ export default function CheckBox({label, value, name, id, tabIndex, register, er
             role='checkbox'
             {...register(name)}
             {...rest}
+           // if is here register funtion don't overwrite it 
+        //    onChange={handleOnChange}
+        //    checked={isChecked} 
         
         >
         {errors[name] &&

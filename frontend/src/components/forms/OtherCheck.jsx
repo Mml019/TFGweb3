@@ -1,7 +1,7 @@
 import { Form} from 'react-bootstrap';
 
 // this class is used to create radio or check buttons without validations
-export default function CheckBox({ name, register, errors}) {
+export default function OtherCheck({ name, register, errors}) {
     return (
         <Form.Group as={Row} controlId={`formGroup_otras_${name}`}>
             <Form.Label column sm="2">Especifique(separando por comas):</Form.Label>

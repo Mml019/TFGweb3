@@ -15,6 +15,8 @@ export default function FormControlFloatingLabel({ label, type = "text", placeho
           isInvalid={!!errors[name]}
           aria-invalid={!!errors[name]}
           {...rest}
+          className='mb-3'
+          size='sm'
         />
         {errors[name] &&
           <Form.Control.Feedback type="invalid">

@@ -5,8 +5,8 @@ export default function FormInputGroup({label, name, index, register, errors,...
     
     return (
         <InputGroup className="mb-3">
-            <InputGroup.Checkbox aria-label="Checkbox acompañado de texto, input y signo %" />
-            <InputGroup.Text id={`activity_${index}`}>{label}</InputGroup.Text>
+            {/* <InputGroup.Checkbox aria-label="Checkbox acompañado de texto, input y signo %" /> */}
+            {/* <InputGroup.Text id={`activity_${index}`}>{label}</InputGroup.Text> */}
             <Form.Control
                 id={`activity_input_${index}`}
                 type='number'
@@ -14,7 +14,7 @@ export default function FormInputGroup({label, name, index, register, errors,...
                 min="0"
                 max="100"
                 placeholder=""
-                aria-label={label}
+                // aria-label={label}
                 aria-describedby={`activity_${index}`}
                 //value={value}
                 {...register(name)}
