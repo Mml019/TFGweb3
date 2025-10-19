@@ -4,12 +4,13 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { Form } from "react-bootstrap";
 import Image from "react-bootstrap/Image"
 import React from 'react';
+import Spinner from '../../../components/Spinner.jsx';
 
 import * as yup from 'yup';
 import toast from "react-hot-toast";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-import { useForm } from "react-hook-form"
+import { useForm, useWatch } from "react-hook-form"
 import { Container } from "react-bootstrap";
 import { useNavigate } from "react-router-dom"
 import Button from 'react-bootstrap/Button'
@@ -21,19 +22,20 @@ import FormTable from "../../../components/forms/FormTable.jsx";
 import SelectField from "../../../components/forms/FormSelectField.jsx"
 import CheckBox from "../../../components/forms/FormCheck.jsx";
 import { useDispatch } from "react-redux";
+import { createUser } from '../../../reduxToolkit/slices/user.js';
 import { getQuizRandomAndList } from "../../../reduxToolkit/slices/quiz.js";
-import EncuestaForm from '../../../components/EncuestaForm.jsx'
 import OtherCheck from '../../../components/forms/OtherCheck.jsx';
 
+
 export default function UserForm() {
-    const [loading, isLoading] = useState(true);
+    const [loading, isLoading] = useState(false);
     const nav = useNavigate()
     const dispatch = useDispatch();
-    const [master, setMaster] = useState(false)
-    const [profesional, setProfesional] = useState(true)
-    const [PBE_knownledge, setPBE_knowledge] = useState(true)
-    const [activitiesChecked, setActivities] = useState([])
-    const [others, setOthers] = useState([])
+    // const [master, setMaster] = useState(false)
+    // const [profesional, setProfesional] = useState(true)
+    // const [PBE_knownledge, setPBE_knowledge] = useState(true)
+    // const [activitiesChecked, setActivities] = useState([])
+    // const [others, setOthers] = useState([])
     // const [checkeds, setCheked] = useState({})
 
 
@@ -46,47 +48,57 @@ export default function UserForm() {
     ]
 
     const descriptions = [
-        { label:'En investigación, innovación y/o práctica basada en la evidencia',  type:'Investigación' },
-        { label:'Oficial (de 60-120 ECTS con trabajo de investigación que habilita el acceso al doctorado)', type:'Oficial' },
-        { label:'No oficial pero que incluya créditos relacionados con investigación, estadística…', type:'No oficial con créditos en investigación' },
-        { label:'No oficiales, exclusivamente profesionalizantes', type: 'No oficial, profesionalizante' }
+        { label: 'En investigación, innovación y/o práctica basada en la evidencia', type: 'Investigación' },
+        { label: 'Oficial (de 60-120 ECTS con trabajo de investigación que habilita el acceso al doctorado)', type: 'Oficial' },
+        { label: 'No oficial pero que incluya créditos relacionados con investigación, estadística…', type: 'No oficial con créditos en investigación' },
+        { label: 'No oficiales, exclusivamente profesionalizantes', type: 'No oficial, profesionalizante' }
     ]
 
     const booleans = ['Sí', 'No']
 
     // function to know if is master
-    function isTypeSelected(e) {
-        console.log(e.target.value)
-        console.log(master)
+    // function isTypeSelected(e) {
+    //     console.log(e.target.value)
 
-        if (e.target.value === 'Máster') {
-            setMaster(true);
-            console.log(master)
-        } else {
-            setMaster(false)
-        }
+    //     if (e.target.value === 'Máster') {
+    //         setMaster(true);
+    //         console.log(master)
+    //     } else {
+    //         setMaster(false)
+    //     }
 
-        if (e.target.value === 'Profesional') {
-            setProfesional(true)
-        } else {
-            setProfesional(false)
-        }
+    //     if (e.target.value === 'Profesional') {
+    //         setProfesional(true)
+    //     } else {
+    //         setProfesional(false)
+    //     }
 
-        if (e.target.value === 'Sí') {
-            setPBE_knowledge(true)
-        } else {
-            setPBE_knowledge(false)
-        }
+    //     if (e.target.value === 'Sí') {
+    //         setPBE_knowledge(true)
+    //     } else {
+    //         setPBE_knowledge(false)
+    //     }
 
-        if (e.target.value.toLowerCase().includes('por favor, especifique')) {
-            if(e.target.checked){
-                setOthers((prev) =>[...prev, e.target.key])
-            }else{
-                // this works cause they have other names and key
-                 setOthers((prev) => prev.filter((other) => other !== e.target.key))
-            }
-        }
-    }
+    //     if (e.target.value.toLowerCase().includes('por favor, especifique')) {
+    //         if(e.target.checked){
+    //             setOthers((prev) =>[...prev, e.target.key])
+    //         }else{
+    //             // this works cause they have other names and key
+    //              setOthers((prev) => prev.filter((other) => other !== e.target.key))
+    //         }
+    //     }
+    // }
+
+    // const otherCheck = (e) => {
+    //           if (e.target.value.toLowerCase().includes('por favor, especifique')) {
+    //         if(e.target.checked){
+    //             setOthers((prev) =>[...prev, e.target.key])
+    //         }else{
+    //             // this works cause they have other names and key
+    //              setOthers((prev) => prev.filter((other) => other !== e.target.key))
+    //         }
+    //     }
+    // }
 
     const handleOnCheck = (name, checked,) => {
         // console.log('onchange')
@@ -111,39 +123,36 @@ export default function UserForm() {
         // console.log(checkeds)
     }
 
-    const updatedActivities = (e) => {
-        console.log(e.target.checked)
-        
-        if(!e.target.checked){
-            setActivities((prev)=> prev.filter((act) => act !== e.target.value))
-        }else{
-            setActivities((prev)=> [...prev, e.target.value])
-        }
-        
+    // const updatedActivities = (e) => {
+    //     console.log(e.target.checked)
 
-        
+    //     if (!e.target.checked) {
+    //         setActivities((prev) => prev.filter((act) => act !== e.target.value))
+    //     } else {
+    //         setActivities((prev) => [...prev, e.target.value])
+    //     }
 
-        //     const { value, checked } = e.target;
-        //     setActivities((prev) => {
-        //         if ( e.target.checked) {
-        //             return [...prev, value];
-        //         } else {
-        //             return prev.filter((act) => act !== value);
-        //         }
-        //     });
-      
-        // setActivities((prev) => {
+    //     const { value, checked } = e.target;
+    //     setActivities((prev) => {
+    //         if ( e.target.checked) {
+    //             return [...prev, value];
+    //         } else {
+    //             return prev.filter((act) => act !== value);
+    //         }
+    //     });
 
-        //     if (!e.target.checked) {
-        //         return((prev) => prev.filter((act) => act !== e.target.value))
-        //     } else {
-        //         if (!prev.includes(e.target.value)) {
-        //             return([...prev, e.target.value])
-        //         }
-        //     }
-        // })
-    }
-    
+    // setActivities((prev) => {
+
+    //     if (!e.target.checked) {
+    //         return((prev) => prev.filter((act) => act !== e.target.value))
+    //     } else {
+    //         if (!prev.includes(e.target.value)) {
+    //             return([...prev, e.target.value])
+    //         }
+    //     }
+    // })
+    // }
+
 
     // transform to capitalize a string
     function capitalize(str) {
@@ -198,38 +207,71 @@ export default function UserForm() {
 
     const {
         register,
+        watch,
         handleSubmit,
         formState: { errors },
     } = useForm({
         defaultValues: {
-            // age: 18,
-            // sex: 'Femenino',
-            // nationality: 'Española',
-            // city: 'Palma',
-            // province: 'Illes Balears',
-            // level_PBE: '1',
-            // profile: 'Estudiante',
-            // PBE_knownledge: false,
-            // PBE_training: '',
-            // academic_level: 'Grado',
-            // description: "",
-            // year_academic_lvl: new Date().getFullYear,
-            // speciality: '',
-            // profarea: '',
-            // satisfation: 5,
-            // enviroment: '',
-            // sector: '',
-            // activity: '',
-            // supervisor: false,
-            // dedicationW: 48,
+            age: 18,
+            sex: 'Femenino',
+            nationality: 'Española',
+            city: 'Palma',
+            province: 'Illes Balears',
+            level_PBE: '1',
+            profile: 'Profesional',
+            PBE_knownledge: "Sí",
+            PBE_training: 'Bibliográfica',
+            academic_level: 'Máster',
+            description: "Oficial",
+            year_academic_lvl: new Date().getFullYear(),
+            speciality: '',
+            profarea: ["Enfermería"],
+            active_sas: "0",
+            calm_sas: "0",
+            fresh_sas: "0",
+            happy_sas: "0",
+            interest_sas: "0",
+            satisfation: "0",
+            //activity: '',
+            activity: ["Asistencial", "Investigacion", "Docencia", "Administracion", "Otras(por favor, especifique)"],
+            activity_val_0: "0",
+            activity_val_1: "0",
+            activity_val_2: "0",
+            activity_val_3: "0",
+            activity_val_4: "0",
+            enviroment: ["Atención especializada"],
+            sector: ["Privado"],
+
+            dedicationW: 5,
+            supervisor: "Sí",
+            years: 0,
+            //supervisor: false,
+            //dedicationW: 48,
             // years: 5,
+
         },
-        resolver: yupResolver(yupSchema)
+        //resolver: yupResolver(yupSchema)
     })
 
-    const onSubmit = (data) => {
+    const master = watch('academic_level')
+    const profesional = watch('profile')
+    const PBE_knownledge = watch('PBE_knownledge')
+    const rawActivities = watch('activity', []);
+    const activitiesChecked = Array.isArray(rawActivities)
+        ? rawActivities
+        : rawActivities
+            ? [rawActivities]
+            : [];
+    //const activitiesChecked = watch('activity', [])
+    const otherArea = watch('profarea')
+    const otherSector = watch('sector')
+    const otherEnviroment = watch('enviroment')
+
+    const onSubmit = async (data) => {
+        isLoading(true)
         console.log('submit')
         console.log(data)
+        console.log(JSON.stringify(data))
         // data.forEach(e => {
         //     if (typeof e === 'string') {
         //         capitalize(e)
@@ -243,13 +285,22 @@ export default function UserForm() {
         //     }
         // })
         //POST to make Use in database
-        // dispatch(createUser(data))
+        try {
+            // JSON Stringify is in POST request in dispatcher
+            const userCreated = await dispatch(createUser(data)).unwrap()
+            console.log(userCreated)
 
-        // put in localstorage user id
-        //get random quiz to show quiz
-        // dispatch(getQuizRandomAndList());
-        // navigate to question
-        nav("/quiz/questions/")
+            // put in localstorage user id
+            localStorage.setItem('userCreated', JSON.stringify(userCreated));
+            //get random quiz to show quiz
+            dispatch(getQuizRandomAndList());
+            // navigate to question
+            nav("/quiz/questions/")
+        } catch (err) {
+            toast.error(`Error al crear el usuario y enviar el form. ${err}`)
+        } finally {
+            isLoading(false)
+        }
     }
 
     return (
@@ -296,8 +347,8 @@ export default function UserForm() {
                                         inline
                                         register={register}
                                         errors={errors}
-                                        id={`level_pbe_${index}`}
-                                        key={`level_pbe_${e}`}
+                                        id={`level_PBE_${index}`}
+                                        key={`level_PBE_${e}`}
                                         name={"level_PBE"}
                                         type="radio"
                                         label={e}
@@ -330,7 +381,7 @@ export default function UserForm() {
                                         label={e}
                                         value={e}
                                         index={index}
-                                        onChange={isTypeSelected}
+                                    //onChange={isTypeSelected}
                                     />
                                 ))}
                             </Col>
@@ -357,7 +408,12 @@ export default function UserForm() {
                                         value={e}
                                         index={index}
                                     />))
+
                                 }
+                                {/* {otherArea && <OtherCheck
+                                    
+                                
+                                />} */}
                             </Col>
                         </Row>
                         <Row>
@@ -394,10 +450,10 @@ export default function UserForm() {
                                         label={e}
                                         value={e}
                                         index={index}
-                                        onChange={isTypeSelected}
+                                    //onChange={isTypeSelected}
                                     //onCheck={handleOnCheck}
                                     />))}
-                                {(master) &&
+                                {(master === 'Máster') &&
                                     < Row id='descriptions' className="mt-3" >
                                         <Row>
                                             <h3>Si ha seleccionado Máster de que tipo:</h3>
@@ -410,10 +466,10 @@ export default function UserForm() {
                                                     // id={`description_${index}`}
                                                     key={`description_${e.type}`}
                                                     name={"description"}
-                                             
+
                                                     type="radio"
                                                     label={e.label}
-                                                    value={e.label}
+                                                    value={e.type}
                                                     index={index}
                                                 />
                                             ))}
@@ -469,12 +525,12 @@ export default function UserForm() {
                                         label={e}
                                         value={e}
                                         index={index}
-                                        onChange={isTypeSelected}
+                                    // onChange={isTypeSelected}
                                     />
                                 ))}
                             </Col>
                         </Row>
-                        {(PBE_knownledge) &&
+                        {(PBE_knownledge === 'Sí') &&
                             <div id="PBE_training">
                                 <Row className="mb-3">
                                     <h3 className='tittle-quest'>
@@ -536,7 +592,7 @@ export default function UserForm() {
                     </div>
                     {/* Only show rest form for Profesional users*/}
 
-                    {(profesional) &&
+                    {(profesional === 'Profesional') &&
                         <div id='profesional_area'>
                             <Row>
                                 <h2>Para profesionales:</h2>
@@ -677,7 +733,7 @@ export default function UserForm() {
                                                         label={e}
                                                         value={e}
                                                         index={index}
-                                                        onChange={updatedActivities}
+                                                    //onChange={updatedActivities}
                                                     />
                                                     {activitiesChecked.includes(e) && (
                                                         < FormInputGroup
@@ -703,9 +759,14 @@ export default function UserForm() {
                             </Container>
                         </div>
                     }
-                    <Button type="submit">Enviar</Button>
+                    {/* <Button type="submit">Enviar</Button> */}
+                    <Button type="submit" disabled={loading}>
+                        {loading ? <Spinner load={loading} /> : "Enviar"}
+                    </Button>
+                   
                 </form>
             </div >
         </Container >
     );
 }
+

@@ -34,22 +34,23 @@ export default function FormTable({register, errors}) {
 
             <tbody>
                 {/* every row must be registered */}
-                {Object.keys(questions).map((q, ind) => (
+                {Object.entries(questions).map(([question, type], ind) => (
                     <tr key={`row_${ind}`}>
-                        <td key={`question_${ind}`}>{q}</td>
-                        {Array.from({ length: 6 }).map((_, index) => (
-                            <td key={q[1]}>
+                        <td key={`question_${ind}`}>{question}</td>
+                        {Object.entries(RANKING_VALUES).map(([rank, num], index) => (
+                            <td key={`${type}_${num}`}>
                                 <CheckBox
                                     inline
                                     register={register}
                                     errors={errors}
-                                    id={`${q[1]}_${RANKING_VALUES[index]}`}
-                                    key={`${q[1]}_${RANKING_VALUES[index]}`}
-                                    name={q[1]}
+                                    id={`${type}_${num}`}
+                                    key={`${type}_${num}`}
+                                    //name={`${question}:${type}`}
+                                    name={`${type}`}
                                     type="radio"
-                                    label={index}
-                                    value={index}
-                                    index={index}
+                                    label={num}
+                                    value={num}
+                                    index={num}
                                 />
                             </td>
                         ))}

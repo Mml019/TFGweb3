@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 
 // Returns a json with a list of ids and random quiz with their questions and options
-export const getQuizRandomAndList = createAsyncThunk('quiz/getListAndQuiz',
+export const getQuizRandomAndList = createAsyncThunk('quiz/getQuizRandomAndList',
   async () => {
     const response = await fetch(`${import.meta.env.REACT_API_URL}/uib/PEBquiz/quiz`);
     if (!response.ok) throw new Error('Error fetching questions');

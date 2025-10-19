@@ -1,28 +1,18 @@
 import { useState } from "react";
 import { DotLoader } from "react-spinners";
 
-function Spinner() {
-  let [loading, setLoading] = useState(false);
-  let [color, setColor] = useState("#ffffff");
+export default function Spinner({load}) {
+ 
 
   return (
     <div className="sweet-loading">
-      <button onClick={() => setLoading(!loading)}>Toggle Loader</button>
-      <input
-        value={color}
-        onChange={(input) => setColor(input.target.value)}
-        placeholder="Color of the loader"
-      />
-
       <DotLoader
-        color={color}
+        color='#FFFF'
         loading={load}
-        size={150}
+        size={20}
         aria-label="Loading Spinner"
         data-testid="loader"
       />
     </div>
   );
 }
-
-export default Spinner;
