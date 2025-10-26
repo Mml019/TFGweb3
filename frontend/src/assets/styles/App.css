@@ -37,7 +37,9 @@ root {
     overflow: auto;
     height: 90%;
     padding-bottom: 60px;
-    padding-top: 20px
+    padding-top: 20px;
+    margin-left: 2%;
+    padding-right: 2%;
 }
 
 #footer {

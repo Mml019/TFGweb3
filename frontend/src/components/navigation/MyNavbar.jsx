@@ -27,25 +27,27 @@ export default function MyNavbar({
           height="30"
           alt="Logo de la Universidad"
         />
-        <Navbar.Toggle aria-controls="responsive-navbar-nav" />
-        <Navbar.Collapse id="responsive-navbar-nav">
-          <Nav className="me-auto" as="ul">
-            {items.length > 0
-              ? items.map((item, index) => (
+        {items.length > 0 ? (
+          <>
+            <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+            <Navbar.Collapse id="responsive-navbar-nav">
+              <Nav className="me-auto" as="ul">
+                {items.map((item, index) => (
                   <NavItem as="li" key={index}>
                     <Nav.Link as={Link} to={item.path || "#"}>
                       {item.name}
                     </Nav.Link>
                   </NavItem>
-                ))
-              : null}
-            {type === "admin" ? (
-              <Navbar.Text className="justify-content-end">
-                Eres Admin
-              </Navbar.Text>
-            ) : null}
-          </Nav>
-        </Navbar.Collapse>
+                ))}
+                {type === "admin" ? (
+                  <Navbar.Text className="justify-content-end">
+                    Eres Admin
+                  </Navbar.Text>
+                ) : null}
+              </Nav>
+            </Navbar.Collapse>
+          </>
+        ) : null}
       </Container>
     </Navbar>
   );

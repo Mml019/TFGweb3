@@ -15,12 +15,11 @@ export default function EticCondition() {
     let index = location.state?.checkIndex;
     if (index !== undefined) {
       const checked = checkedList[index];
-      console.log(checkedList);
       if (checked !== undefined || checked == false) {
         dispatch(toogleCheck(index));
-        console.log(checkedList);
       }
     }
+    nav("/quiz");
   };
 
   return (
@@ -173,7 +172,6 @@ export default function EticCondition() {
             label={"Atrás"}
             type={"button"}
             variant={"secondary"}
-            // onClick={}
             size={"sm"}
             onClick={() => nav(-1)}
           >
