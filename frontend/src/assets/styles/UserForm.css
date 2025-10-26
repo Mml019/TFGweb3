@@ -2,10 +2,8 @@
     font-size: large;
 }
 
-h2{
-    font-size: larger;
-}
-
-h3{
-    font-size: large;
+#col-form{
+    height: 100vh;
+    overflow: auto;
+    width: 100%;
 }

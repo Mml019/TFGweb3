@@ -1,14 +1,18 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
 // Returns a json with a list of ids and random quiz with their questions and options
-export const getQuizRandomAndList = createAsyncThunk('quiz/getQuizRandomAndList',
+export const getQuizRandomAndList = createAsyncThunk(
+  "quiz/getQuizRandomAndList",
   async () => {
-    const response = await fetch(`${import.meta.env.REACT_API_URL}/uib/PEBquiz/quiz`);
-    if (!response.ok) throw new Error('Error fetching questions');
+    const response = await fetch(
+      `${import.meta.env.REACT_API_URL}/uib/PEBquiz/quiz`
+    );
+    if (!response.ok) throw new Error("Error fetching questions");
     const data = await response.json();
-    console.log(data)
+    console.log(data);
     return data;
-  })
+  }
+);
 
 // // Returns a json with a list of ids and random quiz with their questions and options
 // export const getQuizUnOrderQuestions = createAsyncThunk('quiz/getQuestionsUnOrder',
@@ -21,13 +25,14 @@ export const getQuizRandomAndList = createAsyncThunk('quiz/getQuizRandomAndList'
 //   })
 // Slice
 export const quizSlice = createSlice({
-  name: 'quiz',
+  name: "quiz",
   initialState: {
     quiz_ids: [],
     currentQuiz: null,
     currentQuizIndex: 0,
-    statusQRandom: 'idle', // 'idle', 'loading', 'succeeded', 'failed'
+    statusQRandom: "idle", // 'idle', 'loading', 'succeeded', 'failed'
     errorQRandom: null,
+    checkedList: [],
     // // status from passig idQ
     // questionSetUnorder: [],
     // currentQuestion: null,
@@ -39,49 +44,50 @@ export const quizSlice = createSlice({
     nextQuiz: (state) => {
       if (state.quiz_ids.length > 0) {
         state.currentQuiz = action.payload.quiz;
-        state.currentQuizIndex = action.payload.quiz['idQ']
-        state.quiz_ids = action.payload.ids
+        state.currentQuizIndex = action.payload.quiz["idQ"];
+        state.quiz_ids = action.payload.ids;
       }
     },
-    // nextQuestion: (state) => {
-    //   if (state.currentQuestionIndex < state.questionSetUnorder.length) {
-    //     state.currentQuestionIndex += 1;
-
-    //   }
-    // },
+    initChecks: (state) => {
+      state.checkedList = action.payload;
+    },
+    toogleCheck: (position) => {
+      const index = action.payload;
+      state.checkedList[index] = !state.checkedList[index];
+    },
   },
   extraReducers: (builder) => {
     builder
       .addCase(getQuizRandomAndList.pending, (state) => {
-        state.statusQRandom = 'loading';
+        state.statusQRandom = "loading";
       })
       .addCase(getQuizRandomAndList.fulfilled, (state, action) => {
-        state.statusQRandom = 'succeeded';
+        state.statusQRandom = "succeeded";
         state.currentQuiz = action.payload.quiz;
-        state.currentQuizIndex = action.payload.quiz['idQ']
-        state.quiz_ids = action.payload.ids
+        state.currentQuizIndex = action.payload.quiz["idQ"];
+        state.quiz_ids = action.payload.ids;
       })
       .addCase(getQuizRandomAndList.rejected, (state, action) => {
-        state.statusQRandom = 'failed';
+        state.statusQRandom = "failed";
         state.errorQRandom = action.error.message;
       });
-      // .addCase(getQuizUnOrderQuestions.pending, (state) => {
-      //   state.statusQ = 'loading';
-      // })
-      // .addCase(getQuizUnOrderQuestions.fulfilled, (state, action) => {
-      //   state.statusQ = 'succeeded';
-      //   state.currentQuiz = action.payload.quiz;
-      //   state.currentQuizIndex = action.payload.quiz['idQ']
-      //   state.quiz_ids = action.payload.ids
-      // })
-      // .addCase(getQuizUnOrderQuestions.rejected, (state, action) => {
-      //   state.statusQ = 'failed';
-      //   state.errorQ = action.error.message;
-      // });
+    // .addCase(getQuizUnOrderQuestions.pending, (state) => {
+    //   state.statusQ = 'loading';
+    // })
+    // .addCase(getQuizUnOrderQuestions.fulfilled, (state, action) => {
+    //   state.statusQ = 'succeeded';
+    //   state.currentQuiz = action.payload.quiz;
+    //   state.currentQuizIndex = action.payload.quiz['idQ']
+    //   state.quiz_ids = action.payload.ids
+    // })
+    // .addCase(getQuizUnOrderQuestions.rejected, (state, action) => {
+    //   state.statusQ = 'failed';
+    //   state.errorQ = action.error.message;
+    // });
   },
 });
 
 // export actions
 export const { nextQuiz } = quizSlice.actions;
 
-export default quizSlice.reducer
+export default quizSlice.reducer;
