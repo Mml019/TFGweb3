@@ -64,9 +64,6 @@ class QuestionViewSet(ModelViewSet):
         else:
             return Response({'error': f"There isn't any question in this quiz {id}"}, status=HTTP_404_NOT_FOUND)
 
-# class ApperanceView(ModelViewSet):
-
-
 class RespondantViews(CreateAPIView):
     pass
     # def post(self, request):

@@ -13,7 +13,7 @@ from .permissions import create_group
 # ------------- QUESTION CLASS --------------
 class Dimension(models.Model):
     idD =       models.SmallAutoField(primary_key=True)
-    orden =     models.PositiveSmallIntegerField() 
+    orden =     models.PositiveSmallIntegerField()
     dimension = models.CharField(max_length=125)
 
     class Meta:
@@ -35,7 +35,7 @@ class InterestArea(models.Model):
 
     def __str__(self):
         return ('ID ' + str(self.idA) + ' Orden '+ str(self.orden) + ' Área de Interés ' + self.int_area + ' Dimension ' + self.idD.dimension)
-      
+
 class CoreContent(models.Model):
     idC =       models.SmallAutoField(primary_key=True)
     core_cont = models.CharField(max_length=125)
@@ -43,18 +43,18 @@ class CoreContent(models.Model):
 
     class Meta:
         ordering = ['core_cont']
-    
+
     def __str__(self):
         return (f'ID {self.idC}, Contenido Nuclear {self.core_cont }, Área de interés  {self.idA.int_area}')
 
-class Question(models.Model): 
+class Question(models.Model):
     class QuestionManager(models.Manager):
         def get_queryset(self):
             return super().get_queryset().values().annotate()
-        
+
     idP =               models.BigAutoField(primary_key=True)
     numero =            models.PositiveIntegerField(default=1)
-    statement =         models.CharField(max_length= 500, unique=True)  
+    statement =         models.CharField(max_length= 500, unique=True)
     time =              models.TimeField()
     difficult_level =   models.PositiveSmallIntegerField()
     version =           models.PositiveIntegerField(default=0)
@@ -63,7 +63,7 @@ class Question(models.Model):
 
     class Meta:
         indexes = [models.Index(fields=['statement', 'numero', 'version'])]
-        
+
     def __str__(self):
         return str(f'ID: {self.idP}, Número: {self.numero}, Version: {self.version}, Enunciado: {self.statement}')
 
@@ -74,29 +74,29 @@ class Option(models.Model):
     question =          models.ManyToManyField(Question, through='OptionQuestion', related_name='question_values')
 
     class Meta:
-        indexes = [models.Index(fields=['option'])]    
+        indexes = [models.Index(fields=['option'])]
 
     def __str__(self):
         return ('ID ' + str(self.idO) + ' Opción ' + self.option)
 
-class OptionQuestion(models.Model): 
-    
-    # get only the solutions for each question id of all options 
+class OptionQuestion(models.Model):
+
+    # get only the solutions for each question id of all options
     class OptionQuestionManager(models.Manager):
         def get_queryset(self):
             return super().get_queryset().values('idP').annotate('idP').exclude(Q(motive__isnull=True)|Q(motive='')|Q(motive=' ')).values('idP', 'idO', 'motive')
-        
+
     idP =       models.ForeignKey(Question, on_delete=models.CASCADE, related_name='option_value_to_question')
     idO =       models.ForeignKey(Option, on_delete=models.CASCADE, related_name='option_value') # this id of the value
     motive =    models.TextField(max_length=250, null=True)
     pk =        models.CompositePrimaryKey('idP', 'idO')
 
     objects =   models.Manager() #default
-    solutions=  OptionQuestionManager() 
-        
+    solutions=  OptionQuestionManager()
+
     def __str__(self):
         return (f'Pregunta {self.idP} Valor {self.idO}')
-    
+
 # ------------- QUIZ CLASS --------------------
 class Quiz(models.Model):
     idQ =       models.AutoField(primary_key=True)
@@ -107,7 +107,7 @@ class Quiz(models.Model):
 
     def __str__(self):
        return (f'ID: {str(self.idQ)} fecha creación: {self.fechaC} fecha actualización: {self.fechaA}')
-    
+
 class AppearanceQuiz(models.Model):
     quiz =      models.ForeignKey(Quiz, on_delete=models.CASCADE)
     question =  models.ForeignKey(Question, on_delete=models.CASCADE)
@@ -116,56 +116,56 @@ class AppearanceQuiz(models.Model):
 #----------- INTERVIEWER CLASS(is MyUser) ---------
 # AbstractUser to adapt default User Django Class
 class MyUser(AbstractBaseUser, PermissionsMixin):
-    
+
     class MyUserManager(BaseUserManager):
-                
+
         def create_user(self, username, password, is_staff, **extra_fields):
             user = self.model(username, password, is_staff, **extra_fields)
-                            
+
             if is_staff == True:
                 user = self.model(username=username, is_staff=is_staff, **extra_fields)
                 user.set_password(password)
-            
+
             user.save()
             return user
-        
-        
+
+
         def create_superuser(self, username, password, **extra_fields):
             user = self.model(username=username, is_superuser=True, **extra_fields)
             user.set_password(password)
-            
+
             user.save()
-            return user        
-            
+            return user
+
     id =            models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False, auto_created=True)
     username=       models.CharField(max_length=256, unique=True, null=True)
-    password =      models.CharField(max_length=256, editable=False, null=True) 
+    password =      models.CharField(max_length=256, editable=False, null=True)
     is_staff =      models.BooleanField(default=False)
     is_superuser =  models.BooleanField(default=False)
 
     objects =       MyUserManager()
-    
+
     USERNAME_FIELD = 'username'
 
     def save(self, force_insert = ..., force_update = ..., using = ..., update_fields = ...):
-        
+
         if self.is_staff is True:
             group = create_group('interviewer')
             self.groups().add(group)
-            
+
         return super().save(force_insert, force_update, using, update_fields)
 
     def __str__(self):
-       return ('ID: '+ + str(self.id) + ' usuario: ' + self.username + ' password:' + self.password)  
-    
+       return ('ID: '+ + str(self.id) + ' usuario: ' + self.username + ' password:' + self.password)
+
  # ------------- RESPONDANT --------------------
 class ProfesionalArea(models.Model):
     idA      =  models.AutoField(primary_key=True)
     profarea =  models.CharField(max_length=125)
-    
+
     class Meta:
             ordering = ['profarea']
-    
+
     def __str__(self):
         return ('ID: '+ str(self.idA) +' Area Profesional: ' + self.profarea)
 
@@ -178,12 +178,12 @@ class Satisfation(models.Model):
         'Más de la mitad del tiempo':   3,
         'La mayor parte del tiempo':    4,
         'Todo el tiempo':               5
-    }     
+    }
 
     idSas =     models.AutoField(primary_key=True)
     questionS =  models.CharField(max_length=250)
     value =     models.PositiveSmallIntegerField(choices=RANKING_INDIVIUAL)
-    
+
 class  AcademicLevel(models.Model):
     class AcademicLevelTypes(models.TextChoices):
         Grado = 'Grado'
@@ -194,8 +194,13 @@ class  AcademicLevel(models.Model):
     description =   models.CharField(max_length=250, null=True)
     # null True permits set null in a database field
     year =          models.PositiveSmallIntegerField()
-           
+
 class Respondant(models.Model):
+
+    class SatisfationGrade(models.TextChoices):
+        RANKING_GLOBAL = []
+        for i in range(1, 10):
+            RANKING_GLOBAL.append((i, str(i)))
 
     class Sex(models.TextChoices):
         FEMENINO = 'F', 'Femenino'
@@ -212,36 +217,37 @@ class Respondant(models.Model):
     PBE_training =      models.CharField(max_length=125)
     speciality =        models.CharField(max_length=50, null=True)
     academic_level =    models.ForeignKey(AcademicLevel, on_delete=models.CASCADE, null=True)
-    
-    
+
+    grade = models.PositiveSmallIntegerField(choices=SatisfationGrade)
+
     # if i change the name to reply or answer don't works but Respuesta sí.
     question =    models.ManyToManyField(Question, through='Respuesta', related_name='respondant_answer_to_question')
-    profarea =    models.ManyToManyField(ProfesionalArea, through='SatisfationGrade', related_name='profesional_area_user')
+    # profarea =    models.ManyToManyField(ProfesionalArea, through='SatisfationGrade', related_name='profesional_area_user')
     satisfation = models.ManyToManyField(Satisfation, through='SatisfationRes', related_name='satisfation_per_user')
-    
+
     def save(self, force_insert = ..., force_update = ..., using = ..., update_fields = ...):
         group = create_group('respondant')
         self.respondant.groups().add(group)
         return super().save(force_insert, force_update, using, update_fields)
-    
+
     def __str__(self):
        return (f'ID: {self.respondant.id} Edad: {str(self.age)} Sexo: {self.sex} Nacionalidad: {self.nationality } Ciudad: {self.city} Región:  {self.region} Nivel académico: {self.academic_level.academic_lvl} Año del nivel académico: {self.academic_level.year} Area profesional/estudio:{self.profarea.values_list(flat=True)} Nivel de PBE: {self.level_PBE} Conocimiento en PBE {self.PBE_knownledge}  Especialidad: {self.speciality}')
-    
+
 class SatisfationRes(models.Model):
     idS =   models.ForeignKey(Satisfation, on_delete=models.CASCADE)
     idRes =   models.ForeignKey(Respondant, on_delete=models.CASCADE)
     pk =    models.CompositePrimaryKey('idS', 'idRes')
 
-class SatisfationGrade(models.Model):
-    RANKING_GLOBAL = []
-    for i in range(1, 10):
-        RANKING_GLOBAL.append((i, str(i)))
+# class SatisfationGrade(models.Model):
+#     RANKING_GLOBAL = []
+#     for i in range(1, 10):
+#         RANKING_GLOBAL.append((i, str(i)))
 
-    grade = models.PositiveSmallIntegerField(choices=RANKING_GLOBAL)
-    idA =   models.ForeignKey(ProfesionalArea, on_delete=models.CASCADE)
-    idRes =   models.ForeignKey(Respondant, on_delete=models.CASCADE)
-    pk =    models.CompositePrimaryKey('idA', 'idRes')
-    
+#     grade = models.PositiveSmallIntegerField(choices=RANKING_GLOBAL)
+#     idA =   models.ForeignKey(ProfesionalArea, on_delete=models.CASCADE)
+#     idRes =   models.ForeignKey(Respondant, on_delete=models.CASCADE)
+#     pk =    models.CompositePrimaryKey('idA', 'idRes')
+
 # ------------- ANSWER CLASS --------------
 # The class name is in spanish cause django don't permit other
 class Respuesta(models.Model):
@@ -254,18 +260,18 @@ class Respuesta(models.Model):
 
     class Meta:
         ordering = ['-date']
-    
+
     def __str__(self):
         return (f'ID {self.pk} Enunciado  {self.answer}')
 
-# ------------------- PROFESIONALS --------------------          
+# ------------------- PROFESIONALS --------------------
 class Enviroment(models.Model):
     idEnv = models.AutoField(primary_key=True)
     enviroment = models.CharField(max_length=125)
 
     def __str__(self):
         return (f'ID: {self.idEnv}, environ {self.environ}')
-    
+
 class Sector(models.Model):
     idSec = models.AutoField(primary_key=True)
     sector = models.CharField(max_length=125)
@@ -279,13 +285,13 @@ class Activity(models.Model):
 
     def __str__(self):
         return (f'ID:  {self.idAct}, activity: {self.activity}')
-    
+
 class  Profesional(models.Model):
     profesional =   models.OneToOneField(Respondant, on_delete=models.CASCADE, primary_key=True)
     supervisor =    models.BooleanField(default=False)
     dedicationW =   models.PositiveSmallIntegerField(default=0)
     years =         models.PositiveSmallIntegerField(default=0)
-    
+
     activities =  models.ManyToManyField(Activity, through='Dedication', related_name='activities_by_profesional')
     sectors =     models.ManyToManyField(Sector, through='Secprof', related_name='sectors_on_works')
     enviroments = models.ManyToManyField(Enviroment, through='Envprof', related_name='enviroments_on_works')
@@ -296,13 +302,13 @@ class Dedication(models.Model):
     activity =    models.ForeignKey(Activity, on_delete=models.CASCADE)
     percentatge = models.PositiveSmallIntegerField(default=0)
     pk =          models.CompositePrimaryKey('profesional','activity')
-        
+
 class  Envprof(models.Model):
     profesional = models.ForeignKey(Profesional, on_delete=models.CASCADE)
     enviroment =  models.ForeignKey(Enviroment, on_delete=models.CASCADE)
     pk =          models.CompositePrimaryKey('profesional','enviroment')
 
-class  Secprof(models.Model): 
+class  Secprof(models.Model):
     profesional = models.ForeignKey(Profesional, on_delete=models.CASCADE)
     sector =      models.ForeignKey(Sector, on_delete=models.CASCADE)
     pk =          models.CompositePrimaryKey('profesional','sector')
