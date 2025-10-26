@@ -48,10 +48,10 @@ export const quizSlice = createSlice({
         state.quiz_ids = action.payload.ids;
       }
     },
-    initChecks: (state) => {
+    initChecks: (state, action) => {
       state.checkedList = action.payload;
     },
-    toogleCheck: (position) => {
+    toogleCheck: (state, action) => {
       const index = action.payload;
       state.checkedList[index] = !state.checkedList[index];
     },
@@ -88,6 +88,6 @@ export const quizSlice = createSlice({
 });
 
 // export actions
-export const { nextQuiz } = quizSlice.actions;
+export const { nextQuiz, initChecks, toogleCheck } = quizSlice.actions;
 
 export default quizSlice.reducer;

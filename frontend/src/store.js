@@ -1,11 +1,10 @@
-import {configureStore} from '@reduxjs/toolkit'
-import {combinedReducers} from './reduxToolkit/reducers/combinedReducers'
+import { configureStore } from "@reduxjs/toolkit";
+import combinedReducers from "./reduxToolkit/reducers/combinedReducers";
 
-export const store = configureStore(
-    {
-    reducer: combinedReducers,
-    middleware: (getDefaultMiddleware) => getDefaultMiddleware(), 
-    devTools: import.meta.env.DEVTOOLS !== 'production',
+export const store = configureStore({
+  reducer: combinedReducers,
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware(),
+  devTools: import.meta.env.DEVTOOLS !== "production",
 });
 
 export default store;

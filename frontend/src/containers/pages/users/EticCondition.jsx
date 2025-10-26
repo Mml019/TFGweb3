@@ -2,13 +2,26 @@ import Container from "react-bootstrap/Container";
 import MyButton from "../../../components/MyButton";
 import MyNavbar from "../../../components/navigation/MyNavbar";
 import { useNavigate, useLocation } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { toogleCheck } from "../../../reduxToolkit/slices/quiz";
 
 export default function EticCondition() {
   const nav = useNavigate();
-  // to recipe state from checkbox
   const location = useLocation();
-  const checkIndex = location.state?.checkIndex;
-  // const { checkIndex } = location.state || {};
+  const dispatch = useDispatch();
+  const checkedList = useSelector((state) => state.quizReducer.checkedList);
+
+  const handleAcept = () => {
+    let index = location.state?.checkIndex;
+    if (index !== undefined) {
+      const checked = checkedList[index];
+      console.log(checkedList);
+      if (checked !== undefined || checked == false) {
+        dispatch(toogleCheck(index));
+        console.log(checkedList);
+      }
+    }
+  };
 
   return (
     <Container fluid>
@@ -171,9 +184,7 @@ export default function EticCondition() {
             type={"button"}
             variant={"primary"}
             //turn to start page and knowing what check was checked
-            onClick={() => {
-              nav("/quiz", { state: { acceptedIndex: checkIndex } });
-            }}
+            onClick={handleAcept}
             size={"sm"}
           >
             Aceptar

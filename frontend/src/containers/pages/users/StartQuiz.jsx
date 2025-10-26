@@ -3,16 +3,18 @@ import Row from "react-bootstrap/Row";
 import Stack from "react-bootstrap/Stack";
 import Image from "react-bootstrap/Image";
 import { useEffect, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 
 // onw components
-import CheckButton from "../../../components/forms/CheckLink";
+import CheckLink from "../../../components/forms/CheckLink";
 import MyVerticallyCenteredModal from "../../../components/Modal";
 import MyNavbar from "../../../components/navigation/MyNavbar";
 import LayoutUser from "../../../hocs/LayoutUser";
 import logoPortada from "/img/logoPortadaUib.png";
 import MyButton from "../../../components/MyButton";
+import { useDispatch, useSelector } from "react-redux";
+import { toogleCheck, initChecks } from "../../../reduxToolkit/slices/quiz";
 
 export default function StartQuiz() {
   const itemsChecks = [
@@ -24,15 +26,14 @@ export default function StartQuiz() {
     },
   ];
 
-  // create ana array with the number of check box
-
-  const [checkedList, setIsChecked] = useState(
-    new Array(itemsChecks?.length).fill(false)
-  );
-
-  const [cookie, setCookie] = useState(false);
   const navigate = useNavigate();
-  const location = useLocation();
+  const dispatch = useDispatch();
+  const checkedList = useSelector((state) => state.quizReducer.checkedList);
+
+  // create ana array with the number of check box
+  // const [checkedList, setIsChecked] = useState(
+  //   new Array(itemsChecks?.length).fill(false)
+  // );
 
   // const handleOnChange = (position) => {
   //   const newCheckedList = [...checkedList];
@@ -41,44 +42,23 @@ export default function StartQuiz() {
   // };
 
   const handleOnChange = (position) => {
-    setIsChecked((prev) =>
-      prev.map((item, index) => (index === position ? !item : item))
-    );
+    // setIsChecked((prev) =>
+    //   prev.map((item, index) => (index === position ? !item : item))
+    // );
+    dispatch(toogleCheck(position));
   };
 
-  // useEffect(() => {});
-
-  // to see if participation checkbox was accepted comming from EticPage
+  //start status of checkbox
   useEffect(() => {
-    console.log(location.state);
-    const acceptedIndex = location.state?.acceptedIndex;
-    console.log(acceptedIndex);
-    if (typeof acceptedIndex === "number" && acceptedIndex !== undefined) {
-      if (checkedList[acceptedIndex] !== true) {
-        setIsChecked((prev) => {
-          const newCheckedList = [...prev];
-          newCheckedList[acceptedIndex] = true;
-          return newCheckedList;
-        });
-      }
+    if (checkedList?.length === 0) {
+      dispatch(initChecks(new Array(itemsChecks.length).fill(false)));
     }
-  }, [location.state]);
-
-  const isAcceptedCookie = () => {
-    return setCookie(!cookie);
-  };
-  const acceptedCookie = () => {
-    setCookie(true);
-  };
-  const notAcceptedCookie = () => setCookie(false);
+  }, []);
 
   function handleClick() {
     const allCheck = checkedList.every((element) => element == true);
-    console.log("all" + allCheck);
-    console.log(cookie);
     if (allCheck == true) {
       // Then show it userform
-
       navigate("/quiz/conditions/instructions");
     } else {
       navigate("#");
@@ -125,8 +105,7 @@ export default function StartQuiz() {
               </MyButton>
               <div className="mb-3" id="rules">
                 {itemsChecks.map((item, index) => (
-                  //<CheckButton key={index} type="checkbox" item={item} index={index} ></CheckButton>
-                  <CheckButton
+                  <CheckLink
                     inline
                     link={item.link}
                     inicio={true}
@@ -136,10 +115,10 @@ export default function StartQuiz() {
                     label={item.label}
                     type="checkbox"
                     index={index}
-                    checked={checkedList[index]}
+                    checked={!!checkedList[index]} // return clean boolean
                     onChange={handleOnChange}
                     aria-placeholder={item.ariaPlace}
-                    aria-checked={checkedList[index]} //{() => {checked[index] !== undefined ? checked[index] : false}}
+                    aria-checked={!!checkedList[index]} //{() => {checked[index] !== undefined ? checked[index] : false}}
                     tabIndex={index}
                     role="checkbox"
                   />

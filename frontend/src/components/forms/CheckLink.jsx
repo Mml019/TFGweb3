@@ -19,10 +19,8 @@ export default function CheckButton(props) {
             {/* create temporal status to mark checkbox if is accepted*/}
             <Link
               to={props.link}
-              state={{
-                checkIndex: props.index,
-              }}
               htmlFor={props.id}
+              state={{ checkIndex: props.index }}
             >
               {props.label}
             </Link>
