@@ -14,6 +14,7 @@ import { useForm, useWatch } from "react-hook-form";
 import { Container } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import Button from "react-bootstrap/Button";
+import MyNavbar from "../../../components/navigation/MyNavbar.jsx";
 
 import {
   yupSchema,
@@ -95,39 +96,6 @@ export default function UserForm() {
   ];
 
   const booleans = ["Sí", "No"];
-
-  // function to know if is master
-  // function isTypeSelected(e) {
-  //     console.log(e.target.value)
-
-  //     if (e.target.value === 'Máster') {
-  //         setMaster(true);
-  //         console.log(master)
-  //     } else {
-  //         setMaster(false)
-  //     }
-
-  //     if (e.target.value === 'Profesional') {
-  //         setProfesional(true)
-  //     } else {
-  //         setProfesional(false)
-  //     }
-
-  //     if (e.target.value === 'Sí') {
-  //         setPBE_knowledge(true)
-  //     } else {
-  //         setPBE_knowledge(false)
-  //     }
-
-  //     if (e.target.value.toLowerCase().includes('por favor, especifique')) {
-  //         if(e.target.checked){
-  //             setOthers((prev) =>[...prev, e.target.key])
-  //         }else{
-  //             // this works cause they have other names and key
-  //              setOthers((prev) => prev.filter((other) => other !== e.target.key))
-  //         }
-  //     }
-  // }
 
   // const otherCheck = (e) => {
   //           if (e.target.value.toLowerCase().includes('por favor, especifique')) {
@@ -242,9 +210,6 @@ export default function UserForm() {
       dedicationW: 5,
       supervisor: "Sí",
       years: 0,
-      //supervisor: false,
-      //dedicationW: 48,
-      // years: 5,
     },
     //resolver: yupResolver(yupSchema)
   });
@@ -303,7 +268,7 @@ export default function UserForm() {
   return (
     <Container fluid id="user_form">
       <Col id="col-form">
-        <MyNavbar nameBrand={[{ name: "Datos demográficos" }]}></MyNavbar>
+        <MyNavbar nameBrand={"Datos demográficos"}></MyNavbar>
         {/* <div className="header">
           <Image
             src="/img/logoUib.png"
@@ -313,461 +278,460 @@ export default function UserForm() {
           ></Image>
           <h1>Datos demográficos</h1>
         </div> */}
-        <div id="content">
-          <form onSubmit={handleSubmit(onSubmit)}>
-            <div id="basic-data">
-              <Row className="mb-3 align-items-center">
-                <Row>
-                  <h2>Datos principales:</h2>
-                </Row>
-                <Col xs={8}>
-                  {basic_data.map((e, index) => (
-                    <FormControlFloatingLabel
-                      register={register}
-                      errors={errors}
-                      key={`basic_data_${index}`}
-                      // id={`basic_data_${index}`}
-                      name={e.name}
-                      label={e.label}
-                      placeholder={e.label}
-                      type={e.type}
-                      //value={e.value}
-                    />
-                  ))}
-                </Col>
-              </Row>
-            </div>
-            <div id="level_PBE">
-              <Row className="mb-3 pregunta">
-                <h3 className="tittle-quest">
-                  ¿Qué nivel de conocimientos en práctica basada en la evidencia
-                  considera que tiene del 1 al 5? (1: mínimo y 5: muy elevado):
-                </h3>
-              </Row>
-              <Row className="mb-3">
-                <Col>
-                  {level_PBE.map((e, index) => (
-                    <CheckBox
-                      inline
-                      register={register}
-                      errors={errors}
-                      id={`level_PBE_${index}`}
-                      key={`level_PBE_${e}`}
-                      name={"level_PBE"}
-                      type="radio"
-                      label={e}
-                      value={e}
-                      index={index}
-                      // checked={checkedList[index]}
-                      // handleOnChange={handleOnChange}
-                    />
-                  ))}
-                </Col>
-              </Row>
-            </div>
-            <div id="profiles">
-              <Row className="mb-3">
-                <h3 className="tittle-quest">
-                  Seleccione el perfil que defina mejor su situación actual:
-                </h3>
-              </Row>
-              <Row className="mb-3">
-                <Col>
-                  {perfil.map((e, index) => (
-                    <CheckBox
-                      inline
-                      register={register}
-                      errors={errors}
-                      id={`profile_${index}`}
-                      key={`profile_${e}`}
-                      name={"profile"}
-                      type="radio"
-                      label={e}
-                      value={e}
-                      index={index}
-                      //onChange={isTypeSelected}
-                    />
-                  ))}
-                </Col>
-              </Row>
-            </div>
-            <div id="profarea">
-              <Row className="mb-3">
-                <h3 className="tittle-quest">
-                  Seleccione el perfil que defina mejor su situación actual:
-                </h3>
-              </Row>
-              <Row className="mb-3">
-                <Col>
-                  {profareas.map((e, index) => (
-                    <CheckBox
-                      inline
-                      register={register}
-                      errors={errors}
-                      id={`profarea_${index}`}
-                      key={`profarea_${e}`}
-                      name={"profarea"}
-                      type="checkbox"
-                      label={e}
-                      value={e}
-                      index={index}
-                    />
-                  ))}
-                  {/* {otherArea && <OtherCheck
-                                    
-                                
-                                />} */}
-                </Col>
-              </Row>
+        {/* <div id="content"> */}
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <div id="basic-data">
+            <Row className="mb-3 align-items-center">
               <Row>
-                <Col>
+                <h2>Datos principales:</h2>
+              </Row>
+              <Col xs={8}>
+                {basic_data.map((e, index) => (
                   <FormControlFloatingLabel
                     register={register}
                     errors={errors}
-                    key="speciality"
-                    // id={`basic_data_${index}`}
-                    name="speciality"
-                    label="Especialida(si procede)"
-                    placeholder="Especialidad(si procede)"
-                    type="text"
+                    key={`basic_data_${index}`}
+                    name={e.name}
+                    label={e.label}
+                    placeholder={e.label}
+                    type={e.type}
                     //value={e.value}
                   />
-                </Col>
-              </Row>
-            </div>
-            <div id="academic_level">
-              <Row className="mb-3">
-                <h3 className="tittle-quest">
-                  Especifique su mayor nivel académico obtenido: (si es
-                  estudiante de grado dejar en blanco){" "}
-                </h3>
-              </Row>
-              <Row className="mb-3">
-                <Col>
-                  {academic_levels.map((e, index) => (
-                    <CheckBox
-                      register={register}
-                      errors={errors}
-                      id={`academic_level_${index}`}
-                      key={`academic_level_${e}`}
-                      name={"academic_level"}
-                      type="radio"
-                      label={e}
-                      value={e}
-                      index={index}
-                      //onChange={isTypeSelected}
-                      //onCheck={handleOnCheck}
-                    />
-                  ))}
-                  {master === "Máster" && (
-                    <Row id="descriptions" className="mt-3">
-                      <Row>
-                        <h3>Si ha seleccionado Máster de que tipo:</h3>
-                      </Row>
-                      <Col>
-                        {descriptions.map((e, index) => (
-                          <CheckBox
-                            register={register}
-                            errors={errors}
-                            // id={`description_${index}`}
-                            key={`description_${e.type}`}
-                            name={"description"}
-                            type="radio"
-                            label={e.label}
-                            value={e.type}
-                            index={index}
-                          />
-                        ))}
-                      </Col>
+                ))}
+              </Col>
+            </Row>
+          </div>
+          <div id="level_PBE">
+            <Row className="mb-3 pregunta">
+              <h3 className="tittle-quest">
+                ¿Qué nivel de conocimientos en práctica basada en la evidencia
+                considera que tiene del 1 al 5? (1: mínimo y 5: muy elevado):
+              </h3>
+            </Row>
+            <Row className="mb-3">
+              <Col>
+                {level_PBE.map((e, index) => (
+                  <CheckBox
+                    inline
+                    register={register}
+                    errors={errors}
+                    id={`level_PBE_${index}`}
+                    key={`level_PBE_${e}`}
+                    name={"level_PBE"}
+                    type="radio"
+                    label={e}
+                    value={e}
+                    index={index}
+                    // checked={checkedList[index]}
+                    // handleOnChange={handleOnChange}
+                  />
+                ))}
+              </Col>
+            </Row>
+          </div>
+          <div id="profiles">
+            <Row className="mb-3">
+              <h3 className="tittle-quest">
+                Seleccione el perfil que defina mejor su situación actual:
+              </h3>
+            </Row>
+            <Row className="mb-3">
+              <Col>
+                {Object.entries(perfil).map(([key, val], index) => (
+                  <CheckBox
+                    inline
+                    register={register}
+                    errors={errors}
+                    id={`profile_${index}`}
+                    key={`profile_${key}`}
+                    name={"profile"}
+                    type="radio"
+                    label={val}
+                    value={key}
+                    index={index}
+                    //onChange={isTypeSelected}
+                  />
+                ))}
+              </Col>
+            </Row>
+          </div>
+          <div id="profarea">
+            <Row className="mb-3">
+              <h3 className="tittle-quest">
+                Selecciona tu área profesional, ya sea en ejercicio o en
+                estudio:
+              </h3>
+            </Row>
+            <Row className="mb-3">
+              <Col>
+                {profareas.map((e, index) => (
+                  <CheckBox
+                    inline
+                    register={register}
+                    errors={errors}
+                    id={`profarea_${index}`}
+                    key={`profarea_${e}`}
+                    name={"profarea"}
+                    type="checkbox"
+                    label={e}
+                    value={e}
+                    index={index}
+                  />
+                ))}
+                {/* {otherArea && <OtherCheck
+                                    
+                                
+                                />} */}
+              </Col>
+            </Row>
+            <Row>
+              <Col>
+                <FormControlFloatingLabel
+                  register={register}
+                  errors={errors}
+                  key="speciality"
+                  // id={`basic_data_${index}`}
+                  name="speciality"
+                  label="Especialida(si procede)"
+                  placeholder="Especialidad(si procede)"
+                  type="text"
+                  //value={e.value}
+                />
+              </Col>
+            </Row>
+          </div>
+          <div id="academic_level">
+            <Row className="mb-3">
+              <h3 className="tittle-quest">
+                Especifique su mayor nivel académico obtenido: (si es estudiante
+                de grado dejar en blanco){" "}
+              </h3>
+            </Row>
+            <Row className="mb-3">
+              <Col>
+                {Object.entries(academic_levels).map(([key, val], index) => (
+                  <CheckBox
+                    register={register}
+                    errors={errors}
+                    id={`academic_level_${index}`}
+                    key={`academic_level_${index}`}
+                    name={"academic_level"}
+                    type="radio"
+                    label={val}
+                    value={key}
+                    index={index}
+                    //onChange={isTypeSelected}
+                    //onCheck={handleOnCheck}
+                  />
+                ))}
+                {master === "Máster" && (
+                  <Row id="descriptions" className="mt-3">
+                    <Row>
+                      <h3>Si ha seleccionado Máster de que tipo:</h3>
                     </Row>
+                    <Col>
+                      {descriptions.map((e, index) => (
+                        <CheckBox
+                          register={register}
+                          errors={errors}
+                          // id={`description_${index}`}
+                          key={`description_${e.type}`}
+                          name={"description"}
+                          type="radio"
+                          label={e.label}
+                          value={e.type}
+                          index={index}
+                        />
+                      ))}
+                    </Col>
+                  </Row>
+                )}
+              </Col>
+            </Row>
+          </div>
+          <div id="year_academic_lvl">
+            <Row className="mb-3">
+              <Form.Group
+                as={Row}
+                className="mb-3"
+                controlId="academic_lvl_form"
+              >
+                <Form.Label column sm="5" className="pr-0">
+                  Año de obtención de dicho nivel académico obtenido:
+                </Form.Label>
+                <Col sm="3">
+                  <Form.Control
+                    type="number"
+                    placeholder="Año(número)"
+                    {...errors["year_academic_lvl"]}
+                    name="year_academic_lvl"
+                    isInvalid={!!errors["year_academic_lvl"]}
+                    {...register("year_academic_lvl")}
+                    min={new Date().getFullYear() - 80}
+                    max={new Date().getFullYear() + 20}
+                  />
+                  {errors["year_academic_lvl"] && (
+                    <Form.Control.Feedback type="invalid">
+                      {errors["year_academic_lvl"].message}
+                      {/* {errors[name] && errors[name]?.message} */}
+                    </Form.Control.Feedback>
                   )}
                 </Col>
-              </Row>
-            </div>
-            <div id="year_academic_lvl">
-              <Row className="mb-3">
-                <Form.Group
-                  as={Row}
-                  className="mb-3"
-                  controlId="academic_lvl_form"
-                >
-                  <Form.Label column sm="5" className="pr-0">
-                    Año de obtención de dicho nivel académico obtenido:
-                  </Form.Label>
-                  <Col sm="3">
-                    <Form.Control
-                      type="number"
-                      placeholder="Año(número)"
-                      {...errors["year_academic_lvl"]}
-                      name="year_academic_lvl"
-                      isInvalid={!!errors["year_academic_lvl"]}
-                      {...register("year_academic_lvl")}
-                      min={new Date().getFullYear() - 80}
-                      max={new Date().getFullYear() + 20}
-                    />
-                    {errors["year_academic_lvl"] && (
-                      <Form.Control.Feedback type="invalid">
-                        {errors["year_academic_lvl"].message}
-                        {/* {errors[name] && errors[name]?.message} */}
-                      </Form.Control.Feedback>
-                    )}
+              </Form.Group>
+            </Row>
+          </div>
+          <div id="PBE_knownledge">
+            <Row className="mb-3">
+              <h3 className="tittle-quest">
+                ¿Ha realizado usted algún tipo de formación específica en
+                Práctica Basada en la Evidencia?{" "}
+              </h3>
+            </Row>
+            <Row className="mb-3">
+              <Col>
+                {booleans.map((e, index) => (
+                  <CheckBox
+                    inline
+                    register={register}
+                    errors={errors}
+                    id={`PBE_knownledge_${index}`}
+                    key={`PBE_knownledge_${e}`}
+                    name={"PBE_knownledge"}
+                    type="radio"
+                    label={e}
+                    value={e}
+                    index={index}
+                    // onChange={isTypeSelected}
+                  />
+                ))}
+              </Col>
+            </Row>
+            {PBE_knownledge === "Sí" && (
+              <div id="PBE_training">
+                <Row className="mb-3">
+                  <h3 className="tittle-quest">
+                    ¿Ha realizado usted algún tipo de formación específica en
+                    Práctica Basada en la Evidencia?{" "}
+                  </h3>
+                </Row>
+                <Row className="mb-3">
+                  <Col>
+                    {Object.entries(training).map((e, index) => (
+                      <CheckBox
+                        inline
+                        register={register}
+                        errors={errors}
+                        // id={`PBE_training_${index}`}
+                        key={`PBE_training_${e[0]}`}
+                        name={"PBE_training"}
+                        type="radio"
+                        label={e[1]}
+                        value={e[0]}
+                        index={index}
+                      />
+                    ))}
                   </Col>
-                </Form.Group>
+                </Row>
+              </div>
+            )}
+          </div>
+          <div id="satisfation_table">
+            <Row>
+              <h2>Satisfacción laboral (o académica):</h2>
+            </Row>
+            <Container>
+              <Row>
+                <FormTable register={register} errors={errors} />
               </Row>
-            </div>
-            <div id="PBE_knownledge">
-              <Row className="mb-3">
-                <h3 className="tittle-quest">
-                  ¿Ha realizado usted algún tipo de formación específica en
-                  Práctica Basada en la Evidencia?{" "}
-                </h3>
+              <Row>
+                <Row>
+                  <h3>
+                    En una escala de 1 a 10, rodee el valor que representa el
+                    grado de satisfacción que tiene con su trabajo (o estudio):
+                  </h3>
+                </Row>
+                <Row>
+                  <Col>
+                    {Array.from({ length: 10 }).map((_, index) => (
+                      <CheckBox
+                        inline
+                        register={register}
+                        errors={errors}
+                        // id={`satisfation_${index}`}
+                        key={`satisfation_${index}`}
+                        name={"satisfation"}
+                        type="radio"
+                        label={index}
+                        value={index}
+                        index={index}
+                      />
+                    ))}
+                  </Col>
+                </Row>
               </Row>
-              <Row className="mb-3">
-                <Col>
-                  {booleans.map((e, index) => (
-                    <CheckBox
-                      inline
-                      register={register}
-                      errors={errors}
-                      id={`PBE_knownledge_${index}`}
-                      key={`PBE_knownledge_${e}`}
-                      name={"PBE_knownledge"}
-                      type="radio"
-                      label={e}
-                      value={e}
-                      index={index}
-                      // onChange={isTypeSelected}
-                    />
-                  ))}
-                </Col>
+            </Container>
+          </div>
+          {/* Only show rest form for Profesional users*/}
+
+          {profesional === "Profesional" && (
+            <div id="profesional_area">
+              <Row>
+                <h2>Para profesionales:</h2>
               </Row>
-              {PBE_knownledge === "Sí" && (
-                <div id="PBE_training">
+
+              <Container>
+                <div id="supervisor">
                   <Row className="mb-3">
                     <h3 className="tittle-quest">
-                      ¿Ha realizado usted algún tipo de formación específica en
-                      Práctica Basada en la Evidencia?{" "}
+                      ¿Tiene usted o ha tenido funciones directivas, de mando
+                      intermedio, o de supervisión?
                     </h3>
                   </Row>
                   <Row className="mb-3">
                     <Col>
-                      {Object.entries(training).map((e, index) => (
+                      {booleans.map((e, index) => (
                         <CheckBox
                           inline
                           register={register}
                           errors={errors}
-                          // id={`PBE_training_${index}`}
-                          key={`PBE_training_${e[0]}`}
-                          name={"PBE_training"}
+                          // id={`supervisor_${index}`}
+                          key={`supervisor_${e}`}
+                          name={"supervisor"}
                           type="radio"
-                          label={e[1]}
-                          value={e[0]}
+                          label={e}
+                          value={e}
                           index={index}
                         />
                       ))}
                     </Col>
                   </Row>
                 </div>
-              )}
-            </div>
-            <div id="satisfation_table">
-              <Row>
-                <h2>Satisfacción laboral (o académica):</h2>
-              </Row>
-              <Container>
-                <Row>
-                  <FormTable register={register} errors={errors} />
-                </Row>
-                <Row>
-                  <Row>
-                    <h3>
-                      En una escala de 1 a 10, rodee el valor que representa el
-                      grado de satisfacción que tiene con su trabajo (o
-                      estudio):
+                <div id="profesional_years">
+                  <Row className="mb-3">
+                    <FormControlFloatingLabel
+                      register={register}
+                      errors={errors}
+                      key="active_years"
+                      // id={`basic_data_${index}`}
+                      name="years" //active years from profesional
+                      label="¿Cuántos años lleva usted en activo? (relacionado con la profesión sanitaria):"
+                      placeholder=""
+                      type="number"
+                      min="0"
+                      max="80"
+                      //value={e.value}
+                    />
+                  </Row>
+                </div>
+
+                <div id="profesional_dedication">
+                  <Row className="mb-3">
+                    <FormControlFloatingLabel
+                      register={register}
+                      errors={errors}
+                      key="dedicationW"
+                      // id={`basic_data_${index}`}
+                      name="dedicationW" //active years from profesional
+                      label="¿Cuál es su dedicación laboral semanal en horas en el momento actual?"
+                      placeholder=""
+                      type="number"
+                      min="5"
+                      max="150"
+                      //value={e.value}
+                    />
+                  </Row>
+                </div>
+
+                <div id="profesional_enviroments">
+                  <Row className="mb-3">
+                    <h3 className="tittle-quest">
+                      ¿En cuál de los siguientes entornos realiza usted la mayor
+                      parte de su actividad profesional?{" "}
                     </h3>
                   </Row>
-                  <Row>
+                  <Row className="mb-3">
                     <Col>
-                      {Array.from({ length: 10 }).map((_, index) => (
+                      {enviroments.map((e, index) => (
                         <CheckBox
                           inline
                           register={register}
                           errors={errors}
-                          // id={`satisfation_${index}`}
-                          key={`satisfation_${index}`}
-                          name={"satisfation"}
-                          type="radio"
-                          label={index}
-                          value={index}
+                          id={`enviroments_${index}`}
+                          key={`enviroments_${e}`}
+                          name={"enviroment"}
+                          type="checkbox"
+                          label={e}
+                          value={e}
                           index={index}
                         />
                       ))}
                     </Col>
                   </Row>
-                </Row>
-              </Container>
-            </div>
-            {/* Only show rest form for Profesional users*/}
+                </div>
 
-            {profesional === "Profesional" && (
-              <div id="profesional_area">
-                <Row>
-                  <h2>Para profesionales:</h2>
-                </Row>
+                <div id="profesional_sectors">
+                  <Row className="mb-3">
+                    <h3 className="tittle-quest">
+                      ¿En cuál de los siguientes entornos realiza usted la mayor
+                      parte de su actividad profesional?
+                    </h3>
+                  </Row>
+                  <Row className="mb-3">
+                    <Col>
+                      {sectors.map((e, index) => (
+                        <CheckBox
+                          inline
+                          register={register}
+                          errors={errors}
+                          id={`sectors_${index}`}
+                          key={`sectors_${e}`}
+                          name={"sector"}
+                          type="checkbox"
+                          label={e}
+                          value={e}
+                          index={index}
+                          //onCheck={handleOnCheck}
+                        />
+                      ))}
+                    </Col>
+                  </Row>
+                </div>
 
-                <Container>
-                  <div id="supervisor">
-                    <Row className="mb-3">
-                      <h3 className="tittle-quest">
-                        ¿Tiene usted o ha tenido funciones directivas, de mando
-                        intermedio, o de supervisión?
-                      </h3>
-                    </Row>
-                    <Row className="mb-3">
-                      <Col>
-                        {booleans.map((e, index) => (
+                <div id="profesional_activities">
+                  <Row className="mb-3">
+                    <h3 className="tittle-quest">
+                      Por favor, indique el porcentaje aproximado del tiempo
+                      total de trabajo que invierte usted en cada tipo de
+                      actividad en la actualidad:
+                    </h3>
+                    <span>(Recuerde: La suma debe ser igual a 100)</span>
+                  </Row>
+                  <Row className="mb-3">
+                    <Col>
+                      {activities.map((e, index) => (
+                        <React.Fragment key={`activities_wrapped_${index}`}>
                           <CheckBox
-                            inline
                             register={register}
                             errors={errors}
-                            // id={`supervisor_${index}`}
-                            key={`supervisor_${e}`}
-                            name={"supervisor"}
-                            type="radio"
-                            label={e}
-                            value={e}
-                            index={index}
-                          />
-                        ))}
-                      </Col>
-                    </Row>
-                  </div>
-                  <div id="profesional_years">
-                    <Row className="mb-3">
-                      <FormControlFloatingLabel
-                        register={register}
-                        errors={errors}
-                        key="active_years"
-                        // id={`basic_data_${index}`}
-                        name="years" //active years from profesional
-                        label="¿Cuántos años lleva usted en activo? (relacionado con la profesión sanitaria):"
-                        placeholder=""
-                        type="number"
-                        min="0"
-                        max="80"
-                        //value={e.value}
-                      />
-                    </Row>
-                  </div>
-
-                  <div id="profesional_dedication">
-                    <Row className="mb-3">
-                      <FormControlFloatingLabel
-                        register={register}
-                        errors={errors}
-                        key="dedicationW"
-                        // id={`basic_data_${index}`}
-                        name="dedicationW" //active years from profesional
-                        label="¿Cuál es su dedicación laboral semanal en horas en el momento actual?"
-                        placeholder=""
-                        type="number"
-                        min="5"
-                        max="150"
-                        //value={e.value}
-                      />
-                    </Row>
-                  </div>
-
-                  <div id="profesional_enviroments">
-                    <Row className="mb-3">
-                      <h3 className="tittle-quest">
-                        ¿En cuál de los siguientes entornos realiza usted la
-                        mayor parte de su actividad profesional?{" "}
-                      </h3>
-                    </Row>
-                    <Row className="mb-3">
-                      <Col>
-                        {enviroments.map((e, index) => (
-                          <CheckBox
-                            inline
-                            register={register}
-                            errors={errors}
-                            id={`enviroments_${index}`}
-                            key={`enviroments_${e}`}
-                            name={"enviroment"}
+                            id={`activity_${index}`}
+                            key={`activity_${e}`}
+                            name={"activity"}
                             type="checkbox"
                             label={e}
                             value={e}
                             index={index}
+                            //onChange={updatedActivities}
                           />
-                        ))}
-                      </Col>
-                    </Row>
-                  </div>
-
-                  <div id="profesional_sectors">
-                    <Row className="mb-3">
-                      <h3 className="tittle-quest">
-                        ¿En cuál de los siguientes entornos realiza usted la
-                        mayor parte de su actividad profesional?
-                      </h3>
-                    </Row>
-                    <Row className="mb-3">
-                      <Col>
-                        {sectors.map((e, index) => (
-                          <CheckBox
-                            inline
-                            register={register}
-                            errors={errors}
-                            id={`sectors_${index}`}
-                            key={`sectors_${e}`}
-                            name={"sector"}
-                            type="checkbox"
-                            label={e}
-                            value={e}
-                            index={index}
-                            //onCheck={handleOnCheck}
-                          />
-                        ))}
-                      </Col>
-                    </Row>
-                  </div>
-
-                  <div id="profesional_activities">
-                    <Row className="mb-3">
-                      <h3 className="tittle-quest">
-                        Por favor, indique el porcentaje aproximado del tiempo
-                        total de trabajo que invierte usted en cada tipo de
-                        actividad en la actualidad:
-                      </h3>
-                      <span>(Recuerde: La suma debe ser igual a 100)</span>
-                    </Row>
-                    <Row className="mb-3">
-                      <Col>
-                        {activities.map((e, index) => (
-                          <React.Fragment key={`activities_wrapped_${index}`}>
-                            <CheckBox
+                          {activitiesChecked.includes(e) && (
+                            <FormInputGroup
                               register={register}
                               errors={errors}
-                              id={`activity_${index}`}
-                              key={`activity_${e}`}
-                              name={"activity"}
-                              type="checkbox"
-                              label={e}
-                              value={e}
-                              index={index}
-                              //onChange={updatedActivities}
+                              // label={e}
+                              name={`activity_val_${index}`}
+                              key={`activity_val_${index}`}
                             />
-                            {activitiesChecked.includes(e) && (
-                              <FormInputGroup
-                                register={register}
-                                errors={errors}
-                                // label={e}
-                                name={`activity_val_${index}`}
-                                key={`activity_val_${index}`}
-                              />
-                            )}
-                            {/* {(other) &&
+                          )}
+                          {/* {(other) &&
                                                         < FormInputGroup
                                                             register={register}
                                                             errors={errors}
@@ -775,22 +739,22 @@ export default function UserForm() {
                                                             name={`activity_val_${index}`}
                                                             key={`activity_val_${index}`} />
                                                     } */}
-                          </React.Fragment>
-                        ))}
-                      </Col>
-                    </Row>
-                  </div>
-                </Container>
-              </div>
-            )}
-            {/* <Button type="submit">Enviar</Button> */}
-            <div xlassName="d-flex justify-content-end pe-3">
-              <Button type="submit" disabled={loading}>
-                {loading ? <Spinner load={loading} /> : "Enviar"}
-              </Button>
+                        </React.Fragment>
+                      ))}
+                    </Col>
+                  </Row>
+                </div>
+              </Container>
             </div>
-          </form>
-        </div>
+          )}
+          {/* <Button type="submit">Enviar</Button> */}
+          <div className="d-flex justify-content-end pe-3">
+            <Button type="submit" disabled={loading}>
+              {loading ? <Spinner load={loading} /> : "Enviar"}
+            </Button>
+          </div>
+        </form>
+        {/* </div> */}
       </Col>
     </Container>
   );
