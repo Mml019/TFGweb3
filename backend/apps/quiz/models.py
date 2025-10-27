@@ -218,7 +218,7 @@ class Respondant(models.Model):
     speciality =        models.CharField(max_length=50, null=True)
     academic_level =    models.ForeignKey(AcademicLevel, on_delete=models.CASCADE, null=True)
 
-    grade = models.PositiveSmallIntegerField(choices=SatisfationGrade)
+    grade =             models.PositiveSmallIntegerField(choices=SatisfationGrade)
 
     # if i change the name to reply or answer don't works but Respuesta sí.
     question =    models.ManyToManyField(Question, through='Respuesta', related_name='respondant_answer_to_question')
@@ -237,16 +237,6 @@ class SatisfationRes(models.Model):
     idS =   models.ForeignKey(Satisfation, on_delete=models.CASCADE)
     idRes =   models.ForeignKey(Respondant, on_delete=models.CASCADE)
     pk =    models.CompositePrimaryKey('idS', 'idRes')
-
-# class SatisfationGrade(models.Model):
-#     RANKING_GLOBAL = []
-#     for i in range(1, 10):
-#         RANKING_GLOBAL.append((i, str(i)))
-
-#     grade = models.PositiveSmallIntegerField(choices=RANKING_GLOBAL)
-#     idA =   models.ForeignKey(ProfesionalArea, on_delete=models.CASCADE)
-#     idRes =   models.ForeignKey(Respondant, on_delete=models.CASCADE)
-#     pk =    models.CompositePrimaryKey('idA', 'idRes')
 
 # ------------- ANSWER CLASS --------------
 # The class name is in spanish cause django don't permit other
