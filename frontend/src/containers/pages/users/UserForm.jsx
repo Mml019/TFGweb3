@@ -16,6 +16,16 @@ import { useNavigate } from "react-router-dom";
 import Button from "react-bootstrap/Button";
 import MyNavbar from "../../../components/navigation/MyNavbar.jsx";
 
+import FormControlFloatingLabel from "../../../components/forms/FormControl.jsx";
+import FormInputGroup from "../../../components/forms/FormInputGroup.jsx";
+import FormTable from "../../../components/forms/FormTable.jsx";
+import SelectField from "../../../components/forms/FormSelectField.jsx";
+import CheckBox from "../../../components/forms/FormCheck.jsx";
+import { useDispatch } from "react-redux";
+import { createUser } from "../../../reduxToolkit/slices/user.js";
+import { getQuizRandomAndList } from "../../../reduxToolkit/slices/quiz.js";
+import OtherCheck from "../../../components/forms/OtherCheck.jsx";
+
 import {
   yupSchema,
   academic_levels,
@@ -30,15 +40,6 @@ import {
   training,
   sectors,
 } from "../../../schema/UserForm.js";
-import FormControlFloatingLabel from "../../../components/forms/FormControl.jsx";
-import FormInputGroup from "../../../components/forms/FormInputGroup.jsx";
-import FormTable from "../../../components/forms/FormTable.jsx";
-import SelectField from "../../../components/forms/FormSelectField.jsx";
-import CheckBox from "../../../components/forms/FormCheck.jsx";
-import { useDispatch } from "react-redux";
-import { createUser } from "../../../reduxToolkit/slices/user.js";
-import { getQuizRandomAndList } from "../../../reduxToolkit/slices/quiz.js";
-import OtherCheck from "../../../components/forms/OtherCheck.jsx";
 
 export default function UserForm() {
   const [loading, isLoading] = useState(false);
@@ -224,7 +225,6 @@ export default function UserForm() {
     ? [rawActivities]
     : [];
   //const activitiesChecked = watch('activity', [])
-  const otherArea = watch("profarea");
   const otherSector = watch("sector");
   const otherEnviroment = watch("enviroment");
 
@@ -267,9 +267,11 @@ export default function UserForm() {
 
   return (
     <Container fluid id="user_form">
-      <Col id="col-form">
+      {/* <Col id="col-form"> */}
+      <div id="header">
         <MyNavbar nameBrand={"Datos demográficos"}></MyNavbar>
-        {/* <div className="header">
+      </div>
+      {/* <div className="header">
           <Image
             src="/img/logoUib.png"
             alt="Logo de la Universidad"
@@ -278,14 +280,14 @@ export default function UserForm() {
           ></Image>
           <h1>Datos demográficos</h1>
         </div> */}
-        {/* <div id="content"> */}
+      <div id="content">
         <form onSubmit={handleSubmit(onSubmit)}>
           <div id="basic-data">
             <Row className="mb-3 align-items-center">
               <Row>
                 <h2>Datos principales:</h2>
               </Row>
-              <Col xs={8}>
+              <Col>
                 {basic_data.map((e, index) => (
                   <FormControlFloatingLabel
                     register={register}
@@ -378,10 +380,6 @@ export default function UserForm() {
                     index={index}
                   />
                 ))}
-                {/* {otherArea && <OtherCheck
-                                    
-                                
-                                />} */}
               </Col>
             </Row>
             <Row>
@@ -427,14 +425,16 @@ export default function UserForm() {
                 {master === "Máster" && (
                   <Row id="descriptions" className="mt-3">
                     <Row>
-                      <h3>Si ha seleccionado Máster de que tipo:</h3>
+                      <h3 className="tittle-quest">
+                        Si ha seleccionado Máster de que tipo:
+                      </h3>
                     </Row>
                     <Col>
                       {descriptions.map((e, index) => (
                         <CheckBox
                           register={register}
                           errors={errors}
-                          // id={`description_${index}`}
+                          id={`description_${index}`}
                           key={`description_${e.type}`}
                           name={"description"}
                           type="radio"
@@ -510,8 +510,15 @@ export default function UserForm() {
               <div id="PBE_training">
                 <Row className="mb-3">
                   <h3 className="tittle-quest">
-                    ¿Ha realizado usted algún tipo de formación específica en
-                    Práctica Basada en la Evidencia?{" "}
+                    En caso de que haya respondido de forma afirmativa a la
+                    pregunta anterior, escoja la respuesta que considere más
+                    adecuada teniendo en cuenta toda la formación que usted ha
+                    recibido sobre este material;
+                    {/* <br />  */}
+                    tanto durante su carrera universitaria como también a lo
+                    largo de toda su carrera profesional (formación continuada…)
+                    <br />
+                    <span>Seleccione una de las siguientes opciones:</span>
                   </h3>
                 </Row>
                 <Row className="mb-3">
@@ -521,7 +528,7 @@ export default function UserForm() {
                         inline
                         register={register}
                         errors={errors}
-                        // id={`PBE_training_${index}`}
+                        id={`PBE_training_${index}`}
                         key={`PBE_training_${e[0]}`}
                         name={"PBE_training"}
                         type="radio"
@@ -545,7 +552,7 @@ export default function UserForm() {
               </Row>
               <Row>
                 <Row>
-                  <h3>
+                  <h3 className="tittle-quest">
                     En una escala de 1 a 10, rodee el valor que representa el
                     grado de satisfacción que tiene con su trabajo (o estudio):
                   </h3>
@@ -557,7 +564,7 @@ export default function UserForm() {
                         inline
                         register={register}
                         errors={errors}
-                        // id={`satisfation_${index}`}
+                        id={`satisfation_${index}`}
                         key={`satisfation_${index}`}
                         name={"satisfation"}
                         type="radio"
@@ -594,7 +601,7 @@ export default function UserForm() {
                           inline
                           register={register}
                           errors={errors}
-                          // id={`supervisor_${index}`}
+                          id={`supervisor_${index}`}
                           key={`supervisor_${e}`}
                           name={"supervisor"}
                           type="radio"
@@ -665,6 +672,13 @@ export default function UserForm() {
                           index={index}
                         />
                       ))}
+                      {otherEnviroment.includes("Otros") && (
+                        <OtherCheck
+                          name={"enviroment"}
+                          errors={errors}
+                          register={register}
+                        />
+                      )}
                     </Col>
                   </Row>
                 </div>
@@ -672,8 +686,8 @@ export default function UserForm() {
                 <div id="profesional_sectors">
                   <Row className="mb-3">
                     <h3 className="tittle-quest">
-                      ¿En cuál de los siguientes entornos realiza usted la mayor
-                      parte de su actividad profesional?
+                      ¿A qué sector pertenece su entorno de trabajo principal
+                      actualmente?
                     </h3>
                   </Row>
                   <Row className="mb-3">
@@ -693,6 +707,13 @@ export default function UserForm() {
                           //onCheck={handleOnCheck}
                         />
                       ))}
+                      {otherSector.includes("Otros") && (
+                        <OtherCheck
+                          name={"sector"}
+                          errors={errors}
+                          register={register}
+                        />
+                      )}
                     </Col>
                   </Row>
                 </div>
@@ -714,7 +735,7 @@ export default function UserForm() {
                             register={register}
                             errors={errors}
                             id={`activity_${index}`}
-                            key={`activity_${e}`}
+                            key={`activity_${index}`}
                             name={"activity"}
                             type="checkbox"
                             label={e}
@@ -729,16 +750,9 @@ export default function UserForm() {
                               // label={e}
                               name={`activity_val_${index}`}
                               key={`activity_val_${index}`}
+                              index={index}
                             />
                           )}
-                          {/* {(other) &&
-                                                        < FormInputGroup
-                                                            register={register}
-                                                            errors={errors}
-                                                            label={e}
-                                                            name={`activity_val_${index}`}
-                                                            key={`activity_val_${index}`} />
-                                                    } */}
                         </React.Fragment>
                       ))}
                     </Col>
@@ -754,8 +768,8 @@ export default function UserForm() {
             </Button>
           </div>
         </form>
-        {/* </div> */}
-      </Col>
+      </div>
+      {/* </Col> */}
     </Container>
   );
 }

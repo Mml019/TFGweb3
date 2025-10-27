@@ -22,7 +22,7 @@ export default function CheckBox({
       id={id}
       // checked={isChecked}
       //onChange={() => props.onChange(props.index)}
-      aria-labelledby={label}
+      aria-labelledby={id}
       aria-placeholder={label}
       // aria-checked={isChecked}
       tabIndex={tabIndex}

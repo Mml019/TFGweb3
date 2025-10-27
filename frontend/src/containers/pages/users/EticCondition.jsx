@@ -24,9 +24,11 @@ export default function EticCondition() {
 
   return (
     <Container fluid>
-      <MyNavbar
-        nameBrand={"Hoja de información, para participantes"}
-      ></MyNavbar>
+      <div id="header">
+        <MyNavbar
+          nameBrand={"Hoja de información, para participantes"}
+        ></MyNavbar>
+      </div>
       {/* <div className="header">
                 <h1>Información para participantes</h1>
             </div> */}

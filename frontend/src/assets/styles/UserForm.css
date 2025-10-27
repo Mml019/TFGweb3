@@ -2,10 +2,16 @@
     font-size: large;
 }
 
-
-
-#col-form{
+/* #col-form{
     height: 100vh;
     overflow: auto;
     width: 100%;
+} */
+
+.row{
+    padding: 0%;
+    display: flex;
+    justify-content: center;
+    margin: 2%;
+    text-align: left;
 }
