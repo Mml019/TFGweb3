@@ -14,7 +14,7 @@ export const sectors = [
   "Público",
   "Privado",
   "Centro concertado o mixto",
-  "Otra",
+  "Otro",
 ];
 export const activities = [
   "Asistencial",
@@ -33,7 +33,7 @@ export const training = {
 };
 export const academic_levels = {
   Grado: "Grado/Licenciatura-Diplomatura",
-  Máster: "Máster (Programa de ≥ 60 ECTS con evaluación y proyecto final):",
+  Máster: "Máster (Programa de ≥ 60 ECTS con evaluación y proyecto final)",
   Doctorado: "Doctorado",
 };
 export const sexs = ["Femenino", "Masculino"];

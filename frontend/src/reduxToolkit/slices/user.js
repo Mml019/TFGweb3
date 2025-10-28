@@ -2,12 +2,12 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 
 export const createUser = createAsyncThunk('user/createUser',
 
-    async (data, { rejectWithValue }) => {
+    async (dataUser, { rejectWithValue }) => {
     try {
       const response = await fetch(`${import.meta.env.REACT_API_URL}/uib/PEBquiz/user`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data)
+        body: JSON.stringify(dataUser)
       });
       if (!response.ok) throw new Error('Error fetching creando usuario');
       const data = await response.json();

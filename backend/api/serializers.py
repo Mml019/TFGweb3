@@ -151,7 +151,13 @@ class SatisfationSerializer(serializers.ModelSerializer):
             return ValidationError('La puntuación debe ser entre 0 y 5')
         return value
 
+class YearAcademicLevelSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = YearAcademicLevel
+        field = '__all__'
+
 class AcademicLevelSerializer(serializers.ModelSerializer):
+    year = YearAcademicLevelSerializer
     class Meta:
         model = AcademicLevel
         field = '__all__'

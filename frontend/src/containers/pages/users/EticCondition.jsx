@@ -24,36 +24,22 @@ export default function EticCondition() {
 
   return (
     <Container fluid>
-      <MyNavbar
-        nameBrand={"Hoja de información, para participantes"}
-      ></MyNavbar>
-      {/* <div className="header">
-                <h1>Información para participantes</h1>
-            </div> */}
+      <div id="header">
+        <MyNavbar nameBrand="Hoja de información para participantes" />
+      </div>
+      {/*<div className="header">
+        <h1>Información para participantes</h1>
+      </div> */}
       <div id="content">
         <nav>
           <ul>
-            <li>
-              <a href="#section1">Título del estudio</a>
-            </li>
-            <li>
-              <a href="#section2">Riesgos y beneficios</a>
-            </li>
-            <li>
-              <a href="#section3">Anonimato y gestión de los datos</a>
-            </li>
-            <li>
-              <a href="#section4">Participación voluntaria</a>
-            </li>
-            <li>
-              <a href="#section5">Publicación de los resultados</a>
-            </li>
-            <li>
-              <a href="#section6">Contacto</a>
-            </li>
-            <li>
-              <a href="#section7">Consentimiento</a>
-            </li>
+            <li><a href="#section1">Título del estudio</a></li>
+            <li><a href="#section2">Riesgos y beneficios</a></li>
+            <li><a href="#section3">Anonimato y gestión de los datos</a></li>
+            <li><a href="#section4">Participación voluntaria</a></li>
+            <li><a href="#section5">Publicación de los resultados</a></li>
+            <li><a href="#section6">Contacto</a></li>
+            <li><a href="#section7">Consentimiento</a></li>
           </ul>
         </nav>
         <hr />
@@ -64,6 +50,7 @@ export default function EticCondition() {
           Práctica Basada en la Evidencia en profesionales de la salud.
         </p>
         <br />
+
         <h2>¿Quién coordina el estudio?</h2>
         <p>Equipo investigador de la Universitat de les Illes Balears (UIB).</p>
         <br />
@@ -75,15 +62,14 @@ export default function EticCondition() {
           profesionales y estudiantes de ciencias de la salud.
         </p>
         <br />
+
         <h2>¿En qué consiste su participación?</h2>
         <ul>
           <li>
-            Completar un{" "}
-            <strong>breve formulario sociodemográfico anónimo.</strong>
+            Completar un <strong>breve formulario sociodemográfico anónimo.</strong>
           </li>
           <li>
-            Responder <strong>100 preguntas de verdadero/falso</strong>{" "}
-            asignadas aleatoriamente por el sistema.
+            Responder <strong>100 preguntas de verdadero/falso</strong> asignadas aleatoriamente por el sistema.
           </li>
           <li>
             <strong>Duración aproximada:</strong> 55 minutos en una única sesión
@@ -124,8 +110,7 @@ export default function EticCondition() {
               solicitan nombre, correo, IP, número de colegiado, etc.).
             </li>
             <li>
-              Cada registro se{" "}
-              <strong>identifica con un código aleatorio</strong> que
+              Cada registro se <strong>identifica con un código aleatorio</strong> que
               imposibilita su vinculación con personas concretas.
             </li>
             <li>
@@ -139,13 +124,10 @@ export default function EticCondition() {
         <p>
           Participar es totalmente voluntario.
           <br />
-          Puede{" "}
-          <strong>
+          Puede <strong>
             interrumpir la cumplimentación en cualquier momento antes de enviar
             el formulario
-          </strong>{" "}
-          cerrando la página. Dado que los datos son anónimos,{" "}
-          <strong>
+          </strong> cerrando la página. Dado que los datos son anónimos,<strong>
             una vez enviado el cuestionario no será posible localizar ni retirar
             su participación.
           </strong>
@@ -159,7 +141,7 @@ export default function EticCondition() {
         <h2 id="section6">Contacto</h2>
         <p>
           {" "}
-          Para cualquier duda sobre el estudio contactar con:{" "}
+          Para cualquier duda sobre el estudio contactar con: 
           <b>[clara.carbonell@uib.cat] [jcarlos.fernandez@uib.es]</b>.
         </p>
         <h2 id="section7">Consentimiento</h2>
