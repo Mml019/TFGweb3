@@ -184,17 +184,20 @@ class Satisfation(models.Model):
     questionS =  models.CharField(max_length=250)
     value =     models.PositiveSmallIntegerField(choices=RANKING_INDIVIUAL)
 
+class YearAcademicLevel(models.Model):
+    year =  models.PositiveSmallIntegerField(primary_key=True)
+
 class  AcademicLevel(models.Model):
     class AcademicLevelTypes(models.TextChoices):
         Grado = 'Grado'
         Máster = 'Máster'
         Doctorado = 'Doctorado'
 
-    academic_lvl =  models.CharField(max_length=10, choices=AcademicLevelTypes) #academic_lvl
+    academic_lvl =  models.CharField(max_length=10, choices=AcademicLevelTypes, primary_key=True) #academic_lvl
     description =   models.CharField(max_length=250, null=True)
     # null True permits set null in a database field
-    year =          models.PositiveSmallIntegerField()
-
+    year =          models.ForeignKey(YearAcademicLevel, on_delete=models.CASCADE)
+           
 class Respondant(models.Model):
 
     class SatisfationGrade(models.TextChoices):
@@ -205,6 +208,10 @@ class Respondant(models.Model):
     class Sex(models.TextChoices):
         FEMENINO = 'F', 'Femenino'
         MASCULINO = 'M', 'Masculino'
+    
+    # RANKING_GLOBAL = []
+    # for i in range(1, 10):
+    #     RANKING_GLOBAL.append((i, str(i)))
 
     respondant =        models.OneToOneField(MyUser, on_delete=models.CASCADE)
     age =               models.PositiveSmallIntegerField()
@@ -218,13 +225,14 @@ class Respondant(models.Model):
     speciality =        models.CharField(max_length=50, null=True)
     academic_level =    models.ForeignKey(AcademicLevel, on_delete=models.CASCADE, null=True)
 
-    grade =             models.PositiveSmallIntegerField(choices=SatisfationGrade)
+    grade =             models.PositiveSmallIntegerField(choices=SatisfationGrade, default=0)
 
     # if i change the name to reply or answer don't works but Respuesta sí.
     question =    models.ManyToManyField(Question, through='Respuesta', related_name='respondant_answer_to_question')
     # profarea =    models.ManyToManyField(ProfesionalArea, through='SatisfationGrade', related_name='profesional_area_user')
+    profarea =    models.ManyToManyField(ProfesionalArea)
     satisfation = models.ManyToManyField(Satisfation, through='SatisfationRes', related_name='satisfation_per_user')
-
+    
     def save(self, force_insert = ..., force_update = ..., using = ..., update_fields = ...):
         group = create_group('respondant')
         self.respondant.groups().add(group)

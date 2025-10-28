@@ -317,8 +317,9 @@ def normalizeFile(df):
 
     # set data types
     df = df.astype("string")
+    print("error1")
     df["dificultad"] = df["dificultad"].astype("int")
-   
+    print("error2")
     # NA values
     df["dificultad"] = df["dificultad"].fillna(0)
 

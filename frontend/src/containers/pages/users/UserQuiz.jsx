@@ -9,6 +9,7 @@ import Spinner from "../../../components/Spinner"
 import { nextQuestion } from "../../../reduxToolkit/slices/questions"
 import { getQuizRandomAndList } from "../../../reduxToolkit/slices/quiz"
 import { unwrapResult } from "@reduxjs/toolkit"
+import MyNavbar from '../../../components/navigation/MyNavbar'
 
 function UserQuiz() {
     const [loading, setLoading] = useState(true)
@@ -54,8 +55,6 @@ function UserQuiz() {
                 .then( await dispatch())
                 )
         }
-
-
     }, []);
 
     return (
