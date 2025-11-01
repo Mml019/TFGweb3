@@ -1,5 +1,4 @@
 import { Form } from "react-bootstrap";
-import { useState } from "react";
 
 // this class is used to create radio or check buttons without validations
 export default function CheckBox({

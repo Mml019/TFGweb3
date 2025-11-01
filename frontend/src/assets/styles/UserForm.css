@@ -1,5 +1,11 @@
-/* .tittle-quest{
+.tittle-quest{
     font-size: large;
+    font-weight: bold
+}
+
+.section-form{
+    font-size: larger;
+    font-weight: bold
 }
 
 /* #col-form{
