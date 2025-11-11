@@ -5,7 +5,7 @@ import datetime
 from django.contrib.auth.models import AbstractUser, AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.db.models import Q
 from django.db import models
-from .permissions import create_group
+from .utils.permissions import create_group
 
 
 # Create your models here.
@@ -119,24 +119,26 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
 
     class MyUserManager(BaseUserManager):
 
-        def create_user(self, username, password, is_staff, **extra_fields):
-            user = self.model(username, password, is_staff, **extra_fields)
-
-            if is_staff == True:
-                user = self.model(username=username, is_staff=is_staff, **extra_fields)
+        def create_user(self, username=None, password=None, is_staff=False, **extra_fields):
+            # extra_fields.setdefault('is_active', True)
+            # if user have password it would be a admin or is_staff True
+            if password is not None:
                 user.set_password(password)
-
+            
+            user = self.model(username, password, is_staff=is_staff, **extra_fields)
             user.save()
             return user
 
 
         def create_superuser(self, username, password, **extra_fields):
-            user = self.model(username=username, is_superuser=True, **extra_fields)
+            extra_fields.setdefault('is_staff', True)
+            extra_fields.setdefault('is_superuser', True)
+            user = self.model(username=username, **extra_fields)
             user.set_password(password)
 
             user.save()
             return user
-
+        
     id =            models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False, auto_created=True)
     username=       models.CharField(max_length=256, unique=True, null=True)
     password =      models.CharField(max_length=256, editable=False, null=True)
@@ -146,17 +148,29 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
     objects =       MyUserManager()
 
     USERNAME_FIELD = 'username'
+    
+    # def save(self, *args, **kwargs):
+    #     if self.is_staff is True:
+    #         group = Group
+            
+    #     else:
+    #         group = create_group('respondant')
+    #     print(group)
+    #     if group is not None:
+    #         self.groups.add(group, using='default')
 
-    def save(self, force_insert = ..., force_update = ..., using = ..., update_fields = ...):
+    #     return super().save(*args, **kwargs)
 
-        if self.is_staff is True:
-            group = create_group('interviewer')
-            self.groups().add(group)
+    # def save(self, force_insert = ..., force_update = ..., using = ..., update_fields = ...):
 
-        return super().save(force_insert, force_update, using, update_fields)
+    #     if self.is_staff is True:
+    #         group = create_group('interviewer')
+    #         self.groups.add(group)
+
+    #     return super().save(force_insert, force_update, using, update_fields)
 
     def __str__(self):
-       return ('ID: '+ + str(self.id) + ' usuario: ' + self.username + ' password:' + self.password)
+       return (f"ID: {str(self.id)} usuario: {self.username} password: {self.password}")
 
  # ------------- RESPONDANT --------------------
 class ProfesionalArea(models.Model):
@@ -192,26 +206,21 @@ class  AcademicLevel(models.Model):
         Grado = 'Grado'
         Máster = 'Máster'
         Doctorado = 'Doctorado'
-
-    academic_lvl =  models.CharField(max_length=10, choices=AcademicLevelTypes, primary_key=True) #academic_lvl
+    idAcademicLvl = models.PositiveSmallIntegerField(primary_key=True)
+    academic_lvl =  models.CharField(max_length=10, choices=AcademicLevelTypes) #academic_lvl
     description =   models.CharField(max_length=250, null=True)
     # null True permits set null in a database field
     year =          models.ForeignKey(YearAcademicLevel, on_delete=models.CASCADE)
            
 class Respondant(models.Model):
 
-    class SatisfationGrade(models.TextChoices):
-        RANKING_GLOBAL = []
-        for i in range(1, 10):
-            RANKING_GLOBAL.append((i, str(i)))
-
     class Sex(models.TextChoices):
         FEMENINO = 'F', 'Femenino'
         MASCULINO = 'M', 'Masculino'
     
-    # RANKING_GLOBAL = []
-    # for i in range(1, 10):
-    #     RANKING_GLOBAL.append((i, str(i)))
+    RANKING_GLOBAL = []
+    for i in range(1, 10):
+        RANKING_GLOBAL.append((i, str(i)))
 
     respondant =        models.OneToOneField(MyUser, on_delete=models.CASCADE)
     age =               models.PositiveSmallIntegerField()
@@ -225,7 +234,7 @@ class Respondant(models.Model):
     speciality =        models.CharField(max_length=50, null=True)
     academic_level =    models.ForeignKey(AcademicLevel, on_delete=models.CASCADE, null=True)
 
-    grade =             models.PositiveSmallIntegerField(choices=SatisfationGrade, default=0)
+    grade =             models.PositiveSmallIntegerField(choices=RANKING_GLOBAL, default=0)
 
     # if i change the name to reply or answer don't works but Respuesta sí.
     question =    models.ManyToManyField(Question, through='Respuesta', related_name='respondant_answer_to_question')
@@ -298,7 +307,7 @@ class  Profesional(models.Model):
 class Dedication(models.Model):
     profesional = models.ForeignKey(Profesional, on_delete=models.CASCADE, related_name='id_between_activity_profesional')
     activity =    models.ForeignKey(Activity, on_delete=models.CASCADE)
-    percentatge = models.PositiveSmallIntegerField(default=0)
+    percentatge = models.FloatField(default=0)
     pk =          models.CompositePrimaryKey('profesional','activity')
 
 class  Envprof(models.Model):

@@ -70,7 +70,7 @@ class QuestionViewSet(ModelViewSet):
 # I can't use create apiview cause is a personalize creation
 class RespondantViews(CreateAPIView):
     
-    def post(self, request):
+    def create(self, request):
         # generate_random_id()
         data = request.data
         # return Response({request.data}, HTTP_200_OK)
@@ -87,43 +87,64 @@ class RespondantViews(CreateAPIView):
             
                 prof_list=[]
                 for p in data['profarea']:
-                    profarea, _ = ProfesionalArea.objects.get_or_create(profarea=p)
+                    # profarea, _ = ProfesionalArea.objects.get_or_create(profarea=p)
+                    profarea, _ = ProfesionalArea.objects.get(pk=p)
                     prof_list.append(profarea)
                
                 env_list=[]
                 for e in data['enviroment']:
-                    env, _ = Enviroment.objects.get_or_create(enviroment=e)
-                env_list.append(env)
+                    env, _ = Enviroment.objects.get(pk=e)
+                    env_list.append(env)
+                # if i have other check
+                if(data['other_env'] is not None or []):
+                    arr_other = str(data['other_env']).string.split(',')
+                for obj in arr_other:
+                    obj_ok = obj.strip().capitalize()
+                    env,_ = Enviroment.objects.get_or_create(enviroment=obj_ok) 
+                    env_list.append(env)
                 
                 sec_list=[]
                 for s in data['sector']:
-                    sector, _ = Sector.objects.get_or_create(sector=s)
-                sec_list.append(sector)
-                
+                    sector, _ = Sector.objects.get(pk=s)
+                    sec_list.append(sector)
+                # if i have other check
+                if(data['other_sec'] is not None or []):
+                    arr_other = str(data['other_sec']).string.split(',')
+                for obj in arr_other:
+                    obj_ok = obj.strip().capitalize()
+                    sector, _ = Sector.objects.get_or_create(sector=obj_ok)
+                    sec_list.append(obj_ok)
+
                 act_list=[]
                 for a in data['activity']:
-                    activity, _ =Activity.objects.get_or_create(activity=a)
+                    # activity, _ =Activity.objects.get_or_create(activity=a)
+                    activity, _ =Activity.objects.get_or_create(pk=a)
                     act_list.append(activity)
 
+                year, _ = YearAcademicLevel.objects.get_or_create(int(data['year_academic_lvl']))
                 academic_level = AcademicLevel(
                     academic_lvl=data['academic_level'], 
                     description=None, 
-                    year=int(data['year_academic_lvl']))
+                    year=year)
                 
                 if(data['academic_level'] == 'Máster'):
                     academic_level.description = data['description']
-                    academic_level.save()
+                # create and save Academic level
+                academic_level.save()
                 
                 satisfation_list=[]
-                for question, val in self.questions.items():
+                for question, val in questions.items():
                     
-                    satisfation, _ = Satisfation.objects.get_or_create(
-                        questionS=question,
-                        value = int(val)
-                    )
+                    # satisfation, _ = Satisfation.objects.get_or_create(
+                    #     questionS=question,
+                    #     value = int(val)
+                    # )
+                    satisfation, _ = Satisfation.objects.get(pk=)
                     satisfation_list.append(satisfation)
+
+                myuser = MyUser.objects.create(username=None, password=None, is_staff=False, is_superuser=False)
+                # add group and perms to user
                 
-                myuser = MyUser.objects.create()
                 respondant, _ = Respondant.objects.create(
                     myuser=myuser,
                     age=int(data['age']),
@@ -134,16 +155,20 @@ class RespondantViews(CreateAPIView):
                     level_PBE=int(data['level_PBE']),
                     PBE_knownledge=bool(data['PBE_knownledge']),
                     PBE_training=data['PBE_training'],
-                    speciality=['speciality'],
+                    speciality=data['speciality'],
                     academic_level=academic_level,
 
                     grade=int(data['satisfation']),
 
-                    question=None,
-                    profarea=prof_list,
-                    satisfation=satisfation_list,
+                    # question=None,
+                    # profarea=prof_list,
+                    # satisfation=satisfation_list,
                 )
+                # add many to many fields, 
+                respondant.profarea.set(prof_list)
+                respondant.satisfation.set(satisfation_list) 
 
+                # If is profesional
                 if(data['profile']=='Profesional'):
                     profesional = Profesional.objects.create(
                         profesional=respondant,
@@ -151,36 +176,40 @@ class RespondantViews(CreateAPIView):
                         dedicationW=int(data['dedicationW']),
                         years=int(data['years']),
 
-                        actvities=act_list,
-                        sectors=sec_list,
-                        enviroments =env_list
+                        # actvities=act_list,
+                        # sectors=sec_list,
+                        # enviroments =env_list
                     )
+                
+                profesional.activities.set(act_list)
+                profesional.sectors.set(sec_list)
+                profesional.enviroments.set(env_list)
                     
                 for index, a in enumerate(data['activity']):
-                    activity, _ =Activity.objects.get_or_create(activity=a)
+                    activity, _ = Activity.objects.get_or_create(activity=a)
                     dedication = Dedication.objects.create(
                         profesional=profesional, 
-                        activity=a, 
+                        activity=activity, 
                         percentatge=float(data[f'activity_val_{index}'])
                 )
                     
-                # return user    
-                respondant_serial = RespondantSerializer(respondant_serial)
+                # return user serializable   
+                respondant_serial = RespondantSerializer(respondant)
 
             except ValidationError(e):
                 return Response({'error': f'{e}'}, HTTP_400_BAD_REQUEST)
             return Response(respondant_serial.data, HTTP_201_CREATED)
         
-
-
-
-
-        
-
-
-    
-
-
-
-# def RespondantView(APIView):
-    
+class RespondantViewPrueba(APIView):
+    def post(self, request):
+        user=MyUser.objects.create()  
+        user2=MyUser.objects.create()
+        print(user)
+        group = create_group('interviewer')
+        group2 = create_group('respondant')
+        print(group)
+        print(group2)
+        user.groups.add(group)
+        user2.groups.add(group2)
+        return Response('success', status=HTTP_201_CREATED)
+      

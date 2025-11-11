@@ -10,7 +10,7 @@ import pandas as pd
 from .models import OptionQuestion as oqm
 from .models import *
 from api.serializers import *
-from apps.quiz.permissions import *
+from .utils.permissions import *
 
 from django.db import transaction
 from django.core.exceptions import ValidationError
@@ -178,18 +178,18 @@ class QuizViews(APIView):
             for i in range(len(df_normal)):
             
                 try:
-                    dimensionN, create = Dimension.objects.get_or_create(
+                    dimensionN, _ = Dimension.objects.get_or_create(
                         orden=df_normal.iloc[i]["ordenD"], 
                         dimension=df_normal.iloc[i]["dimension"]
                     )             
 
-                    areaIntN, create = InterestArea.objects.get_or_create(
+                    areaIntN, _ = InterestArea.objects.get_or_create(
                         orden=df_normal.iloc[i]["ordenA"],
                         int_area=df_normal.iloc[i]["area"],
                         idD=dimensionN,
                     )
                     
-                    coreCont = CoreContent.objects.get_or_create(
+                    coreCont, _ = CoreContent.objects.get_or_create(
                         core_cont=df_normal.iloc[i]["contenido"],
                         idA=areaIntN,
                     )
@@ -241,7 +241,7 @@ class QuizViews(APIView):
                         '''
                             
                         # Create only one kind of option per quetsion in Option Table
-                        option, create = Option.objects.get_or_create(option=valor_op_mapeado)
+                        option, _ = Option.objects.get_or_create(option=valor_op_mapeado)
                         
                         '''optionQ = OptionQuestion(idO=option, idP=question, motive=None)
                         optionQ.full_clean'''

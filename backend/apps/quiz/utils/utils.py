@@ -1,4 +1,4 @@
-# This file contains extra validation field and declared permissions
+# This file contains extra validation field to models
 
 from rest_framework.serializers import ValidationError
 from datetime import datetime
