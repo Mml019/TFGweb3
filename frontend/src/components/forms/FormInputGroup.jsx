@@ -1,7 +1,7 @@
 import Form from 'react-bootstrap/Form';
 import InputGroup from 'react-bootstrap/InputGroup';
 
-export default function FormInputGroup({label, name, index, register, errors,...rest}) {
+export default function FormInputGroup({label, name, index, value, register, errors,...rest}) {
     
     return (
         <InputGroup className="mb-3">
@@ -16,7 +16,7 @@ export default function FormInputGroup({label, name, index, register, errors,...
                 placeholder=""
                 // aria-label={label}
                 aria-describedby={`activity_${index}`}
-                //value={value}
+                value={value}
                 {...register(name)}
                 isInvalid={!!errors[name]}
                 aria-invalid={!!errors[name]}

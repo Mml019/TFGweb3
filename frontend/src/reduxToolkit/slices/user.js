@@ -4,11 +4,12 @@ export const createUser = createAsyncThunk('user/createUser',
 
     async (dataUser, { rejectWithValue }) => {
     try {
-      const response = await fetch(`${import.meta.env.REACT_API_URL}/uib/PEBquiz/user`, {
+      const response = await fetch(`${import.meta.env.VITE_REACT_API_URL}/uib/PEBquiz/user`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(dataUser)
       });
+      console.log(response)
       if (!response.ok) throw new Error('Error fetching creando usuario');
       const data = await response.json();
       return data; 

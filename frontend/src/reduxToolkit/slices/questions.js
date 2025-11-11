@@ -2,7 +2,7 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 
 // export const getQuestionsByQuiz = createAsyncThunk('quiz/getQuestions',
 //   async () =>{
-//     const response = await fetch(`${import.meta.env.REACT_API_URL}/questions`);
+//     const response = await fetch(`${import.meta.env.VITE_REACT_API_URL}/questions`);
 //     if (!response.ok) throw new Error('Error fetching questions');
 //     const data = await response.json();
 //     console.log(data)
@@ -12,7 +12,7 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
   // Returns a json with a list of ids and random quiz with their questions and options
 export const getQuizUnOrderQuestions = createAsyncThunk('quiz/getQuestionsUnOrder',
   async (idQ) =>{
-    const response = await fetch(`${import.meta.env.REACT_API_URL}/uib/PEBquiz/questions/listByQuiz/?quiz=${idQ}`);
+    const response = await fetch(`${import.meta.env.VITE_REACT_API_URL}/uib/PEBquiz/questions/listByQuiz/?quiz=${idQ}`);
     if (!response.ok) throw new Error('Error fetching questions');
     const data = await response.json();
     console.log(data)

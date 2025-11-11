@@ -13,7 +13,7 @@ import { useNavigate } from "react-router-dom";
 import { yupResolver } from "@hookform/resolvers/yup";
 
 import * as yup from "yup";
-import { yupSchema, academic_levels, level_PBE, loadAllCities, loadNacionalities, perfil, profareas, sexs, activities, enviroments, training, sectors } from "../../../schema/UserForm.js"
+import { yupSchema, academic_levels, level_PBE, loadAllCities, loadNacionalities, perfil, profareas, sexs, activities, enviroments, training, sectors, descriptions, booleans } from "../../../schema/UserForm.js"
 import FormControlFloatingLabel from "../../../components/forms/FormControl.jsx"
 import FormInputGroup from "../../../components/forms/FormInputGroup.jsx";
 import FormTable from "../../../components/forms/FormTable.jsx";
@@ -30,7 +30,7 @@ export default function UserForm() {
   const [loading, isLoading] = useState(false);
   const nav = useNavigate();
   const dispatch = useDispatch();
-
+  
   const basic_data = [
     { placeholder: "Sexo", label: "Sexo", type: "text", name: "sex" },
     { placeholder: 18, label: "Edad(años)", type: "number", name: "age" },
@@ -38,15 +38,6 @@ export default function UserForm() {
     { placeholder: "Ciudad", label: "Ciudad de residencia", type: "text", name: "city", },
     { placeholder: "Provincia", label: "Provincia/Región", type: "text", name: "province", },
   ];
-
-  const descriptions = [
-    { label: 'En investigación, innovación y/o práctica basada en la evidencia', type: 'Investigación' },
-    { label: 'Oficial (de 60-120 ECTS con trabajo de investigación que habilita el acceso al doctorado)', type: 'Oficial' },
-    { label: 'No oficial pero que incluya créditos relacionados con investigación, estadística…', type: 'No oficial con créditos en investigación' },
-    { label: 'No oficiales, exclusivamente profesionalizantes', type: 'No oficial, profesionalizante' }
-  ]
-
-  const booleans = ['Sí', 'No']
 
   const handleOnCheck = (name, checked) => {
     console.log(checkeds);
@@ -61,24 +52,24 @@ export default function UserForm() {
 
   useEffect(() => {
     const fetchAllData = async () => {
-      //     try {
-      //         let nacionalities = await loadNacionalities();
-      //         let ccaa = await loadCCAA();
-      //         let cities = await loadAllCities();
-      //         console.log(nacionalities)
-      //         console.log(ccaa)
-      //         console.log( JSON.parse({
-      //             'nacionalities': nacionalities,
-      //             'ccaa': ccaa,
-      //             'cities': cities
-      //         }))
-      //     } catch (err) {
-      //         toast.error(err)
-      //     }
-      // }
-      // let data = fetchAllData();
-      // console.log(data)
-    };
+          try {
+              let nacionalities = await loadNacionalities();
+              let ccaa = await loadCCAA();
+              let cities = await loadAllCities();
+              console.log(nacionalities)
+              console.log(ccaa)
+              console.log( JSON.parse({
+                  'nacionalities': nacionalities,
+                  'ccaa': ccaa,
+                  'cities': cities
+              }))
+          } catch (err) {
+              toast.error(err)
+          }
+      }
+      let data = fetchAllData();
+
+      console.log(data)
   }, []);
 
   // const schema = yup.object({
@@ -140,23 +131,21 @@ export default function UserForm() {
       activity_val_3: "0",
       activity_val_4: "0",
       enviroment: ["Atención especializada"],
+      other_env: "",
       sector: ["Privado"],
+      other_sec: "",
       dedicationW: 5,
       supervisor: "Sí",
       years: 0,
     },
-    //resolver: yupResolver(yupSchema)
+    resolver: yupResolver(yupSchema)
   })
 
   const master = useWatch({ name: 'academic_level', control })
   const profesional = useWatch({ name: 'profile', control })
   const PBE_knownledge = useWatch({ name: 'PBE_knownledge', control })
   const arrActivities = useWatch({ name: 'activity', control });
-  const activitiesChecked = Array.isArray(arrActivities)
-    ? arrActivities
-    : arrActivities
-      ? [arrActivities]
-      : [];
+  const activitiesChecked = Array.isArray(arrActivities) ? arrActivities : arrActivities ? [arrActivities]: [];
   const arrSectors = useWatch({ name: 'sector', control })
   const otherSector = Array.isArray(arrSectors) ? arrSectors : arrSectors ? [arrSectors] : [];
   const arrEnviroment = useWatch({ name: 'enviroment', control })
@@ -189,7 +178,8 @@ export default function UserForm() {
       // put in localstorage user id
       localStorage.setItem('userCreated', JSON.stringify(userCreated));
       //get random quiz to show quiz
-      dispatch(getQuizRandomAndList());
+      quizList = await dispatch(getQuizRandomAndList()).unwrap();
+      console.log(quizList)
       // navigate to question form
       nav("/quiz/questions/");
 
@@ -222,7 +212,7 @@ export default function UserForm() {
                     label={e.label}
                     placeholder={e.label}
                     type={e.type}
-                  //value={e.value}
+                    value={index}
                   />
                 ))}
               </Col>
@@ -393,7 +383,7 @@ export default function UserForm() {
                     isInvalid={!!errors["year_academic_lvl"]}
                     {...register("year_academic_lvl")}
                     min={new Date().getFullYear() - 80}
-                    max={new Date().getFullYear() + 20}
+                    max={new Date().getFullYear() + 50}
                   />
                   {errors["year_academic_lvl"] && (
                     <Form.Control.Feedback type="invalid">
@@ -504,7 +494,6 @@ export default function UserForm() {
             </Container>
           </div>
           {/* Only show rest form for Profesional users*/}
-
           {profesional === "Profesional" && (
             <div id="profesional_area">
               <Row>

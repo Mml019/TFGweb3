@@ -5,7 +5,7 @@ export const getQuizRandomAndList = createAsyncThunk(
   "quiz/getQuizRandomAndList",
   async () => {
     const response = await fetch(
-      `${import.meta.env.REACT_API_URL}/uib/PEBquiz/quiz`
+      `${import.meta.env.VITE_REACT_API_URL}/uib/PEBquiz/quiz`
     );
     if (!response.ok) throw new Error("Error fetching questions");
     const data = await response.json();
@@ -17,7 +17,7 @@ export const getQuizRandomAndList = createAsyncThunk(
 // // Returns a json with a list of ids and random quiz with their questions and options
 // export const getQuizUnOrderQuestions = createAsyncThunk('quiz/getQuestionsUnOrder',
 //   async (idQ) => {
-//     const response = await fetch(`${import.meta.env.REACT_API_URL}/uib/PEBquiz/questions/listByQuiz/?quiz=${idQ}`);
+//     const response = await fetch(`${import.meta.env.VITE_REACT_API_URL}/uib/PEBquiz/questions/listByQuiz/?quiz=${idQ}`);
 //     if (!response.ok) throw new Error('Error fetching questions');
 //     const data = await response.json();
 //     console.log(data)
