@@ -6,7 +6,7 @@ import Card from "react-bootstrap/Card"
 import Col from "react-bootstrap/Col"
 import Row from "react-bootstrap/Row"
 import Spinner from "../../../components/Spinner"
-import { nextQuestion } from "../../../reduxToolkit/slices/questions"
+import { getQuizUnOrderQuestions, nextQuestion } from "../../../reduxToolkit/slices/questions"
 import { getQuizRandomAndList } from "../../../reduxToolkit/slices/quiz"
 import { unwrapResult } from "@reduxjs/toolkit"
 import MyNavbar from '../../../components/navigation/MyNavbar'
@@ -30,18 +30,20 @@ function UserQuiz() {
 
     function crearRespuesta() {
         // POST to data base with data
+        
+        nav('quiz/results', { replace: true })
     }
 
     function otroQuiz() {
         // POST to data base with data
+        nav('quiz/results', { replace: true })
     }
 
     function handleClick() {
-        if (currentQuestionIndex != questions.lenght) {
+        if (currentQuestionIndex != questions.length - 1) {
             console.log('siguiente')
-              dispatch(nextQuestion)
+            dispatch(nextQuestion())
         }
-
     }
 
     useEffect(() => {
@@ -50,12 +52,17 @@ function UserQuiz() {
         }
 
         if (currentQuiz === undefined || currentQuiz === null) {
-            const fetchQuestions = async () => (
-                await dispatch(getQuizRandomAndList().unwrap())
-                .then( await dispatch())
-                )
+            const fetchQuestions = async () => {
+                try {
+                    quiz_list = await dispatch(getQuizRandomAndList().unwrap())
+                        .then(await dispatch(getQuizUnOrderQuestions(currentQuizIndex)).unwrap())
+                }catch(e){
+                    toast.error(`Error al mostrar las preguntas del quiz ${currentQuiz}. ${err}`)
+                }
+            }
         }
-    }, []);
+        fetchQuestions()
+    },[]);
 
     return (
         <>
@@ -95,7 +102,7 @@ function UserQuiz() {
                                                 ))}
                                             </Row>
                                             <Row>
-                                                {(currentQuestion === questions.lenght)
+                                                {(currentQuestion === questions.length - 1)
                                                     ?
                                                     (<Buttons
                                                         btns={
@@ -107,6 +114,7 @@ function UserQuiz() {
                                                     : (<MyButton
                                                         type='submit'
                                                         className='btn btn-primary'
+                                                        onClick={handleClick}
                                                         {...disabled}
                                                     >
                                                         Siguiente

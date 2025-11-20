@@ -9,16 +9,28 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 //     return data;
 //   })
 
-  // Returns a json with a list of ids and random quiz with their questions and options
-export const getQuizUnOrderQuestions = createAsyncThunk('quiz/getQuestionsUnOrder',
-  async (idQ) =>{
-    const response = await fetch(`${import.meta.env.VITE_REACT_API_URL}/uib/PEBquiz/questions/listByQuiz/?quiz=${idQ}`);
-    if (!response.ok) throw new Error('Error fetching questions');
-    const data = await response.json();
-    console.log(data)
-    return data;
-  })
+// // Returns a json with a list of ids and random quiz with their questions and options
+// export const getQuizUnOrderQuestions = createAsyncThunk('quiz/getQuestionsUnOrder',
+//   async (idQ) =>{
+//     const response = await fetch(`${import.meta.env.VITE_REACT_API_URL}/uib/PEBquiz/questions/listByQuiz/?quiz=${idQ}`);
+//     if (!response.ok) throw new Error('Error fetching questions');
+//     const data = await response.json();
+//     console.log(data)
+//     return data;
+//   })
 
+// Returns a json with a list of ids and random quiz with their questions and options
+export const getQuizUnOrderQuestions = createAsyncThunk(
+  'quiz/getQuestionsUnOrder',
+  async (idQ, { rejectWithValue }) => {
+    try {
+      const response = await api.get(`/uib/PEBquiz/questions/listByQuiz/?quiz=${idQ}`);
+      console.log(data)
+      return data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || `Error fecthing unorder questions form quiz ${idQ}. Error: ${error.message}`)
+    }
+  })
 
 // Slice
 export const questionSlice = createSlice({
@@ -33,13 +45,14 @@ export const questionSlice = createSlice({
   },
   reducers: {
     nextQuestion: (state) => {
-      if (state.currentQuestionIndex < state.questions.length){
+      if (state.currentQuestionIndex < state.questions.length - 1) {
         state.currentQuestionIndex += 1;
-        
+
+        // shift retunrs the first object of the array and modify others positions
         question_doned = state.questions.shift();
-        state.questions_done.append(question_doned);
-        
-        state.currentQuestion=state.questions[0]
+        state.questions_done.push(question_doned);
+
+        state.currentQuestion = state.questions[0]
       }
     },
   },

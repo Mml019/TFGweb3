@@ -87,13 +87,13 @@ class RespondantViews(CreateAPIView):
             
                 prof_list=[]
                 for p in data['profarea']:
-                    # profarea, _ = ProfesionalArea.objects.get_or_create(profarea=p)
-                    profarea, _ = ProfesionalArea.objects.get(pk=p)
-                    prof_list.append(profarea)
+                        profarea, _ = ProfesionalArea.objects.get_or_create(profarea=p)
+
+                        # profarea, _ = ProfesionalArea.objects.get(pk=p)
                
                 env_list=[]
                 for e in data['enviroment']:
-                    env, _ = Enviroment.objects.get(pk=e)
+                    env, _ = Enviroment.objects.get_or_create(enviroment=e)
                     env_list.append(env)
                 # if i have other check
                 if(data['other_env'] is not None or []):
@@ -105,7 +105,7 @@ class RespondantViews(CreateAPIView):
                 
                 sec_list=[]
                 for s in data['sector']:
-                    sector, _ = Sector.objects.get(pk=s)
+                    sector, _ = Sector.objects.get_or_create(sector=s)
                     sec_list.append(sector)
                 # if i have other check
                 if(data['other_sec'] is not None or []):
@@ -118,7 +118,7 @@ class RespondantViews(CreateAPIView):
                 act_list=[]
                 for a in data['activity']:
                     # activity, _ =Activity.objects.get_or_create(activity=a)
-                    activity, _ =Activity.objects.get_or_create(pk=a)
+                    activity, _ = Activity.objects.get_or_create(activity=a)
                     act_list.append(activity)
 
                 year, _ = YearAcademicLevel.objects.get_or_create(int(data['year_academic_lvl']))
@@ -135,13 +135,13 @@ class RespondantViews(CreateAPIView):
                 satisfation_list=[]
                 for question, val in questions.items():
                     
-                    # satisfation, _ = Satisfation.objects.get_or_create(
-                    #     questionS=question,
-                    #     value = int(val)
-                    # )
-                    satisfation, _ = Satisfation.objects.get(pk=)
+                    satisfation, _ = Satisfation.objects.get_or_create(
+                        questionS=question,
+                        value = int(val)
+                    )
+                    # satisfation, _ = Satisfation.objects.get(pk=)
                     satisfation_list.append(satisfation)
-
+                
                 myuser = MyUser.objects.create(username=None, password=None, is_staff=False, is_superuser=False)
                 # add group and perms to user
                 

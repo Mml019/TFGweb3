@@ -1,16 +1,34 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { api } from "../../api/api";
 
 // Returns a json with a list of ids and random quiz with their questions and options
+// export const getQuizRandomAndList = createAsyncThunk(
+//   "quiz/getQuizRandomAndList",
+//   async () => {
+//     const response = await fetch(
+//       `${import.meta.env.VITE_REACT_API_URL}/uib/PEBquiz/quiz`
+//     );
+//     if (!response.ok) throw new Error("Error fetching questions");
+//     const data = await response.json();
+//     console.log(data);
+//     return data;
+//   }
+// );
+
 export const getQuizRandomAndList = createAsyncThunk(
   "quiz/getQuizRandomAndList",
-  async () => {
-    const response = await fetch(
-      `${import.meta.env.VITE_REACT_API_URL}/uib/PEBquiz/quiz`
+  async (_, {rejectWithValue}) => {
+    try {
+      const response = await api.get(
+      `/uib/PEBquiz/quiz`
     );
-    if (!response.ok) throw new Error("Error fetching questions");
-    const data = await response.json();
-    console.log(data);
-    return data;
+    //if (!response.ok) throw new Error("Error fetching questions");
+    console.log(response.data);
+    return response.data;
+    } catch (error) {
+      // this error it would be trated in action
+      return rejectWithValue(error.response?.data || `Error fetching questions: ${error.message}`)
+    }
   }
 );
 

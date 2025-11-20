@@ -121,20 +121,19 @@ export function loadCCAA(nameFile = "CCAA.xml") {
       return response.text();
     })
     .then((str) => {
-      parser = new DOMParser();
-      xml = parser.parseFromString(str);
-      rows = xml.getElementsByTagName("row");
+      let parser = new DOMParser();
+      let xml = parser.parseFromString(str, "application/xml");
+      let rows = xml.getElementsByTagName("row");
       let CCAA = [];
 
       Array.from(rows).forEach((row) => {
         let ccaa = {};
         ccaa["nom_oficial"] = row.querySelector("nom_oficial").textContent;
-        ccaa["codi"] = row.querySelector("codi");
-
+        ccaa["codi"] = row.querySelector("ccaa_codi").textContent;
+       
         CCAA.push(ccaa);
-        console.log(CCAA);
-        return Promise.resolve(CCAA);
       });
+      return Promise.resolve(CCAA);
     })
     .catch((err) => {
       console.log(
@@ -166,19 +165,19 @@ export function loadAllCities(nameFile = "municipios.xml") {
       return response.text();
     })
     .then((str) => {
-      parser = new DOMParser();
-      xml = parser.parseFromString(str);
-      rows = xml.getElementsByTagName("row");
+      let parser = new DOMParser();
+      let xml = parser.parseFromString(str, "application/xml");
+      let rows = xml.getElementsByTagName("row");
       let cities = [];
-
+   
       Array.from(rows).forEach((row) => {
         let city = {};
         city["nom"] = row.querySelector("nom").textContent;
         city["codi_prov"] = row.querySelector("codi_prov_ncia").textContent;
+
         cities.push(city);
-        console.log(cities);
-        return Promise.resolve(cities);
       });
+      return Promise.resolve(cities);
     })
     .catch((err) => {
       console.log(
@@ -211,21 +210,20 @@ export function loadCitiesByCCAA(nameFile = "municipios.xml", code) {
     })
     .then((str) => {
       parser = new DOMParser();
-      xml = parser.parseFromString(str);
+      xml = parser.parseFromString(str, "application/xml");
       rows = xml.getElementsByTagName("row");
       cities_code = xml.getElementsByTagName("row[codi_prov_ncia]=04");
-
+      
       let cities = [];
       Array.from(rows).forEach((row) => {
         let city = {};
         if (row.querySelector("codi_prov_ncia").textContent == code) {
           city["nom"] = row.querySelector("nom").textContent;
-          city["cp"] = row.querySelector("codi").textContent;
+          // city["cp"] = row.querySelector("codi").textContent;
         }
-        cities.push(city);
-        console.log(cities);
-        return Promise.resolve(cities);
+        cities.push(city);      
       });
+      return Promise.resolve(cities);
     })
     .catch((err) => {
       console.log(
@@ -258,49 +256,56 @@ const activities_schema = yup.object(
       return (suma === 100)}
   );
 
-export const yupSchema = yup.object({
-  sex: yup.string().oneOf(sexs, "Solo puede ser Femenino o Masculino").required(),
-  age: yup.number().integer().max(120, "No puede superar los 120 años").min(16, "Debes tener al menos 16 años").required(),
-  nacionality: yup.string().required(), //.oneOf(nacionalities, "Seleccione una de las ocpiones").required(),
-  city: yup.string().required(), //.oneOf().required(),
-  province: yup.string().required(), //.oneOf().required(),
-  level_PBE: yup.number().positive().min(1, "Debe estar entre 1 y 5").max(5, "Debe estar entre 1 y 5").required(),
-  profile: yup.string().oneOf(Object.values(perfil), "Debe seleccionar entre Estudiante o Profesional de la salud"),
-  PBE_knownledge: yup.boolean().required("Debe contestar Sí o No"),
-  PBE_training: yup.string().oneOf(Object.keys(training), "Debe seleccionar una de las opciones si marcó sí en la regunta anterior").required(),
-  academic_level: yup.string().oneOf(Object.keys(academic_levels), `Debe escoger entre ${Object.keys(academic_levels)}`).required(),
-  description: yup.string().oneOf(Object.keys(descriptions), `Debe escoger entre ${Object.keys(descriptions)}`).required(),
-  year_academic_lvl: yup.number().integer().positive().min(new Date().getFullYear() - 80).max(new Date().getFullYear() + 50)
-  .required("Debe seleccionar un año")
-  .test("year_test", "Debe haberlo obtenido a partir de su mayoría de edad o mínimo 16 años", 
-    (val) => {
-      if(val === undefined ||  val === null){
-        return false
-      }else{
-        let age = this.parent.age
-        let currentYear = new Date().getFullYear()
-        console.log(((currentYear-age)+18)>= val)
-        return((((currentYear-age)+18)>= val)||(((currentYear-age)+16)>= val))
-      }
-    }
-  ),
-  speciality: yup.string(),
-  profarea: yup.string().oneOf(profareas).required("Debe seleccionar al menos una area profesional o de estudio, pueden ser varias"),
-  satisfation: yup.number().integer().positive().min(1).max(10).required("Debe valorar su satisfacción entre 1 y 10"),
-  active_sas: yup.number().integer().positive().min(0).max(5).required("Debe valorar su satisfacción entre 0 y 5"),
-  calm_sas: yup.number().integer().positive().min(0).max(5).required("Debe valorar su satisfacción entre 0 y 5"),
-  fresh_sas: yup.number().integer().positive().min(0).max(5).required("Debe valorar su satisfacción entre 0 y 5"),
-  happy_sas: yup.number().integer().positive().min(0).max(5).required("Debe valorar su satisfacción entre 0 y 5"),
-  interest_sas: yup.number().integer().positive().min(0).max(5).required("Debe valorar su satisfacción entre 0 y 5"),
-  enviroment: yup.string().oneOf(enviroments, "Debe seleccionar a menos un entorno o especifar otros").required(),
-  sector: yup.string().oneOf(sectors, "Debe seleccioanr mínimo un sector o especificar otros").required(),
-  activity: yup.string().oneOf(activities, "Debe seleccionar al menos una actividad o marcar otros"),
-  activities_schema,
-  other_sec: yup.string("Debe escribir otros sectores separados por coma"),
-  other_env: yup.string("Debe escribir otros entornos separados por coma"),
-  supervisor: yup.boolean("Debe responder Sí o No").required(),
-  dedicationW: yup.number().positive('No puede tener horas negativas').min(0).max(120).required(),
-  years: yup.number().integer().min(1).max(100).required()
-});
-
+  export const yupSchema = yup.object({
+    sex: yup.string().oneOf(sexs, "Solo puede ser Femenino o Masculino").required(),
+    age: yup.number().integer().max(120, "No puede superar los 120 años").min(16, "Debes tener al menos 16 años").required(),
+    nacionality: yup.string().required(), //.oneOf(nacionalities, "Seleccione una de las ocpiones").required(),
+    city: yup.string().required(), //.oneOf().required(),
+    province: yup.string().required(), //.oneOf().required(),
+    level_PBE: yup.number().positive().min(1, "Debe estar entre 1 y 5").max(5, "Debe estar entre 1 y 5").required(),
+    profile: yup.string().oneOf(Object.values(perfil), "Debe seleccionar entre Estudiante o Profesional de la salud"),
+    PBE_knownledge: yup.boolean().required("Debe contestar Sí o No"),
+    PBE_training: yup.string().oneOf(Object.keys(training), "Debe seleccionar una de las opciones si marcó sí en la regunta anterior").required(),
+    academic_level: yup.string().oneOf(Object.keys(academic_levels), `Debe escoger entre ${Object.keys(academic_levels)}`).required(),
+    description: yup.string().oneOf(Object.keys(descriptions), `Debe escoger entre ${Object.keys(descriptions)}`).required(),
+    year_academic_lvl: yup.number().integer().positive().min(new Date().getFullYear() - 80).max(new Date().getFullYear() + 50)
+      .required("Debe seleccionar un año")
+      .test("year_test", "Debe haberlo obtenido a partir de su mayoría de edad o mínimo 16 años",
+        (val) => {
+          if (val === undefined || val === null) {
+            return false
+          } else {
+            let age = this.parent.age
+            let currentYear = new Date().getFullYear()
+            console.log(((currentYear - age) + 18) >= val)
+            return ((((currentYear - age) + 18) >= val) || (((currentYear - age) + 16) >= val))
+          }
+        }
+      ),
+    speciality: yup.string(),
+    profarea: yup.string().oneOf(profareas).required("Debe seleccionar al menos una area profesional o de estudio, pueden ser varias"),
+    satisfation: yup.number().integer().positive().min(1).max(10).required("Debe valorar su satisfacción entre 1 y 10"),
+    active_sas: yup.number().integer().positive().min(0).max(5).required("Debe valorar su satisfacción entre 0 y 5"),
+    calm_sas: yup.number().integer().positive().min(0).max(5).required("Debe valorar su satisfacción entre 0 y 5"),
+    fresh_sas: yup.number().integer().positive().min(0).max(5).required("Debe valorar su satisfacción entre 0 y 5"),
+    happy_sas: yup.number().integer().positive().min(0).max(5).required("Debe valorar su satisfacción entre 0 y 5"),
+    interest_sas: yup.number().integer().positive().min(0).max(5).required("Debe valorar su satisfacción entre 0 y 5"),
+    enviroment: yup.string().oneOf(enviroments, "Debe seleccionar a menos un entorno o especifar otros").required(),
+    sector: yup.string().oneOf(sectors, "Debe seleccioanr mínimo un sector o especificar otros").required(),
+    activity: yup.string().oneOf(activities, "Debe seleccionar al menos una actividad o marcar otros"),
+    ...activities_schema.fields,
+    other_sec: yup.string().when("sector", {
+      is: (sector) => sector === "Otro", // Si el sector seleccionado es "Otros"
+      then: yup.string().required("Debe especificar otros sectores").matches(/^([A-Z][a-z]*)(,([A-Z][a-z]*))*$/, "Debe escribir sectores separados por comas"),
+      otherwise: yup.string().notRequired()
+    }),
+    other_env: yup.string().when("enviroment", {
+      is: (enviroment) => enviroment === "Otro",
+      then: yup.string().required().matches(/^([A-Z][a-z]*)(,([A-Z][a-z]*))*$/, "Debe incluir entornos separados por comas"),
+      otherwise: yup.string().notRequired()
+    }),
+    supervisor: yup.boolean("Debe responder Sí o No").required(),
+    dedicationW: yup.number().positive('No puede tener horas negativas').min(0).max(120).required(),
+    years: yup.number().integer().min(1).max(100).required(),
+  });
 
