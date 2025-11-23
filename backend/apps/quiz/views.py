@@ -12,23 +12,23 @@ from .models import *
 from api.serializers import *
 
 class QuizViews(APIView):
-
+    
     """Get a random list of ids from Quiz model and the  first quiz"""
     def get(self, request):
         # obtain all the ids, id list
         ids = list(Quiz.objects.values_list("idQ", flat=True))
-
-        if ids is None:
-            return Response({"error": "Any Quiz exits to get one of them random"})
+      
+        if ids is None or len(ids) == 0:
+            return Response({"error": "Any Quiz exits to get one of them random"}, status=HTTP_404_NOT_FOUND)
 
         random.shuffle(ids)
         quiz = Quiz.objects.get(idQ=ids[0])
-        quiz_serial = QuizSerializer(quiz)
-
+        # serializer without questions serialized
+        quiz_serial = QuizSerializerBasic(quiz)
         # quit id from the list
         ids.pop(0)
         return Response({"ids": ids, 'quiz':quiz_serial.data}, status=HTTP_200_OK)
-        #return Response({"ids": ids_list, 'quiz': quiz}, status=HTTP_200_OK)
+        #return Response({"ids": ids, 'quiz': quiz_serial.data}, status=HTTP_200_OK)
 
 class QuizDetailViews(APIView):
     ''' Get specific quiz with question and options in order'''
@@ -69,7 +69,8 @@ class QuestionViewSet(ModelViewSet):
 
 # I can't use create apiview cause is a personalize creation
 class RespondantViews(CreateAPIView):
-    
+    serializer_class = RespondantSerializer
+
     def create(self, request):
         # generate_random_id()
         data = request.data
@@ -96,24 +97,25 @@ class RespondantViews(CreateAPIView):
                     env, _ = Enviroment.objects.get_or_create(enviroment=e)
                     env_list.append(env)
                 # if i have other check
-                if(data['other_env'] is not None or []):
+
+                if( 'other_env' in data and data['other_env'] is not None and len(data['other_env'])>0):
                     arr_other = str(data['other_env']).string.split(',')
-                for obj in arr_other:
-                    obj_ok = obj.strip().capitalize()
-                    env,_ = Enviroment.objects.get_or_create(enviroment=obj_ok) 
-                    env_list.append(env)
+                    for obj in arr_other:
+                        obj_ok = obj.strip().capitalize()
+                        env,_ = Enviroment.objects.get_or_create(enviroment=obj_ok) 
+                        env_list.append(env)
                 
                 sec_list=[]
                 for s in data['sector']:
                     sector, _ = Sector.objects.get_or_create(sector=s)
                     sec_list.append(sector)
                 # if i have other check
-                if(data['other_sec'] is not None or []):
+                if('other_sec' in data and data['other_sec'] is not None and len(data['other_sec'])>0):
                     arr_other = str(data['other_sec']).string.split(',')
-                for obj in arr_other:
-                    obj_ok = obj.strip().capitalize()
-                    sector, _ = Sector.objects.get_or_create(sector=obj_ok)
-                    sec_list.append(obj_ok)
+                    for obj in arr_other:
+                        obj_ok = obj.strip().capitalize()
+                        sector, _ = Sector.objects.get_or_create(sector=obj_ok)
+                        sec_list.append(obj_ok)
 
                 act_list=[]
                 for a in data['activity']:
@@ -121,7 +123,7 @@ class RespondantViews(CreateAPIView):
                     activity, _ = Activity.objects.get_or_create(activity=a)
                     act_list.append(activity)
 
-                year, _ = YearAcademicLevel.objects.get_or_create(int(data['year_academic_lvl']))
+                year, _ = YearAcademicLevel.objects.get_or_create(year= int(data['year_academic_lvl']))
                 academic_level = AcademicLevel(
                     academic_lvl=data['academic_level'], 
                     description=None, 
@@ -145,8 +147,8 @@ class RespondantViews(CreateAPIView):
                 myuser = MyUser.objects.create(username=None, password=None, is_staff=False, is_superuser=False)
                 # add group and perms to user
                 
-                respondant, _ = Respondant.objects.create(
-                    myuser=myuser,
+                respondant = Respondant.objects.create(
+                    respondant=myuser,
                     age=int(data['age']),
                     sex=data['sex'],
                     nationality=data['nationality'],
@@ -187,7 +189,7 @@ class RespondantViews(CreateAPIView):
                     
                 for index, a in enumerate(data['activity']):
                     activity, _ = Activity.objects.get_or_create(activity=a)
-                    dedication = Dedication.objects.create(
+                    dedication,_ = Dedication.objects.get_or_create(
                         profesional=profesional, 
                         activity=activity, 
                         percentatge=float(data[f'activity_val_{index}'])

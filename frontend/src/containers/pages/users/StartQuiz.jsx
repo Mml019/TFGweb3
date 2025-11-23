@@ -63,7 +63,7 @@ export default function StartQuiz() {
     } else {
       navigate("#");
       toast.error(
-        "Debes aceptar los términos y condiciones y las instrucciones, para continuar"
+        "Debes leer y aceptar la hoja de participación, para continuar"
       );
     }
   }

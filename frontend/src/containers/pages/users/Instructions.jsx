@@ -14,27 +14,9 @@ export default function Instructions() {
         <MyNavbar nameBrand={"Instrucciones del cuestionario"} />
       </div>
       <div id="content" className="pt-2 pb-2">
-        <nav>
-          <ul>
-            <li>
-              <a href="#section1">En qué consiste su participación</a>
-            </li>
-            <li>
-              <a href="#section2">A tener en cuenta</a>
-            </li>
-          </ul>
-        </nav>
         <div id="secction1">
           <h2>En qué consiste su participación:</h2>
           <br />
-          <p>
-            En completar un cuestionario de forma anónima, formada por dos
-            partes:
-            <br /> <br />
-            La primera, un breve <strong>formulario anónimo</strong> de datos sociodemográficos. <br /><br />La segunda, un
-            cuestionario de <strong>100 preguntas verdadero y falso </strong>ofrecidas por el
-            sistema de forma aleatória <br/>con un tiempo de respuesta de 30 segundos cada una o se marcarán como NS/NC.
-          </p>
           <ul>
             <li>
               Completar un <strong>breve formulario sociodemográfico anónimo.</strong>

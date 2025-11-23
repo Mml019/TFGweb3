@@ -4,7 +4,7 @@ import InputGroup from 'react-bootstrap/InputGroup';
 export default function FormInputGroup({label, name, index, value, register, errors,...rest}) {
     
     return (
-        <InputGroup className="mb-3">
+        <InputGroup className="">
             {/* <InputGroup.Checkbox aria-label="Checkbox acompañado de texto, input y signo %" /> */}
             {/* <InputGroup.Text id={`activity_${index}`}>{label}</InputGroup.Text> */}
             <Form.Control

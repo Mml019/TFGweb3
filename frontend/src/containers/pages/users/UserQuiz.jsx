@@ -16,7 +16,7 @@ function UserQuiz() {
     const nav = useNavigate()
     const { questions, currentQuestion, currentQuestionIndex, status, error } = useSelector((state) => state.questionReducer)
     const { quiz_ids, currentQuiz, currentQuizIndex, statusQ, errorQ } = useSelector((state) => state.quizReducer)
-    const { options } = useSelector((state) => state.optionReducer.options)
+    // const { options } = useSelector((state) => state.optionReducer.options)
     //const {quiz} = 
 
     const dispatch = useDispatch()
@@ -55,7 +55,9 @@ function UserQuiz() {
             const fetchQuestions = async () => {
                 try {
                     quiz_list = await dispatch(getQuizRandomAndList().unwrap())
-                        .then(await dispatch(getQuizUnOrderQuestions(currentQuizIndex)).unwrap())
+                        .then(
+                           await dispatch(getQuizUnOrderQuestions(currentQuizIndex)).unwrap())
+                            
                 }catch(e){
                     toast.error(`Error al mostrar las preguntas del quiz ${currentQuiz}. ${err}`)
                 }
@@ -107,7 +109,7 @@ function UserQuiz() {
                                                     (<Buttons
                                                         btns={
                                                             [{ label: 'Enviar y finalizar', type: 'button', variant: 'secondary', size: 'sm', onClick: { crearRespuesta } },
-                                                            { label: 'Continuar con otro cuestionario', type: 'button', variant: 'primary', size: 'sm', onClick: { otroQuiz } }
+                                                             {label: 'Continuar con otro cuestionario', type: 'button', variant: 'primary', size: 'sm', onClick: { otroQuiz } }
                                                             ]
                                                         }
                                                     />)

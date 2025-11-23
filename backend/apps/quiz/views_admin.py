@@ -139,7 +139,7 @@ class QuizViews(APIView):
             file = request.FILES.get("file")
         except:
             return Response({"error": "Not file in request.FILES"}, status=HTTP_400_BAD_REQUEST)
-        print(file)
+        # print(file)
         # print(file.name.endswith)
         if file is None:
             return Response({"error": "Not file added"}, status=HTTP_400_BAD_REQUEST)
@@ -163,13 +163,15 @@ class QuizViews(APIView):
         elif file.name.endswith("xlsx"):
             df = pd.read_excel(file)
         else:
-            print("else")
+            # print("else")
             return Response(
                 {"error": "Incorrect Format, only CSV or XLSX files permited"},
                 status=HTTP_400_BAD_REQUEST,
             )
-        
-        df_normal = normalizeFile(df)
+        try:
+            df_normal = normalizeFile(df)
+        except ValidationError as v:
+            return Response({f'Tiene valores vacíos. {v}'}, status=HTTP_400_BAD_REQUEST)
         with transaction.atomic():
             quiz = Quiz.objects.create(file=file.name)
             '''question_BD = []
@@ -231,7 +233,7 @@ class QuizViews(APIView):
                     try:
 
                         valor_op_mapeado = Opciones[op]
-                        print(valor_op_mapeado)
+                        # print(valor_op_mapeado)
                         '''
                         option = Option(valor_op_mapeado)
                         option.full_clean
@@ -301,6 +303,7 @@ def ensureDecode(file):
 
 
 def normalizeFile(df):
+    
     NEW_header = [
         "enunciado",
         "dimension",
@@ -311,18 +314,36 @@ def normalizeFile(df):
         "motivo",
         "opciones",
     ]
-
+    
     # Set columns header
     df.columns = NEW_header
-
+    
     # set data types
     df = df.astype("string")
-    print("error1")
     df["dificultad"] = df["dificultad"].astype("int")
-    print("error2")
+
     # NA values
     df["dificultad"] = df["dificultad"].fillna(0)
+    
+    # Delete all NaN rows
+    df = df.dropna(how='all')
 
+    # Manage NA values of all dataframe 
+    # fill value as back or forward value
+    # bfill is back fill with the next no NaN value
+    # df_bfill = df.bfill() 
+    # df_ffill = df_bfill.ffill()
+
+    # df=df_ffill
+
+    # Advertise NaN values
+    nan_positions = df.isna()
+    # Obtain nan rows and columns indexes
+    nan_locations = nan_positions.stack()
+    nan_rows_columns = nan_locations[nan_locations].index
+    for row, col in nan_rows_columns:
+        raise ValidationError(f"Fila: {row}, Columna: {col} no tiene un valor")
+       
     # Guardar orden
     df["ordenD"] = df["dimension"].str.extract(r"(\d+)\.").astype(int)
     
@@ -332,16 +353,16 @@ def normalizeFile(df):
     df["solucion"] = df["solucion"].map(Opciones).astype("string")
     df["opciones"] = df["opciones"].str.split(";")
 
-    # determine separator
+        # determine separator
     signos = ",;:?!.-_¨´+*^`[]¿¡'&%()$#·@!º\ª{} "
     signos_f = ",;:-_¨´+*^`[¿'&%($#·@º\ª{ "
-    # delete blanks before and after each colum
+    
+    # # delete blanks before and after each colum
     for i in df.select_dtypes(include=["string"]).columns:
         df[i] = df[i].str.strip()
         df[i] = df[i].str.lstrip(signos + '"')
         df[i] = df[i].str.rstrip(signos_f)
         df[i] = df[i].str.capitalize()
-        df[i] = df[i].fillna(" ")
 
     return pd.DataFrame(df)
 

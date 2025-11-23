@@ -25,8 +25,7 @@ export const getQuizUnOrderQuestions = createAsyncThunk(
   async (idQ, { rejectWithValue }) => {
     try {
       const response = await api.get(`/uib/PEBquiz/questions/listByQuiz/?quiz=${idQ}`);
-      console.log(data)
-      return data;
+      return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || `Error fecthing unorder questions form quiz ${idQ}. Error: ${error.message}`)
     }
@@ -86,4 +85,5 @@ export const questionSlice = createSlice({
 // export actions
 export const { nextQuestion } = questionSlice.actions;
 
+// export the reducer
 export default questionSlice.reducer

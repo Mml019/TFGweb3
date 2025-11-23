@@ -1,12 +1,14 @@
 import { combineReducers } from "redux";
-import { questionSlice } from "../slices/questions";
-import { quizSlice } from "../slices/quiz";
-import { userSlice } from "../slices/user";
+import  questionReducer  from "../slices/questions";
+import  quizReducer  from "../slices/quiz";
+import  userReducer  from "../slices/user";
 
-const combinedReducers = combineReducers({
-  questionReducer: questionSlice.reducer,
-  quizReducer: quizSlice.reducer,
-  userReducer: userSlice.reducer,
+// all the slices are with the reducer inherit
+
+const rootReducer = combineReducers({
+  questionReducer: questionReducer,
+  quizReducer: quizReducer,
+  userReducer: userReducer,
 });
 
-export default combinedReducers;
+export default rootReducer;

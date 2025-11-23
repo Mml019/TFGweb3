@@ -1,8 +1,8 @@
 import { configureStore } from "@reduxjs/toolkit";
-import combinedReducers from "./reduxToolkit/reducers/combinedReducers";
+import rootReducer from "./reduxToolkit/reducers/combinedReducers";
 
 export const store = configureStore({
-  reducer: combinedReducers,
+  reducer: rootReducer,
   middleware: (getDefaultMiddleware) => getDefaultMiddleware(),
   devTools: import.meta.env.VITE_DEVTOOLS !== "production",
 });

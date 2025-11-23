@@ -206,7 +206,7 @@ class  AcademicLevel(models.Model):
         Grado = 'Grado'
         Máster = 'Máster'
         Doctorado = 'Doctorado'
-    idAcademicLvl = models.PositiveSmallIntegerField(primary_key=True)
+    idAcademicLvl = models.AutoField(primary_key=True)
     academic_lvl =  models.CharField(max_length=10, choices=AcademicLevelTypes) #academic_lvl
     description =   models.CharField(max_length=250, null=True)
     # null True permits set null in a database field
@@ -242,10 +242,10 @@ class Respondant(models.Model):
     profarea =    models.ManyToManyField(ProfesionalArea)
     satisfation = models.ManyToManyField(Satisfation, through='SatisfationRes', related_name='satisfation_per_user')
     
-    def save(self, force_insert = ..., force_update = ..., using = ..., update_fields = ...):
-        group = create_group('respondant')
-        self.respondant.groups().add(group)
-        return super().save(force_insert, force_update, using, update_fields)
+    # def save(self, force_insert = ..., force_update = ..., using = ..., update_fields = ...):
+    #     group = create_group('respondant')
+    #     self.respondant.groups().add(group)
+    #     return super().save(force_insert, force_update, using, update_fields)
 
     def __str__(self):
        return (f'ID: {self.respondant.id} Edad: {str(self.age)} Sexo: {self.sex} Nacionalidad: {self.nationality } Ciudad: {self.city} Región:  {self.region} Nivel académico: {self.academic_level.academic_lvl} Año del nivel académico: {self.academic_level.year} Area profesional/estudio:{self.profarea.values_list(flat=True)} Nivel de PBE: {self.level_PBE} Conocimiento en PBE {self.PBE_knownledge}  Especialidad: {self.speciality}')

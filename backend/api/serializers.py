@@ -85,7 +85,17 @@ class QuestionSerializer(serializers.ModelSerializer):
             'idD',
             'idO'
         ]
-
+class QuizSerializerBasic(serializers.ModelSerializer):
+    class Meta:
+        model = Quiz
+        fields = [
+            'idQ',
+            'file',
+            'fechaC',
+            'fechaA',
+            'question' 
+        ]
+# This serializer displays all the questions that belong to a quiz
 class QuizSerializer(serializers.ModelSerializer):
     question = QuestionSerializer(many=True)
     class Meta:
