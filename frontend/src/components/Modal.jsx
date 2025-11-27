@@ -10,7 +10,7 @@ export default function MyVerticallyCenteredModal( props) {
       onHide={props.onHide}
       backdrop="static"
       keyboard={false}
-      aria-labelledby={props.children[0]}
+      // aria-labelledby={props.children[0]}
     >
       <Modal.Header closeButton>
         <Modal.Title>{props.children[0]}</Modal.Title>
@@ -30,7 +30,7 @@ export default function MyVerticallyCenteredModal( props) {
             variant={btn.variant}
             size={btn.size}
             onClick={btn.onClick}
-          />
+          >{btn.label}</MyButton>
         ))
         :
         props.children[2]}

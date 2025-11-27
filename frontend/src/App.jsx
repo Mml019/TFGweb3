@@ -8,6 +8,7 @@ import store from "./store";
 import StartQuiz from "./containers/pages/users/StartQuiz";
 import UserForm from "./containers/pages/users/UserForm";
 import UserQuiz from "./containers/pages/users/UserQuiz";
+import QuestionList from "./containers/pages/users/QuestionList";
 import UserResult from "./containers/pages/users/UserResult";
 import EticCondition from "./containers/pages/users/EticCondition";
 import Instructions from "./containers/pages/users/Instructions";
@@ -38,7 +39,7 @@ function App() {
             element={<Instructions />}
           />
           <Route path="/quiz/form/" element={<UserForm />} />
-          <Route path="/quiz/questions/" element={<UserQuiz />} />
+          <Route path="/quiz/questions/" element={<UserQuiz/>} />
           <Route path="/quiz/results/" element={<UserResult />} />
           {/* <Route path='quiz-admin/' element={<AdminPage/>} /> */}
         </Routes>

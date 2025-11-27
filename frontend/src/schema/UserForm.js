@@ -20,9 +20,9 @@ export const sectors = [
 ];
 export const activities = [
   "Asistencial",
-  "Investigacion",
+  "Investigación",
   "Docencia",
-  "Administracion",
+  "Administración",
   "Otra"
 ];
 export const training = {
@@ -46,7 +46,9 @@ export const descriptions = [
   { label: 'No oficiales, exclusivamente profesionalizantes', type: 'No oficial, profesionalizante' }
 ]
 
-export const booleans = ['Sí', 'No']
+const descriptionTypes = descriptions.map((desc) => (desc.type))
+
+export const booleans = [true, false]
 
 export const sexs = ["Femenino", "Masculino"];
 export const profareas = [
@@ -68,7 +70,7 @@ export const perfil = {
 export const level_PBE = [1, 2, 3, 4, 5];
 
 // Returns tipish nacionalities from txt the other txt has 1
-export function loadNacionalities(nameFile = "nacionalidad_tipica.txt") {
+export function loadNacionalities(nameFile = "nacionalidad.txt") {
   if (!nameFile.endsWith("txt")) {
     return toast.error("El fichero debe ser un tipo txt");
     // return toast.error("El fichero debe ser un tipo txt")
@@ -198,7 +200,7 @@ export function loadCitiesByCCAA(nameFile = "municipios.xml", code) {
 
   let dirName = "/data";
   dirName += `/${nameFile.split(".").pop()}/${nameFile}`;
-    
+
   return fetch(dirName)
     .then((response) => {
       if (!response.ok) {
@@ -213,7 +215,7 @@ export function loadCitiesByCCAA(nameFile = "municipios.xml", code) {
       const xml = parser.parseFromString(str, "application/xml");
       const rows = xml.getElementsByTagName("row");
       // cities_code = xml.getElementsByTagName("row[codi_prov_ncia]=04");
-      
+
       let cities = [];
       Array.from(rows).forEach((row) => {
         let city = {};
@@ -221,10 +223,9 @@ export function loadCitiesByCCAA(nameFile = "municipios.xml", code) {
           city = row.querySelector("nom").textContent;
           //console.log(row.querySelector("nom").textContent)
           // city["cp"] = row.querySelector("codi").textContent;
-          cities.push(city); 
-        }  
+          cities.push(city);
+        }
       });
-      console.log(cities)
       return Promise.resolve(cities);
     })
     .catch((err) => {
@@ -238,77 +239,114 @@ export function loadCitiesByCCAA(nameFile = "municipios.xml", code) {
 }
 
 // -------------------- SCHEMA --------------
-const activities_schema = yup.object(
-  {
-    activity_val_0: yup.number().transform(v => isNaN(v) ? 0 : ((parseFloat(v) * 100) / 100) || 0).min(0).max(100),
-    activity_val_1: yup.number().transform(v => isNaN(v) ? 0 : ((parseFloat(v) * 100) / 100) || 0).min(0).max(100),
-    activity_val_2: yup.number().transform(v => isNaN(v) ? 0 : ((parseFloat(v) * 100) / 100) || 0).min(0).max(100),
-    activity_val_3: yup.number().transform(v => isNaN(v) ? 0 : ((parseFloat(v) * 100) / 100) || 0).min(0).max(100),
-    activity_val_4: yup.number().transform(v => isNaN(v) ? 0 : ((parseFloat(v) * 100) / 100) || 0).min(0).max(100),
-  })
-  .test(
-    "activities_test",
-    "Debe sumar 100% entre todos los valores",
-    (values) => {
-      let suma = 0
-      for (let i = 0; i < values.length; i++) {
-        suma += values[i];
-      }
-      return (suma === 100)
-    }
-  );
+// const activities_schema = yup.object(
+//   {
+//     activity_val_0: yup.number().transform(v => isNaN(v) ? 0 : ((parseFloat(v) * 100) / 100) || 0).min(0).max(100),
+//     activity_val_1: yup.number().transform(v => isNaN(v) ? 0 : ((parseFloat(v) * 100) / 100) || 0).min(0).max(100),
+//     activity_val_2: yup.number().transform(v => isNaN(v) ? 0 : ((parseFloat(v) * 100) / 100) || 0).min(0).max(100),
+//     activity_val_3: yup.number().transform(v => isNaN(v) ? 0 : ((parseFloat(v) * 100) / 100) || 0).min(0).max(100),
+//     activity_val_4: yup.number().transform(v => isNaN(v) ? 0 : ((parseFloat(v) * 100) / 100) || 0).min(0).max(100),
+//   })
+//   // .test(
+//   //   "suma-100",
+//   //   "activity-test",
+//   //   (val, context) => {
+//   //     console.log(context.parent.activity_val_0)
+//   //     let suma = 0
+//   //     for (let i=0; i< activities.length; i++){
+//   //       suma +=context.parent[`activity_val_${i}`]
+//   //     }
+//   //     console.log(suma)
+//   //     return(suma <= 100 || suma <=100.00)
+//   //   }
+//   .test(
+//     'sumar-100', 'La suma de los valores debe ser 100', function (values, context) {
+//     const { activity_val_0, activity_val_1, activity_val_2, activity_val_3, activity_val_4 } = context.parent;
+//     console.log(activity_val_0)
+//     const total = [activity_val_0, activity_val_1, activity_val_2, activity_val_3, activity_val_4].reduce(
+//       (acc, curr) => acc + (curr || 0),
+//       0
+//     );
+//     console.log(total <= 100)
+//     return total <= 100;
+//   }
+// );
 
 export const yupSchema = yup.object({
-  sex: yup.string().oneOf(sexs, "Solo puede ser Femenino o Masculino").required(),
-  age: yup.number().integer().max(120, "No puede superar los 120 años").min(16, "Debes tener al menos 16 años").required(),
-  nacionality: yup.string().required(), //.oneOf(nacionalities, "Seleccione una de las ocpiones").required(),
-  city: yup.string().required(), //.oneOf().required(),
-  province: yup.string().required(), //.oneOf().required(),
-  level_PBE: yup.number().positive().min(1, "Debe estar entre 1 y 5").max(5, "Debe estar entre 1 y 5").required(),
-  profile: yup.string().oneOf(Object.keys(perfil)).required("Debe seleccionar entre Estudiante o Profesional de la salud"),
-  PBE_knownledge: yup.boolean().required("Debe contestar Sí o No"),
-  PBE_training: yup.string().oneOf(Object.keys(training), "Debe seleccionar una de las opciones si marcó sí en la regunta anterior").required(),
-  academic_level: yup.string().oneOf(Object.keys(academic_levels), `Debe escoger entre ${Object.keys(academic_levels)}`).required(),
-  description: yup.string().oneOf(Object.keys(descriptions), `Debe escoger entre ${Object.keys(descriptions)}`).required(),
-  year_academic_lvl: yup.number().integer().positive().min(new Date().getFullYear() - 80, `Debe ser mayor a ${new Date().getFullYear() - 80}`).max(new Date().getFullYear() + 50, `Debe ser menor a ${new Date().getFullYear() + 50}`)
+  sex: yup.string("Debe escribir su sexo").oneOf(sexs, "Solo puede ser Femenino o Masculino").required(),
+  age: yup.number("Debe ser un número").transform(v => isNaN(v) ? 0 : v).integer().max(120, "No puede superar los 120 años").min(16, "Debes tener al menos 16 años").required(),
+  nacionality: yup.string("Debe ser un texto.").required(), //.oneOf(nacionalities, "Seleccione una de las ocpiones").required(),
+  city: yup.string("Debe ser en texto").required(), //.oneOf().required(),
+  province: yup.string("Debe ser una provincia").required(), //.oneOf().required(),
+  level_PBE: yup.number("Debe ser un número del 1 al 5").transform(v => isNaN(v) ? 1 : v).positive().min(1, "Debe estar entre 1 y 5").max(5, "Debe estar entre 1 y 5").required(),
+  profile: yup.string("Debe ser un texto").oneOf(Object.keys(perfil)).required("Debe seleccionar entre Estudiante o Profesional de la salud"),
+  PBE_knownledge: yup.boolean("Deber ser un valor true o false").required("Debe contestar Sí o No"),
+  PBE_training: yup.string("Debe ser un texto").oneOf(Object.keys(training), "Debe seleccionar una de las opciones si marcó sí en la regunta anterior").required(),
+  academic_level: yup.string("Debe ser un texto").oneOf(Object.keys(academic_levels), `Debe escoger entre ${Object.keys(academic_levels)}`).required(),
+  description: yup.string("Debe ser texto").oneOf(descriptionTypes, `Debe escoger entre ${descriptionTypes}`).required(),
+  year_academic_lvl: yup.number("Debe ser un número").transform(v => isNaN(v) ? 0 : v).integer().positive()
+    .min(new Date().getFullYear() - 80, `Debe ser mayor a ${new Date().getFullYear() - 80}`)
+    .max(new Date().getFullYear() + 50, `Debe ser menor a ${new Date().getFullYear() + 50}`)
     .required("Debe seleccionar un año")
     .test("year_test", "Debe haberlo obtenido a partir de su mayoría de edad o mínimo 16 años",
       (val) => {
         if (val === undefined || val === null) {
-          console.log(undefined, val)
           return false
         } else {
           let age_input = age.value
           let currentYear = new Date().getFullYear()
           // console.log(val, ((currentYear - age.value) + 18), val, ((currentYear - age.value) + 16))
-          return ((val >= ((currentYear - age_input) + 18)) || ( val >= ((currentYear - age_input) + 16)))
+          return ((val >= ((currentYear - age_input) + 18)) || (val >= ((currentYear - age_input) + 16)))
         }
       }
     ),
-  speciality: yup.string().optional(),
-  profarea: yup.array().of(yup.string().oneOf(profareas).required("Debe seleccionar al menos una area profesional o de estudio, pueden ser varias")),
-  satisfation: yup.number().integer().positive().min(1).max(10).required("Debe valorar su satisfacción entre 1 y 10"),
-  active_sas: yup.number().integer().positive().min(0).max(5).required("Debe valorar su satisfacción entre 0 y 5"),
-  calm_sas: yup.number().integer().positive().min(0).max(5).required("Debe valorar su satisfacción entre 0 y 5"),
-  fresh_sas: yup.number().integer().positive().min(0).max(5).required("Debe valorar su satisfacción entre 0 y 5"),
-  happy_sas: yup.number().integer().positive().min(0).max(5).required("Debe valorar su satisfacción entre 0 y 5"),
-  interest_sas: yup.number().integer().positive().min(0).max(5).required("Debe valorar su satisfacción entre 0 y 5"),
-  enviroment: yup.array().of(yup.string().oneOf(enviroments, "Debe seleccionar a menos un entorno o especifar otros")).required("Debe seleccionar a menos un entorno o especifar otros"),
-  sector: yup.array().of(yup.string().oneOf(sectors, "Debe seleccioanr mínimo un sector o especificar otros")).required("Debe seleccioanr mínimo un sector o especificar otros"),
-  activity: yup.array().of(yup.string().oneOf(activities, "Debe seleccionar al menos una actividad o marcar otros")).required("Debe seleccionar al menos una actividad o marcar otros"),
-  ...activities_schema.fields,
+  speciality: yup.string("Deber se un texto").optional(),
+  profarea: yup.array("Debe ser un conjunto de textos [,...,]").of(yup.string().oneOf(profareas).required("Debe seleccionar al menos una area profesional o de estudio, pueden ser varias"))
+    .min(1, "Debe seleccionar al menos un área profesional"),
+  satisfation: yup.number("Debe valorar su satisfacción entre 1 y 10").transform(v => isNaN(v) ? 1 : v).integer().positive()
+    .min(1, "Debe valorar su satisfacción entre 1 y 10")
+    .max(10, "Debe valorar su satisfacción entre 1 y 10")
+    .required("Debe valorar su satisfacción entre 1 y 10"),
+  active_sas: yup.number("Debe valorar su satisfacción entre 0 y 5").transform(v => isNaN(v) ? 0 : v).integer().positive().min(0).max(5).required("Debe valorar su satisfacción entre 0 y 5"),
+  calm_sas: yup.number("Debe valorar su satisfacción entre 0 y 5").transform(v => isNaN(v) ? 0 : v).integer().positive().min(0).max(5).required("Debe valorar su satisfacción entre 0 y 5"),
+  fresh_sas: yup.number("Debe valorar su satisfacción entre 0 y 5").transform(v => isNaN(v) ? 0 : v).integer().positive().min(0).max(5).required("Debe valorar su satisfacción entre 0 y 5"),
+  happy_sas: yup.number("Debe valorar su satisfacción entre 0 y 5").transform(v => isNaN(v) ? 0 : v).integer().positive().min(0).max(5).required("Debe valorar su satisfacción entre 0 y 5"),
+  interest_sas: yup.number("Debe valorar su satisfacción entre 0 y 5").transform(v => isNaN(v) ? 0 : v).integer().positive().min(0).max(5).required("Debe valorar su satisfacción entre 0 y 5"),
+  enviroment: yup.array().of(yup.string().oneOf(enviroments, "Debe seleccionar a menos un entorno o especifar otros")).required("Debe seleccionar a menos un entorno o especifar otros").min(1, "Debe seleccionar al menos un entorno"),
+  sector: yup.array().of(yup.string().oneOf(sectors, "Debe seleccioanr mínimo un sector o especificar otros")).required("Debe seleccioanr mínimo un sector o especificar otros").min(1, "Debe seleccionar al menos un sector"),
+  activity: yup.array().min(1, "Debe seleccionar una actividad").required(),//.of(yup.string().oneOf(activities, "Debe seleccionar al menos una actividad o marcar otros")).required("Debe seleccionar al menos una actividad o marcar otros"),
+  // activity_val_0: yup.number().transform(v => isNaN(v) ? 0 : ((parseFloat(v) * 100) / 100) || 0).min(0).max(100),
+  // activity_val_1: yup.number().transform(v => isNaN(v) ? 0 : ((parseFloat(v) * 100) / 100) || 0).min(0).max(100),
+  // activity_val_2: yup.number().transform(v => isNaN(v) ? 0 : ((parseFloat(v) * 100) / 100) || 0).min(0).max(100),
+  // activity_val_3: yup.number().transform(v => isNaN(v) ? 0 : ((parseFloat(v) * 100) / 100) || 0).min(0).max(100),
+  // activity_val_4: yup.number().transform(v => isNaN(v) ? 0 : ((parseFloat(v) * 100) / 100) || 0).min(0).max(100),
+  // activity_total: yup.number().test(
+  //   "",
+  //   "",
+  //   (val, context) => {
+  //     console.log(context.parent.activity_val_0)
+  //     let suma = 0
+  //     for (let i=0; i< activities.length; i++){
+  //       suma +=context.parent[`activity_val_${i}`]
+  //     }
+  //     console.log(suma)
+  //     return(suma <= 100 || suma <=100.00)
+  //   }
+  // ),
+  // activities_schema,
   // other_sec: yup.string().when("sector", {
-  //   is: (sector) => sector === "Otro", // Si el sector seleccionado es "Otros"
+  //   is: (sector) => sector.includes("Otro"), // Si el sector seleccionado es "Otros"
   //   then: yup.string().required("Debe especificar otros sectores").matches(/^([A-Z][a-z]*)(,([A-Z][a-z]*))*$/, "Debe escribir sectores separados por comas"),
   //   otherwise: yup.string().notRequired()
   // }),
   // other_env: yup.string().when("enviroment", {
-  //   is: (enviroment) => enviroment === "Otro",
+  //   is: (enviroment) => enviroment.includes("Otro"),
   //   then: yup.string().required().matches(/^([A-Z][a-z]*)(,([A-Z][a-z]*))*$/, "Debe incluir entornos separados por comas"),
   //   otherwise: yup.string().notRequired()
   // }),
-  supervisor: yup.boolean("Debe responder Sí o No").required(),
-  dedicationW: yup.number().positive('No puede tener horas negativas').min(0).max(120).required(),
-  years: yup.number().integer().min(1).max(100).required(),
+
+  supervisor: yup.boolean("Debe responder true o false").required(),
+  dedicationW: yup.number("Debe ser un número").transform(v => isNaN(v) ? 0 : v).positive('No puede tener horas negativas').min(15, "Mínimo debe hacer 15h semanales").max(120).required(),
+  years: yup.number("Debe ser un número").transform(v => isNaN(v) ? 0 : v).integer().min(0).max(100).required(),
 });
 

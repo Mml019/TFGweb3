@@ -1,4 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
+import { api } from '../../api/api';
 
 // export const getQuestionsByQuiz = createAsyncThunk('quiz/getQuestions',
 //   async () =>{
@@ -9,31 +10,32 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 //     return data;
 //   })
 
-// // Returns a json with a list of ids and random quiz with their questions and options
-// export const getQuizUnOrderQuestions = createAsyncThunk('quiz/getQuestionsUnOrder',
-//   async (idQ) =>{
-//     const response = await fetch(`${import.meta.env.VITE_REACT_API_URL}/uib/PEBquiz/questions/listByQuiz/?quiz=${idQ}`);
-//     if (!response.ok) throw new Error('Error fetching questions');
-//     const data = await response.json();
-//     console.log(data)
-//     return data;
-//   })
-
 // Returns a json with a list of ids and random quiz with their questions and options
-export const getQuizUnOrderQuestions = createAsyncThunk(
-  'quiz/getQuestionsUnOrder',
-  async (idQ, { rejectWithValue }) => {
-    try {
-      const response = await api.get(`/uib/PEBquiz/questions/listByQuiz/?quiz=${idQ}`);
-      return response.data;
-    } catch (error) {
-      return rejectWithValue(error.response?.data || `Error fecthing unorder questions form quiz ${idQ}. Error: ${error.message}`)
-    }
+export const getQuizUnOrderQuestions = createAsyncThunk('quiz/getQuestionsUnOrder',
+  async (idQ) =>{
+    parseInt(idQ)
+    const response = await fetch(`${import.meta.env.VITE_REACT_API_URL}/uib/PEBquiz/questions/listByQuiz/?quiz=${idQ}`);
+    if (!response.ok) throw new Error('Error fetching questions');
+    const data = await response.json();
+    // console.log(data)
+    return data;
   })
+
+// // Returns a json with a list of ids and random quiz with their questions and options
+// export const getQuizUnOrderQuestions = createAsyncThunk(
+//   'quiz/getQuestionsUnOrder',
+//   async (idQ, { rejectWithValue }) => {
+//     try {
+//       const response = await api.get(`/uib/PEBquiz/questions/listByQuiz/?quiz=${idQ}/`);
+//       return response.data;
+//     } catch (error) {
+//       return rejectWithValue(error.response?.data || `Error fecthing unorder questions form quiz ${idQ}. Error: ${error.message}`)
+//     }
+//   })
 
 // Slice
 export const questionSlice = createSlice({
-  name: 'questions',
+  name: 'questionSlice',
   initialState: {
     questions: [],
     questions_done: [],
@@ -53,6 +55,7 @@ export const questionSlice = createSlice({
 
         state.currentQuestion = state.questions[0]
       }
+      // return state.currentQuestion
     },
   },
   extraReducers: (builder) => {
@@ -73,7 +76,8 @@ export const questionSlice = createSlice({
       })
       .addCase(getQuizUnOrderQuestions.fulfilled, (state, action) => {
         state.status = 'succeeded';
-        state.questions = action.payload;
+        state.questions = action.payload.questions;
+        state.currentQuestion = state.questions[0]
       })
       .addCase(getQuizUnOrderQuestions.rejected, (state, action) => {
         state.status = 'failed';
@@ -83,7 +87,7 @@ export const questionSlice = createSlice({
 });
 
 // export actions
-export const { nextQuestion } = questionSlice.actions;
+export const { nextQuestion} = questionSlice.actions;
 
 // export the reducer
 export default questionSlice.reducer

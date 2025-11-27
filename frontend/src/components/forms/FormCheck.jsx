@@ -37,11 +37,11 @@ export default function CheckBox({
       >
       {/* To show error from every check */}
       </Form.Check>
-      {/* {!!errors[name] && (
+      {!!errors[name] &&  (
         <Form.Control.Feedback type="invalid" style={{ display: 'block' }}>
           {errors[name].message}
         </Form.Control.Feedback>
-      )} */}
+      )}
     </>
   );
 }

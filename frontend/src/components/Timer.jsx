@@ -30,6 +30,7 @@ export default function Timer(mytime) {
 
     return (
         <div id='row'>
-        </>
+            {formatTime(time)}
+        </div>
     )
 }

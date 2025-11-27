@@ -8,10 +8,8 @@ export const getQuizRandomAndList = createAsyncThunk(
     const response = await fetch(
       `${import.meta.env.VITE_REACT_API_URL}/uib/PEBquiz/quiz/`
     );
-    console.log(response)
     if (!response.ok) throw new Error("Error fetching quiz, we don't have any questions");
     const data = await response.json();
-    console.log(data);
     return data;
   }
 );
@@ -44,7 +42,7 @@ export const getQuizRandomAndList = createAsyncThunk(
 //     return data;
 //   })
 // Slice
-export const quizSlice = createSlice({
+const quizSlice = createSlice({
   name: "quiz",
   initialState: {
     quiz_ids: [],

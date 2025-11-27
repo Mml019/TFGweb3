@@ -8,7 +8,7 @@ export default function MyButton(props) {
     );
 }
 
-export function Buttons(btns) {
+export function Buttons({btns}) {
     btns.map((btn, index) => (
         <MyButton
             key={`btn-${index}`}

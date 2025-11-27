@@ -6,9 +6,9 @@ import  userReducer  from "../slices/user";
 // all the slices are with the reducer inherit
 
 const rootReducer = combineReducers({
-  questionReducer: questionReducer,
-  quizReducer: quizReducer,
-  userReducer: userReducer,
+  questions: questionReducer,
+  quiz: quizReducer,
+  user: userReducer,
 });
 
 export default rootReducer;

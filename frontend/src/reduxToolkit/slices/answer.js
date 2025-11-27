@@ -27,7 +27,7 @@ export const setAnswers = createAsyncThunk('answer/setAnswers',
                 // body: JSON.stringify(answers)
             });
             return (response.data)
-            console.log(response.data)
+           
         } catch (error) {
             return rejectWithValue( error.response?.data||`Error setting answers ${err.message}`);
         }

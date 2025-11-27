@@ -28,7 +28,7 @@ export default function StartQuiz() {
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const checkedList = useSelector((state) => state.quizReducer.checkedList);
+  const checkedList = useSelector((state) => state.quiz.checkedList);
 
   // create ana array with the number of check box
   // const [checkedList, setIsChecked] = useState(

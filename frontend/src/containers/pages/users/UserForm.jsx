@@ -34,9 +34,8 @@ export default function UserForm() {
   const [nationalities, setNationalities] = useState([])
   const [provincia, setProv] = useState([])
   const [provincia_names, setProvname] = useState([])
-  // const [provincia_codes, setProvcode] = useState([])
-  // const [all_cities, setAllCities] = useState([])
   const [cities, setCities] = useState([])
+  let Total = false;
 
   const basic_data = [
     { placeholder: "Sexo", label: "Sexo", type: "text", name: "sex" },
@@ -49,13 +48,14 @@ export default function UserForm() {
   async function fetchAllData() {
     try {
       setLoading(true)
-      let [nationalitiesData, provinciaData, cities_all] = await Promise.all(
+      let [nationalitiesData, provinciaData, cities_all, balear_cities] = await Promise.all(
         [
           loadNacionalities(),
           loadCCAA(),
-          loadAllCities()
+          loadAllCities(),
+          // Load only Illes Balears towns
+          loadCitiesByCCAA('municipios.xml', '07')
         ])
-        console.log(provinciaData)
       let provincia_name = []
       let provincia_codis = []
       provinciaData.forEach((e) => {
@@ -63,14 +63,10 @@ export default function UserForm() {
         provincia_codis.push(e.codi)
       })
 
-      // let cities_arr = (cities_all.map((e) => (e.nom)))
-
       setNationalities(nationalitiesData);
       setProv(provinciaData)
       setProvname(provincia_name)
-      // setProvcode(provincia_codis)
-      setCities(cities_all)
-      // setAllCities(cities_all)
+      setCities(balear_cities)
     } catch (err) {
       toast.error(`Use effect error${err.message}`)
     } finally {
@@ -96,6 +92,7 @@ export default function UserForm() {
     // watch,
     control,
     handleSubmit,
+    getValues,
     formState: { errors },
   } = useForm({
     defaultValues: {
@@ -106,7 +103,7 @@ export default function UserForm() {
       province: 'Illes Balears',
       level_PBE: '1',
       profile: 'Profesional',
-      PBE_knownledge: "Sí",
+      PBE_knownledge: 'true',
       PBE_training: 'Bibliográfica',
       academic_level: 'Máster',
       description: "Oficial",
@@ -118,25 +115,25 @@ export default function UserForm() {
       fresh_sas: "0",
       happy_sas: "0",
       interest_sas: "0",
-      satisfation: "0",
+      satisfation: "1",
       //activity: '',
-      activity: ["Asistencial", "Investigacion", "Docencia", "Administracion", "Otras(por favor, especifique)"],
-      activity_val_0: "0",
-      activity_val_1: "0",
-      activity_val_2: "0",
-      activity_val_3: "0",
-      activity_val_4: "0",
+      activity: ["Asistencial", "Investigación", "Docencia", "Administración", "Otra"],
+      activity_val_0: 50,
+      activity_val_1: 50,
+      activity_val_2: 50,
+      activity_val_3: 50,
+      activity_val_4: 50,
       enviroment: ["Atención especializada"],
       other_env: "",
       sector: ["Privado"],
       other_sec: "",
       dedicationW: 5,
-      supervisor: "Sí",
+      supervisor: 'true',
       years: 0,
     },
     // Only executes validator when submits the form not in every render
     mode: 'onSubmit',
-    resolver: yupResolver(yupLoadData)
+    // resolver: yupResolver(yupLoadData)
   })
 
   const master = useWatch({ name: 'academic_level', control })
@@ -149,131 +146,33 @@ export default function UserForm() {
   const arrEnviroment = useWatch({ name: 'enviroment', control })
   const otherEnviroment = Array.isArray(arrEnviroment) ? arrEnviroment : arrEnviroment ? [arrEnviroment] : [];
   const nationality = useWatch({ name: 'nationality', control })
-  const province = useWatch({ name: 'province', control })
+  // const province = useWatch({ name: 'province', control })
+  // const arrActivitiesVals = useWatch({name: 'activi' })
 
   const onSubmit = async (data) => {
     setLoadingSpin(true);
-    console.log("submit");
-    console.log(data);
-    console.log(JSON.stringify(data));
+ 
+    nav("/quiz/questions/");
+    // POST to make User in database
+    // try {
+    //   // JSON Stringify is in POST request in dispatcher
+    //   // unwrap to manage request errors or payload
+    //   const userCreated = await dispatch(createUser(data)).unwrap();
+    //   console.log(userCreated);
+    //   // put in localstorage user id is in REDUX not necessary
+    //   // localStorage.setItem('userCreated', JSON.stringify(userCreated));
+    //   //get random quiz to show quiz
+    //   quizList = await dispatch(getQuizRandomAndList()).unwrap();
+    //   console.log(quizList)
+    //   // navigate to question form
+    //   nav("/quiz/questions/");
 
-    //POST to make User in database
-    try {
-      // JSON Stringify is in POST request in dispatcher
-      // unwrap to manage request errors or payload
-      const userCreated = await dispatch(createUser(data)).unwrap();
-      console.log(userCreated);
-      // put in localstorage user id is in REDUX not necessary
-      // localStorage.setItem('userCreated', JSON.stringify(userCreated));
-      //get random quiz to show quiz
-      quizList = await dispatch(getQuizRandomAndList()).unwrap();
-      console.log(quizList)
-      // navigate to question form
-      nav("/quiz/questions/");
-
-    } catch (err) {
-      toast.error(`Error al crear el usuario y enviar el form. ${err.message}`)
-    } finally {
-      setLoadingSpin(false)
-    }
+    // } catch (err) {
+    //   toast.error(`Error al crear el usuario y enviar el form. ${err.message}`)
+    // } finally {
+    //   setLoadingSpin(false)
+    // }
   }
-
-  async function handleProvince(e) {
-    // let code = (provincia.find(item => item.nom_oficial === e.target.value)).codi
-    console.log(e)
-    let code = (provincia.find(item => item.nom_oficial === e)).codi
-    console.log(code)
-    let arr = await loadCitiesByCCAA('municipios.xml', code)
-    setCities(arr)
-    console.log(arr)
-  }
-
-  // async function handleSelect(e) {
-  //   console.log(e.target.name)
-  //   if (e.target.name === 'province') {
-  //     let code = (provincia.find(item => item.nom_oficial === e.target.value)).codi
-  //     let arr = []
-  //     arr = await loadCitiesByCCAA('municipios.xml', code).then((cities) => {
-  //       // setCities(cities); // Actualizar el estado de las ciudades
-  //     })
-  //   }else{
-  //     if(e.target.value === 'Español' || e.target.value === 'Española'){
-  //             return(
-  //             <>
-  //               <Row className="mb-3 align-items-center">
-  //                 <Col>
-  //                   <div id="provinces">
-  //                     <SelectField
-  //                       name='province'
-  //                       ariaLabel='Provincia/Región'
-  //                       options={provincia_names}
-  //                       register={register}
-  //                       errors={errors}
-  //                       onChange={async (e) => {
-  //                         console.log('change')
-  //                         let code = (provincia.find(item => item.nom_oficial === e.target.value)).codi
-  //                         let arr = []
-  //                         arr = await loadCitiesByCCAA('municipios.xml', code)
-  //                         console.log(arr)
-  //                         setCities(arr)
-  //                       }}
-  //                     />
-  //                   </div>
-  //                 </Col>
-  //               </Row>
-  //               {/* {province && handleProvince(province)} */}
-  //               <Row className="mb-3 align-items-center">
-  //                 <Col>
-  //                   <div id="cities">
-  //                     <SelectField
-  //                       name='city'
-  //                       ariaLabel='Ciudad de residencia'
-  //                       options={cities.length > 0 ? cities : all_cities}
-  //                       register={register}
-  //                       errors={errors}
-  //                       //onChange={(e)=>{ nationality = e.target.value}}
-  //                     />
-  //                   </div>
-  //                 </Col>
-  //               </Row>
-  //             </>
-  //             )}else{ return (
-  //             <>
-  //               <Row className="mb-3 align-items-center">
-  //                 <Col>
-  //                   <div id="provincia">
-  //                     <FormControlFloatingLabel
-  //                       register={register}
-  //                       errors={errors}
-  //                       key={'pronvince_input'}
-  //                       name={'province'}
-  //                       label={'Provincia/Región'}
-  //                       placeholder={'Provincia/Región'}
-  //                     // type={'text'}
-  //                     />
-  //                   </div>
-  //                 </Col>
-  //               </Row><Row className="mb-3 align-items-center">
-  //                 <Col>
-  //                   <div id="cities">
-  //                     <FormControlFloatingLabel
-  //                       register={register}
-  //                       errors={errors}
-  //                       key={'city_input'}
-  //                       name={'city'}
-  //                       label={'Ciudad de residencia'}
-  //                       placeholder={'Ciudad'}
-  //                     // type={'text'}
-  //                     // value={index}
-  //                     />
-  //                   </div>
-  //                 </Col>
-  //               </Row>
-  //             </>
-  //         )}
-  //     }
-  // }
-
 
   if (loading) {
     return (
@@ -345,22 +244,15 @@ export default function UserForm() {
                         register={register}
                         errors={errors}
                         onChange={async (e) => {
-                          console.log('change')
-                          console.log(provincia)
                           let code = (provincia.find(item => item.nom_oficial === e.target.value)).codi
                           let arr = []
-                          console.log(e)
-                          console.log(code)
                           arr = await loadCitiesByCCAA('municipios.xml', code)
-                          console.log(arr)
                           setCities(arr)
                         }}
-                      // control={control}
                       />
                     </div>
                   </Col>
                 </Row>
-                {/* {province && handleProvince(province)} */}
                 <Row className="mb-3 align-items-center">
                   <Col>
                     <div id="cities">
@@ -387,7 +279,7 @@ export default function UserForm() {
                         name={'province'}
                         label={'Provincia/Región'}
                         placeholder={'Provincia/Región'}
-                      // type={'text'}
+                        type={'text'}
                       />
                     </div>
                   </Col>
@@ -401,8 +293,7 @@ export default function UserForm() {
                         name={'city'}
                         label={'Ciudad de residencia'}
                         placeholder={'Ciudad'}
-                      // type={'text'}
-                      // value={index}
+                        type={'text'}
                       />
                     </div>
                   </Col>
@@ -606,11 +497,11 @@ export default function UserForm() {
                     register={register}
                     errors={errors}
                     id={`PBE_knownledge_${index}`}
-                    key={`PBE_knownledge_${e}`}
+                    key={`PBE_knownledge_${index}`}
                     name={"PBE_knownledge"}
                     type="radio"
-                    label={e}
-                    value={(e === 'Sí' ? true : false)}
+                    label={(e === true ? 'Sí' : 'No')}
+                    value={e}
                     index={index}
                   // onChange={isTypeSelected}
                   />
@@ -715,7 +606,7 @@ export default function UserForm() {
                           key={`supervisor_${e}`}
                           name={"supervisor"}
                           type="radio"
-                          label={e}
+                          label={(e === true ? 'Sí' : 'No')}
                           value={e}
                           index={index}
                         />
@@ -782,6 +673,11 @@ export default function UserForm() {
                           index={index}
                         />
                       ))}
+                      {!!errors['enviroment'] && (
+                        <Form.Control.Feedback type="invalid" style={{ display: 'block' }}>
+                          {errors['enviroment'].message}
+                        </Form.Control.Feedback>
+                      )}
                       {otherEnviroment.includes("Otros") && (
                         <OtherCheck
                           name={"other_env"}
@@ -862,8 +758,16 @@ export default function UserForm() {
                               name={`activity_val_${index}`}
                               key={`activity_val_${index}`}
                               index={index}
+                              // onChange = {(e) =>{
+                                
+                              // }}
                             />
                           )}
+                          {/* {Total &&
+                            <Form.Control.Feedback type="invalid">
+                              Deben sumar todas las actividades un 100% en total.
+                               {errors[name] && errors[name]?.message} 
+                            </Form.Control.Feedback>} */}
                         </React.Fragment>
                       ))}
                     </Col>

@@ -1,7 +1,7 @@
 function UserResults() {
     return(
         <>
-
+        Resultados
         </>
     );
     

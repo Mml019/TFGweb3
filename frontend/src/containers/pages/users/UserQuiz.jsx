@@ -5,139 +5,191 @@ import Container from "react-bootstrap/Container"
 import Card from "react-bootstrap/Card"
 import Col from "react-bootstrap/Col"
 import Row from "react-bootstrap/Row"
+import { Link } from "react-router-dom"
 import Spinner from "../../../components/Spinner"
 import { getQuizUnOrderQuestions, nextQuestion } from "../../../reduxToolkit/slices/questions"
 import { getQuizRandomAndList } from "../../../reduxToolkit/slices/quiz"
-import { unwrapResult } from "@reduxjs/toolkit"
-import MyNavbar from '../../../components/navigation/MyNavbar'
+import { Form } from "react-bootstrap"
+import MyButton from '../../../components/MyButton'
+import MyVerticallyCenteredModal from "../../../components/Modal"
+import { Buttons } from '../../../components/MyButton'
+import toast from "react-hot-toast"
+// import Timer from '../../../components/Timer'
+import { IoMdArrowDropright, IoMdArrowDropleft } from 'react-icons/io';
 
 function UserQuiz() {
-    const [loading, setLoading] = useState(true)
+    // const [loading, setLoading] = useState(true)
     const nav = useNavigate()
-    const { questions, currentQuestion, currentQuestionIndex, status, error } = useSelector((state) => state.questionReducer)
-    const { quiz_ids, currentQuiz, currentQuizIndex, statusQ, errorQ } = useSelector((state) => state.quizReducer)
-    // const { options } = useSelector((state) => state.optionReducer.options)
-    //const {quiz} = 
 
-    const dispatch = useDispatch()
+    // const dispatch = useDispatch()
+    // const { quiz_ids, currentQuiz, currentQuizIndex, statusQRandom, errorQ } = useSelector((state) => state.quiz)
+    // const { posts, status, error } = useSelector((state) => state.posts); // Accede al estado global de Redux
+    // const currentQuestion = useSelector((state) => state.question.currentQuestion)
+    // const currentQuestionIndex = useSelector((state) => state.question.currentQuestionIndex)
+    // const { options } = useSelector((state) => state.option.options)
+    //const {quiz} = 
+    //const questions = useSelector(state => state.questions)
+    // const questions = useSelector((state) =>(state.questionReducer.questions))
+    const dispatch = useDispatch();
+    // const { posts, status, error } = useSelector((state) => state.posts); // Accede al estado global de Redux
+    const { questions, questions_done, currentQuestion, currentQuestionIndex, status, error } = useSelector((state) => state.question)
+    const { quiz_ids, currentQuiz, currentQuizIndex, statusQRandom, errorQRandom, checkedList } = useSelector((state) => state.quiz)
 
     // to add prop to the button disable button if is final question
     const disabled = () => {
-        if ((currentQuestion === questions.lenght) || (loading)) {
-            return disabled
-        }
+        // if ((currentQuestion === questions.length) || (loading)) {
+        //     return disabled
+        // }
     }
 
     function crearRespuesta() {
         // POST to data base with data
-        
-        nav('quiz/results', { replace: true })
+        console.log("respuesta")
+        // nav("/quiz/results/")
     }
 
     function otroQuiz() {
         // POST to data base with data
-        nav('quiz/results', { replace: true })
+        // nav("/quiz/results/")
+        console.log("otroQuiz")
     }
 
     function handleClick() {
-        if (currentQuestionIndex != questions.length - 1) {
-            console.log('siguiente')
-            dispatch(nextQuestion())
+        // if (currentQuestionIndex != questions.length - 1) {
+        //     dispatch(nextQuestion())
+        // }
+    }
+
+    const fetchQuestions = () => {
+        try {
+            if (currentQuiz === undefined || currentQuiz === null) {
+                dispatch(getQuizRandomAndList()).unwrap()
+                    .then(((quizData) => {
+                        dispatch(getQuizUnOrderQuestions(quizData.quiz.idQ)).unwrap()
+                    }))
+            } else {
+                dispatch(getQuizUnOrderQuestions(currentQuizIndex))
+            }
+        } catch (e) {
+            toast.error(`Error al mostrar las preguntas del quiz ${currentQuiz}. ${e}`)
         }
     }
 
     useEffect(() => {
-        if (status === 'idle') {
-            setLoading(true)
-        }
-
-        if (currentQuiz === undefined || currentQuiz === null) {
-            const fetchQuestions = async () => {
-                try {
-                    quiz_list = await dispatch(getQuizRandomAndList().unwrap())
-                        .then(
-                           await dispatch(getQuizUnOrderQuestions(currentQuizIndex)).unwrap())
-                            
-                }catch(e){
-                    toast.error(`Error al mostrar las preguntas del quiz ${currentQuiz}. ${err}`)
-                }
-            }
-        }
         fetchQuestions()
-    },[]);
+    }, []);
+
+    if (status === 'idle' || status === 'loading') {
+        return (
+            <div
+                className="d-flex flex-column justify-content-center align-items-center"
+                style={{ height: '100vh' }}
+            >
+                <Spinner animation="border" size="lg" />
+                <p className="text-center">Cargando...</p>
+            </div>)
+    }
 
     return (
-        <>
-            {(loading === true) ? (<Spinner></Spinner>)
-                :
-                <Container fluid>
-                    <div className="header">
-                        <h1>{`Quiz ${'3'}`}</h1>
-                    </div>
-                    <div id='content'>
-                        <Card className="text-center"
-                            bg="blue"
-                            key={item.idP}
-                            style={{ width: '18rem' }}
-                            border="blue"
-                        >
+        <Container fluid>
+            <div className="header">
+                <h1>{`Quiz ${currentQuizIndex}`}</h1>
+            </div>
+            <div id='content'>
+                {/* {questions.length !== 0
+                    ? */}
+                {questions.map((q) => {
+                    return (
+                        (<Card className="text-center" key={q.idP}>
                             <Card.Header>
-                                <h1>{`Pregunta ${''} de ${''}`}</h1>
-                                <Timer time={item.time}></Timer>
+                                <h1>{`Pregunta ${currentQuestionIndex} de ${questions.length}`}</h1>
+                                {/* <Timer time={q.time}></Timer> */}
+                                {/* <Timer time={30}></Timer> */}
                             </Card.Header>
                             <Card.Body>
                                 <Card.Title>
-                                    {item.statement}
+                                    {q.statement}
                                 </Card.Title>
-                                <Card.Text>
-                                    <Row>
-                                        <Col xs={2}><IoMdArrowDropleft onClick={handleClick} /></Col>
-                                        <Col xs={8}>
-                                            <Row>
-                                                {opciones.map((op, ind) => (
-                                                    <CheckButton
-                                                        type='radio'
-                                                        item={op}
-                                                        index={ind}
-                                                        checked={false}
-                                                        handleOnChange={handleOnChange} />
-                                                ))}
-                                            </Row>
-                                            <Row>
-                                                {(currentQuestion === questions.length - 1)
-                                                    ?
-                                                    (<Buttons
-                                                        btns={
-                                                            [{ label: 'Enviar y finalizar', type: 'button', variant: 'secondary', size: 'sm', onClick: { crearRespuesta } },
-                                                             {label: 'Continuar con otro cuestionario', type: 'button', variant: 'primary', size: 'sm', onClick: { otroQuiz } }
-                                                            ]
-                                                        }
-                                                    />)
-                                                    : (<MyButton
-                                                        type='submit'
-                                                        className='btn btn-primary'
-                                                        onClick={handleClick}
-                                                        {...disabled}
-                                                    >
-                                                        Siguiente
-                                                    </MyButton>)
-                                                }
-                                            </Row>
-                                        </Col>
-                                        <Col xs={2}><IoMdArrowDropright onClick={handleClick} /></Col>
-                                    </Row>
-
-                                </Card.Text>
+                                <Row>
+                                    <Col xs={2} key={`arrowLeft_${q.idP}`}><IoMdArrowDropleft onClick={handleClick} /></Col>
+                                    <Col xs={8} key={`options_${q.idP}`}>
+                                        {q.idO.map((op, ind) => (
+                                            <Form.Check
+                                                inline
+                                                type='radio'
+                                                key={`radio_${q.idP}_${op.idO}`}
+                                                // item={op.option}
+                                                index={ind}
+                                                label={op.option}
+                                                value={op.idO}
+                                            // checked={false}
+                                            // handleOnChange={handleOnChange} 
+                                            />
+                                        ))}
+                                    </Col>
+                                    <Col key={`arrowRight_${q.idP}`} xs={2}><IoMdArrowDropright onClick={handleClick} /></Col>
+                                </Row>
                             </Card.Body>
                             <Card.Footer>
-
+                                {(currentQuestion === (questions.length - 1))
+                                    ?
+                                    (<Buttons
+                                        btns={
+                                            [{ label: 'Enviar todo', type: 'button', variant: 'secondary', size: 'sm', onClick: { crearRespuesta } },
+                                                // { label: 'Continuar con otro cuestionario', type: 'button', variant: 'primary', size: 'sm', onClick: { otroQuiz } }
+                                            ]
+                                        }
+                                    />)
+                                    : (<MyButton
+                                        type='submit'
+                                        className='btn btn-primary'
+                                        onClick={handleClick}
+                                        {...disabled}
+                                    >
+                                        Siguiente
+                                    </MyButton>)
+                                }
                             </Card.Footer>
-                        </Card>
-                    </div>
-                </Container>
-            }
-        </>
-    );
+                        </Card>)
+                    )
+                }
+                )}
+
+                {/* // :
+                    // (<>
+                    //     <Buttons 
+                    //         btns={
+                    //             [{ label: 'Finalizar', type: 'button', variant: 'secondary', size: 'sm', onClick: { crearRespuesta } },
+                    //             { label: 'Hacer otro cuestionario', type: 'button', variant: 'primary', size: 'sm', onClick: { otroQuiz } }
+                    //             ]
+                    //         }>
+                    //     </Buttons>
+                    // </>)*/}
+                < MyVerticallyCenteredModal
+                    show={questions.length > 0}
+                    onHide={closed}
+                    footerButtons={
+                        [{ label: 'Finalizar', type: 'button', variant: 'secondary', size: 'sm', onClick: crearRespuesta },
+                        { label: 'Hacer otro cuestionario', type: 'button', variant: 'primary', size: 'sm', onClick: otroQuiz }]
+                    }
+                >
+                    <h2>Uso de cookies 🍪</h2>
+                    <p>Utilizamos cookies para asegurarnos de que tengas la mejor experiencia en nuestro sitio web.
+                        Al continuar navegando, aceptas nuestro uso de cookies.
+                        <Link to={"/quiz/conditions/etic"}>Política de cookies</Link>
+                    </p>
+                    {/* <MyButton
+                            label={"Aceptar"}
+                            type={"button"}
+                            variant={"secondary"}
+                            onClick={acceptedCookie}
+                            size={"sm"}>
+                            Aceptar
+                        </MyButton> */}
+                </MyVerticallyCenteredModal>
+            </div>
+        </Container >
+    )
 }
 
 export default UserQuiz;

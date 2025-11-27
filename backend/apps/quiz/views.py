@@ -77,6 +77,7 @@ class RespondantViews(CreateAPIView):
         # return Response({request.data}, HTTP_200_OK)
         with transaction.atomic():
             try:
+                print(data["happy_sas"])
                 #sas_values = [data.happy_sas, data.calm_sas, data.active_sas, data.fresh_sas, data.interest_sas]
                 questions = {
                     "Me he sentido alegre y de buen humor": int(data["happy_sas"]),
@@ -89,7 +90,7 @@ class RespondantViews(CreateAPIView):
                 prof_list=[]
                 for p in data['profarea']:
                         profarea, _ = ProfesionalArea.objects.get_or_create(profarea=p)
-
+                        prof_list.append(profarea)
                         # profarea, _ = ProfesionalArea.objects.get(pk=p)
                
                 env_list=[]
@@ -192,13 +193,14 @@ class RespondantViews(CreateAPIView):
                     dedication,_ = Dedication.objects.get_or_create(
                         profesional=profesional, 
                         activity=activity, 
-                        percentatge=float(data[f'activity_val_{index}'])
+                        
                 )
-                    
+                    dedication.percentatge = float(data[f'activity_val_{index}'])
+
                 # return user serializable   
                 respondant_serial = RespondantSerializer(respondant)
 
-            except ValidationError(e):
+            except ValidationError as e:
                 return Response({'error': f'{e}'}, HTTP_400_BAD_REQUEST)
             return Response(respondant_serial.data, HTTP_201_CREATED)
         
