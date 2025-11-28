@@ -11,9 +11,9 @@ import Button from "react-bootstrap/Button";
 import { useForm, useWatch, Controller } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { yupResolver } from "@hookform/resolvers/yup";
-
 import * as yup from "yup";
-import { yupSchema, academic_levels, level_PBE, loadCCAA, loadAllCities, loadNacionalities, loadCitiesByCCAA, perfil, profareas, sexs, activities, enviroments, training, sectors, descriptions, booleans } from "../../../schema/UserForm.js"
+
+import { yupSchema, descriptionTypes, academic_levels, level_PBE, loadCCAA, loadAllCities, loadNacionalities, loadCitiesByCCAA, perfil, profareas, sexs, activities, enviroments, training, sectors, descriptions, booleans } from "../../../schema/UserForm.js"
 import FormControlFloatingLabel from "../../../components/forms/FormControl.jsx"
 import FormInputGroup from "../../../components/forms/FormInputGroup.jsx";
 import FormTable from "../../../components/forms/FormTable.jsx";
@@ -30,12 +30,13 @@ export default function UserForm() {
   const [loading, setLoading] = useState(true);
   const [loadingSpin, setLoadingSpin] = useState(false);
   const nav = useNavigate();
-  const dispatch = useDispatch();
   const [nationalities, setNationalities] = useState([])
   const [provincia, setProv] = useState([])
   const [provincia_names, setProvname] = useState([])
   const [cities, setCities] = useState([])
-  let Total = false;
+  const [citiesAll, setCitiesAll] = useState([])
+  const dispatch = useDispatch();
+  let [total, setTotal] = useState(false)
 
   const basic_data = [
     { placeholder: "Sexo", label: "Sexo", type: "text", name: "sex" },
@@ -47,7 +48,6 @@ export default function UserForm() {
 
   async function fetchAllData() {
     try {
-      setLoading(true)
       let [nationalitiesData, provinciaData, cities_all, balear_cities] = await Promise.all(
         [
           loadNacionalities(),
@@ -67,6 +67,7 @@ export default function UserForm() {
       setProv(provinciaData)
       setProvname(provincia_name)
       setCities(balear_cities)
+      setCitiesAll(cities_all)
     } catch (err) {
       toast.error(`Use effect error${err.message}`)
     } finally {
@@ -81,9 +82,19 @@ export default function UserForm() {
   }, []);
 
   const yupLoadData = yup.object({
-    nationality: yup.string().oneOf(nationalities, "Debe seleccionar uno de los valores disponibles").required(),
-    city: yup.string().oneOf(cities, "Debe seleccionar uno de los valores disponibles").required(),
-    province: yup.string().oneOf(provincia, "Debe seleccionar uno de los valores disponibles").required(),
+    nationality: yup.string().required("Debe seleccionar uno de los valores disponibles"),
+    city: yup.string().required("Debe escribir una ciudad de residencia o seleccionar uno de los valores disponibles"),
+    province: yup.string().required("Debe escribir o seleccionar una provincia o región"),
+    // city: yup.string().when("nationality", {
+    //   is: "Española",
+    //   then: yup.string().oneOf(citiesAll, "Debe seleccionar uno de los valores disponibles").required(),
+    //   otherwise: yup.string().required("Debe escribir una ciudad de residencia")
+    // }),
+    // province: yup.string().when("nationality", {
+    //   is: "Española",
+    //   then: yup.string().oneOf(provincia_names, "Debe seleccionar uno de los valores disponibles").required(),
+    //   otherwise: yup.string().required("Debe escribir una provincia o región de residencia")
+    // }),
     ...yupSchema.fields
   })
 
@@ -95,6 +106,7 @@ export default function UserForm() {
     getValues,
     formState: { errors },
   } = useForm({
+    resolver: yupResolver(yupLoadData),
     defaultValues: {
       age: 18,
       sex: 'Femenino',
@@ -116,7 +128,6 @@ export default function UserForm() {
       happy_sas: "0",
       interest_sas: "0",
       satisfation: "1",
-      //activity: '',
       activity: ["Asistencial", "Investigación", "Docencia", "Administración", "Otra"],
       activity_val_0: 50,
       activity_val_1: 50,
@@ -133,7 +144,6 @@ export default function UserForm() {
     },
     // Only executes validator when submits the form not in every render
     mode: 'onSubmit',
-    // resolver: yupResolver(yupLoadData)
   })
 
   const master = useWatch({ name: 'academic_level', control })
@@ -149,29 +159,53 @@ export default function UserForm() {
   // const province = useWatch({ name: 'province', control })
   // const arrActivitiesVals = useWatch({name: 'activi' })
 
-  const onSubmit = async (data) => {
-    setLoadingSpin(true);
- 
-    nav("/quiz/questions/");
-    // POST to make User in database
-    // try {
-    //   // JSON Stringify is in POST request in dispatcher
-    //   // unwrap to manage request errors or payload
-    //   const userCreated = await dispatch(createUser(data)).unwrap();
-    //   console.log(userCreated);
-    //   // put in localstorage user id is in REDUX not necessary
-    //   // localStorage.setItem('userCreated', JSON.stringify(userCreated));
-    //   //get random quiz to show quiz
-    //   quizList = await dispatch(getQuizRandomAndList()).unwrap();
-    //   console.log(quizList)
-    //   // navigate to question form
-    //   nav("/quiz/questions/");
+  // return true if activities percentage sum more than 100%
+  const moreThan100 = () => {
+    // Show message total sum 100 of percentage activity
+    if (activitiesChecked !== undefined || activitiesChecked !== null || activitiesChecked.length !== 0) {
+      const positions = activitiesChecked.map(act_check => activities.indexOf(act_check));
+      getValues([''])
+      let suma = 0
+      let values = []
+      for (let i = 0; i < positions.length; i++) {
 
-    // } catch (err) {
-    //   toast.error(`Error al crear el usuario y enviar el form. ${err.message}`)
-    // } finally {
-    //   setLoadingSpin(false)
-    // }
+        values.push(Math.round(parseFloat(getValues([`activity_val_${i}`])) * 100) / 100)
+        suma += values[i]
+
+      }
+      // setTotal((suma <= 100 || suma <= 100.00))
+      return ((suma > 100 || suma > 100.00))
+    }
+  }
+
+  const onSubmit = (data) => {
+    setLoadingSpin(true);
+    // Show alert if sum total more than 100
+    if (moreThan100()) {
+      setLoadingSpin(false)
+      return toast.error("Deben sumar las actividades un total de 100%")
+    } else {
+      // nav("/quiz/questions/");
+      // POST to make User in database
+      try {
+        console.log(data)
+        // JSON Stringify is in POST request in dispatcher
+        // unwrap to manage request errors or payload
+        // const userCreated = dispatch(createUser(data)).unwrap();
+        // console.log(userCreated);
+        // put in localstorage user id is in REDUX not necessary
+        // localStorage.setItem('userCreated', JSON.stringify(userCreated));
+        //get random quiz to show quiz
+        // quizList = dispatch(getQuizRandomAndList).unwrap();
+        // console.log(quizList)
+      } catch (err) {
+        toast.error(`Error al crear el usuario y enviar el form. ${err.message}`)
+      } finally {
+        setLoadingSpin(false)
+      }
+      // navigate to question form
+      nav("/quiz/questions/");
+    }
   }
 
   if (loading) {
@@ -244,10 +278,12 @@ export default function UserForm() {
                         register={register}
                         errors={errors}
                         onChange={async (e) => {
-                          let code = (provincia.find(item => item.nom_oficial === e.target.value)).codi
-                          let arr = []
-                          arr = await loadCitiesByCCAA('municipios.xml', code)
-                          setCities(arr)
+                          if (e.target.value !== ('Seleccione una Provincia/Región')) {
+                            let code = (provincia.find(item => item.nom_oficial === e.target.value)).codi
+                            let arr = []
+                            arr = await loadCitiesByCCAA('municipios.xml', code)
+                            setCities(arr)
+                          }
                         }}
                       />
                     </div>
@@ -758,16 +794,11 @@ export default function UserForm() {
                               name={`activity_val_${index}`}
                               key={`activity_val_${index}`}
                               index={index}
-                              // onChange = {(e) =>{
-                                
-                              // }}
+                            // onChange = {(e) =>{
+
+                            // }}
                             />
                           )}
-                          {/* {Total &&
-                            <Form.Control.Feedback type="invalid">
-                              Deben sumar todas las actividades un 100% en total.
-                               {errors[name] && errors[name]?.message} 
-                            </Form.Control.Feedback>} */}
                         </React.Fragment>
                       ))}
                     </Col>
@@ -778,6 +809,7 @@ export default function UserForm() {
           )}
           <div className="d-flex justify-content-end pe-3">
             <Button type="submit" disabled={loadingSpin}>
+              {console.log(errors)}
               {loadingSpin ? <Spinner load={loadingSpin} /> : "Enviar"}
             </Button>
           </div>
@@ -785,5 +817,4 @@ export default function UserForm() {
       </div>
     </Container>
   );
-
-};
+}

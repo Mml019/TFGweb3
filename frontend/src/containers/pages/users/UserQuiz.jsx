@@ -166,26 +166,18 @@ function UserQuiz() {
                     //     </Buttons>
                     // </>)*/}
                 < MyVerticallyCenteredModal
-                    show={questions.length > 0}
+                    // show={questions.length === 0 && dispatch(getInterestArea)}
+                    show={questions.length === 0}
                     onHide={closed}
                     footerButtons={
                         [{ label: 'Finalizar', type: 'button', variant: 'secondary', size: 'sm', onClick: crearRespuesta },
                         { label: 'Hacer otro cuestionario', type: 'button', variant: 'primary', size: 'sm', onClick: otroQuiz }]
                     }
                 >
-                    <h2>Uso de cookies 🍪</h2>
-                    <p>Utilizamos cookies para asegurarnos de que tengas la mejor experiencia en nuestro sitio web.
-                        Al continuar navegando, aceptas nuestro uso de cookies.
-                        <Link to={"/quiz/conditions/etic"}>Política de cookies</Link>
+                    <h2>¡Enhorabuena Quiz completado!</h2>
+                    <p>Ha finalizado el cuestionario debería <b>repasar estas áreas, 
+                        para volverse todo un experto</b> en Prácticas Basadas en la evidencia(PBE).
                     </p>
-                    {/* <MyButton
-                            label={"Aceptar"}
-                            type={"button"}
-                            variant={"secondary"}
-                            onClick={acceptedCookie}
-                            size={"sm"}>
-                            Aceptar
-                        </MyButton> */}
                 </MyVerticallyCenteredModal>
             </div>
         </Container >
