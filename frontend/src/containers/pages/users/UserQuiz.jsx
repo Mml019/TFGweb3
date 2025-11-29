@@ -1,3 +1,4 @@
+import "../../../assets/styles/UserQuiz.css";
 import { useNavigate } from "react-router-dom"
 import { useDispatch, useSelector } from "react-redux"
 import { useEffect, useState } from "react"
@@ -5,7 +6,6 @@ import Container from "react-bootstrap/Container"
 import Card from "react-bootstrap/Card"
 import Col from "react-bootstrap/Col"
 import Row from "react-bootstrap/Row"
-import { Link } from "react-router-dom"
 import Spinner from "../../../components/Spinner"
 import { getQuizUnOrderQuestions, nextQuestion } from "../../../reduxToolkit/slices/questions"
 import { getQuizRandomAndList } from "../../../reduxToolkit/slices/quiz"
@@ -14,33 +14,24 @@ import MyButton from '../../../components/MyButton'
 import MyVerticallyCenteredModal from "../../../components/Modal"
 import { Buttons } from '../../../components/MyButton'
 import toast from "react-hot-toast"
-// import Timer from '../../../components/Timer'
-import { IoMdArrowDropright, IoMdArrowDropleft } from 'react-icons/io';
+import Timer from '../../../components/Timer'
+import { IoIosArrowForward } from 'react-icons/io';
 
 function UserQuiz() {
     // const [loading, setLoading] = useState(true)
     const nav = useNavigate()
-
-    // const dispatch = useDispatch()
-    // const { quiz_ids, currentQuiz, currentQuizIndex, statusQRandom, errorQ } = useSelector((state) => state.quiz)
-    // const { posts, status, error } = useSelector((state) => state.posts); // Accede al estado global de Redux
-    // const currentQuestion = useSelector((state) => state.question.currentQuestion)
-    // const currentQuestionIndex = useSelector((state) => state.question.currentQuestionIndex)
-    // const { options } = useSelector((state) => state.option.options)
-    //const {quiz} = 
-    //const questions = useSelector(state => state.questions)
-    // const questions = useSelector((state) =>(state.questionReducer.questions))
     const dispatch = useDispatch();
-    // const { posts, status, error } = useSelector((state) => state.posts); // Accede al estado global de Redux
-    const { questions, questions_done, currentQuestion, currentQuestionIndex, status, error } = useSelector((state) => state.question)
+    const { questions, questions_done, currentQuestion, currentQuestionIndex, currentOption, status, error } = useSelector((state) => state.question)
     const { quiz_ids, currentQuiz, currentQuizIndex, statusQRandom, errorQRandom, checkedList } = useSelector((state) => state.quiz)
-
+    const {answers, currentAnswer, responseTime} = useSelector(state => state.answers)
+    const [checked, setChecked] = useState(false)
     // to add prop to the button disable button if is final question
     const disabled = () => {
-        // if ((currentQuestion === questions.length) || (loading)) {
-        //     return disabled
-        // }
+        if ((currentQuestion === questions.length) || (loading)) {
+            return disabled
+        }
     }
+
 
     function crearRespuesta() {
         // POST to data base with data
@@ -58,6 +49,13 @@ function UserQuiz() {
         // if (currentQuestionIndex != questions.length - 1) {
         //     dispatch(nextQuestion())
         // }
+        console.log('siguiente')
+        dispatch(setT)
+        dispatch(nextQuestion())
+    }
+
+    function handleTime(){
+
     }
 
     const fetchQuestions = () => {
@@ -96,68 +94,68 @@ function UserQuiz() {
                 <h1>{`Quiz ${currentQuizIndex}`}</h1>
             </div>
             <div id='content'>
-                {/* {questions.length !== 0
-                    ? */}
-                {questions.map((q) => {
-                    return (
-                        (<Card className="text-center" key={q.idP}>
-                            <Card.Header>
-                                <h1>{`Pregunta ${currentQuestionIndex} de ${questions.length}`}</h1>
-                                {/* <Timer time={q.time}></Timer> */}
-                                {/* <Timer time={30}></Timer> */}
-                            </Card.Header>
-                            <Card.Body>
-                                <Card.Title>
-                                    {q.statement}
-                                </Card.Title>
-                                <Row>
-                                    <Col xs={2} key={`arrowLeft_${q.idP}`}><IoMdArrowDropleft onClick={handleClick} /></Col>
-                                    <Col xs={8} key={`options_${q.idP}`}>
-                                        {q.idO.map((op, ind) => (
-                                            <Form.Check
-                                                inline
-                                                type='radio'
-                                                key={`radio_${q.idP}_${op.idO}`}
-                                                // item={op.option}
-                                                index={ind}
-                                                label={op.option}
-                                                value={op.idO}
-                                            // checked={false}
-                                            // handleOnChange={handleOnChange} 
-                                            />
-                                        ))}
-                                    </Col>
-                                    <Col key={`arrowRight_${q.idP}`} xs={2}><IoMdArrowDropright onClick={handleClick} /></Col>
-                                </Row>
-                            </Card.Body>
-                            <Card.Footer>
-                                {(currentQuestion === (questions.length - 1))
-                                    ?
-                                    (<Buttons
-                                        btns={
-                                            [{ label: 'Enviar todo', type: 'button', variant: 'secondary', size: 'sm', onClick: { crearRespuesta } },
-                                                // { label: 'Continuar con otro cuestionario', type: 'button', variant: 'primary', size: 'sm', onClick: { otroQuiz } }
-                                            ]
-                                        }
-                                    />)
-                                    : (<MyButton
-                                        type='submit'
-                                        className='btn btn-primary'
-                                        onClick={handleClick}
-                                        {...disabled}
-                                    >
-                                        Siguiente
-                                    </MyButton>)
+                <Card className="text-center" key={currentQuestion.idP} >
+                    <Card.Header text='light' bg={'#0d6efd'}>
+                        <h2>{`Pregunta ${currentQuestionIndex + 1} de ${questions.length}`}</h2>
+                        <Timer mytime={currentQuestion.time} ontimeExpired={handleTime}></Timer>
+                    </Card.Header>
+                    <Card.Body>
+                        <Card.Title>
+                            <Row className="d-flex justify-center align-items-center">
+                                <Col xs={1}></Col>
+                                <Col xs={10} key='statement' >{currentQuestion.statement}</Col>
+                                <Col xs={1} key={`arrowRight_${currentQuestion.idP}`}>
+                                    <IoIosArrowForward className='arrow' onClick={handleClick} />
+                                </Col>
+                            </Row>
+                        </Card.Title>
+                        <Row className="d-flex justify-center">
+                            <Col xs={2}></Col>
+                            <Col xs={8} className="flex-center" key={`options_${currentQuestion.idP}`}>
+                                {currentQuestion.idO.map((op, ind) => (
+                                    <Form.Check
+                                        inline
+                                        type='radio'
+                                        key={`radio_${currentQuestion.idP}_${op.idO}`}
+                                        // item={op.option}
+                                        name={'options_questions'}
+                                        index={ind}
+                                        label={op.option}
+                                        value={op.idO}
+                                    // checked={false}
+                                        onChange={(e)=>{
+                                            dis
+                                        }}
+                                    />
+                                ))}
+                            </Col>
+                            <Col xs={2}></Col>
+                        </Row>
+                    </Card.Body>
+                    <Card.Footer>
+                        {(currentQuestionIndex === (questions.length - 1))
+                            ?
+                            (<Buttons
+                                btns={
+                                    [{ label: 'Enviar todo', type: 'button', variant: 'secondary', size: 'sm', onClick: { crearRespuesta } },
+                                        // { label: 'Continuar con otro cuestionario', type: 'button', variant: 'primary', size: 'sm', onClick: { otroQuiz } }
+                                    ]
                                 }
-                            </Card.Footer>
-                        </Card>)
-                    )
-                }
-                )}
-
-                {/* // :
+                            />)
+                            : (<MyButton
+                                type='submit'
+                                className='btn'
+                                onClick={handleClick}
+                                {...disabled}
+                            >
+                                Siguiente
+                            </MyButton>)
+                        }
+                    </Card.Footer>
+                </Card>
+                {/* //
                     // (<>
-                    //     <Buttons 
+                    //     <Buttons
                     //         btns={
                     //             [{ label: 'Finalizar', type: 'button', variant: 'secondary', size: 'sm', onClick: { crearRespuesta } },
                     //             { label: 'Hacer otro cuestionario', type: 'button', variant: 'primary', size: 'sm', onClick: { otroQuiz } }
@@ -166,7 +164,7 @@ function UserQuiz() {
                     //     </Buttons>
                     // </>)*/}
                 < MyVerticallyCenteredModal
-                    // show={questions.length === 0 && dispatch(getInterestArea)}
+                    // show={questions.length === 0 && dispatch(getInterestArea())}
                     show={questions.length === 0}
                     onHide={closed}
                     footerButtons={
@@ -175,7 +173,7 @@ function UserQuiz() {
                     }
                 >
                     <h2>¡Enhorabuena Quiz completado!</h2>
-                    <p>Ha finalizado el cuestionario debería <b>repasar estas áreas, 
+                    <p>Ha finalizado el cuestionario debería <b>repasar estas áreas,
                         para volverse todo un experto</b> en Prácticas Basadas en la evidencia(PBE).
                     </p>
                 </MyVerticallyCenteredModal>

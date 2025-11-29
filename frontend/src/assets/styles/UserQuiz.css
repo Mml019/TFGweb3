@@ -1,0 +1,28 @@
+.arrow{
+    align-items: center;
+    width: 3rem;
+    scale:2;
+    /* height: 100%; */
+    color: #0d6efd;
+}
+
+.arrow:hover {
+  transform: scale(1.2);   
+  color: #0b5ed7;          
+}
+
+.card-header:first-child,
+.card-footer:last-child {
+    background-color: #0065BD;
+    color: white;
+}
+
+.flex-center{
+  display: flex;
+  justify-content: center;
+}
+
+.btn:hover{
+  background-color: darkblue;
+}
+

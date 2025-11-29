@@ -41,22 +41,23 @@ export const questionSlice = createSlice({
     questions_done: [],
     currentQuestion: null,
     currentQuestionIndex: 0,
+    currentOption: 
     status: 'idle', // 'idle', 'loading', 'succeeded', 'failed'
     error: null,
   },
   reducers: {
     nextQuestion: (state) => {
       if (state.currentQuestionIndex < state.questions.length - 1) {
+        
         state.currentQuestionIndex += 1;
 
-        // shift retunrs the first object of the array and modify others positions
-        question_doned = state.questions.shift();
-        state.questions_done.push(question_doned);
 
-        state.currentQuestion = state.questions[0]
+        // shift retunrs the first object of the array and modify others positions
+
+        state.currentQuestion = state.questions[currentQuestionIndex]
       }
-      // return state.currentQuestion
     },
+
   },
   extraReducers: (builder) => {
     builder
@@ -77,7 +78,8 @@ export const questionSlice = createSlice({
       .addCase(getQuizUnOrderQuestions.fulfilled, (state, action) => {
         state.status = 'succeeded';
         state.questions = action.payload.questions;
-        state.currentQuestion = state.questions[0]
+        state.currentQuestion = state.questions[0];
+        state.currentQuestionIndex = 0;
       })
       .addCase(getQuizUnOrderQuestions.rejected, (state, action) => {
         state.status = 'failed';
@@ -87,7 +89,7 @@ export const questionSlice = createSlice({
 });
 
 // export actions
-export const { nextQuestion} = questionSlice.actions;
+export const { nextQuestion, setOption} = questionSlice.actions;
 
 // export the reducer
 export default questionSlice.reducer
