@@ -7,8 +7,9 @@ import Card from "react-bootstrap/Card"
 import Col from "react-bootstrap/Col"
 import Row from "react-bootstrap/Row"
 import Spinner from "../../../components/Spinner"
-import { getQuizUnOrderQuestions, nextQuestion } from "../../../reduxToolkit/slices/questions"
-import { getQuizRandomAndList } from "../../../reduxToolkit/slices/quiz"
+import { getQuizUnOrderQuestions, nextQuestion, setOption } from "../../../reduxToolkit/slices/questions"
+import { getQuizRandomAndList, nextQuiz } from "../../../reduxToolkit/slices/quiz"
+import { setAnswer, sendAnswers } from "../../../reduxToolkit/slices/answer";
 import { Form } from "react-bootstrap"
 import MyButton from '../../../components/MyButton'
 import MyVerticallyCenteredModal from "../../../components/Modal"
@@ -23,8 +24,12 @@ function UserQuiz() {
     const dispatch = useDispatch();
     const { questions, questions_done, currentQuestion, currentQuestionIndex, currentOption, status, error } = useSelector((state) => state.question)
     const { quiz_ids, currentQuiz, currentQuizIndex, statusQRandom, errorQRandom, checkedList } = useSelector((state) => state.quiz)
-    const {answers, currentAnswer, responseTime} = useSelector(state => state.answers)
-    const [checked, setChecked] = useState(false)
+    const { answers, currentAnswer, responseTime } = useSelector(state => state.answers)
+    const { currentUser } = useSelector((state) => state.user)
+
+    const [optionSelected, selectOption] = useState(0)
+    const [stopTime, setStop] = useState(false)
+
     // to add prop to the button disable button if is final question
     const disabled = () => {
         if ((currentQuestion === questions.length) || (loading)) {
@@ -32,30 +37,46 @@ function UserQuiz() {
         }
     }
 
-
-    function crearRespuesta() {
+    function createAnswer() {
         // POST to data base with data
         console.log("respuesta")
-        // nav("/quiz/results/")
+        dispatch(sendAnswers(answers))
     }
 
-    function otroQuiz() {
+    function otherQuiz() {
         // POST to data base with data
-        // nav("/quiz/results/")
-        console.log("otroQuiz")
+        console.log("otherQuiz")
+        dispatch(nextQuiz())
     }
 
+    // To pass nextQuestion and save answers into redux global variables
     function handleClick() {
-        // if (currentQuestionIndex != questions.length - 1) {
-        //     dispatch(nextQuestion())
-        // }
-        console.log('siguiente')
-        dispatch(setT)
+
+        // Stop time and save answer before pass to next question
+        setStop(true)
+
+        if(optionSelected === null || optionSelected === 0){
+          selectOption(JSON.stringify(currentQuestion.idO[2]).idO)
+          console.log(optionSelected)
+        }
+
+        // store answers until all quiz is submitted´
+        console.log(currentQuestion.idP,optionSelected,responseTime)
+        let answer = {
+            questionId: currentQuestion.idP,
+            // userId: currentUser.respondant,
+            option: optionSelected,
+            time: responseTime
+        }
+        console.log(JSON.stringify(answer))
+        dispatch(setAnswer(answer))
+
         dispatch(nextQuestion())
-    }
 
-    function handleTime(){
-
+        // restart values to next question
+        // setTimeout(() => {
+        //     setStop(false);  // Reiniciamos el temporizador
+        // }, 1000);
     }
 
     const fetchQuestions = () => {
@@ -95,9 +116,9 @@ function UserQuiz() {
             </div>
             <div id='content'>
                 <Card className="text-center" key={currentQuestion.idP} >
-                    <Card.Header text='light' bg={'#0d6efd'}>
+                    <Card.Header>
                         <h2>{`Pregunta ${currentQuestionIndex + 1} de ${questions.length}`}</h2>
-                        <Timer mytime={currentQuestion.time} ontimeExpired={handleTime}></Timer>
+                        <Timer mytime={currentQuestion.time} onTimeStop={stopTime}></Timer>
                     </Card.Header>
                     <Card.Body>
                         <Card.Title>
@@ -122,9 +143,9 @@ function UserQuiz() {
                                         index={ind}
                                         label={op.option}
                                         value={op.idO}
-                                    // checked={false}
-                                        onChange={(e)=>{
-                                            dis
+                                        // checked={e === op.value}
+                                        onChange={(e) => {
+                                            selectOption(e.target.value)
                                         }}
                                     />
                                 ))}
@@ -135,13 +156,15 @@ function UserQuiz() {
                     <Card.Footer>
                         {(currentQuestionIndex === (questions.length - 1))
                             ?
-                            (<Buttons
-                                btns={
-                                    [{ label: 'Enviar todo', type: 'button', variant: 'secondary', size: 'sm', onClick: { crearRespuesta } },
-                                        // { label: 'Continuar con otro cuestionario', type: 'button', variant: 'primary', size: 'sm', onClick: { otroQuiz } }
-                                    ]
-                                }
-                            />)
+                            (<MyButton
+                                className='btn'
+                                type='button'
+                                variant='secondary'
+                                size='sm'
+                                onClick={createAnswer}
+                            >
+                                Enviar todo
+                            </MyButton>)
                             : (<MyButton
                                 type='submit'
                                 className='btn'
@@ -157,8 +180,8 @@ function UserQuiz() {
                     // (<>
                     //     <Buttons
                     //         btns={
-                    //             [{ label: 'Finalizar', type: 'button', variant: 'secondary', size: 'sm', onClick: { crearRespuesta } },
-                    //             { label: 'Hacer otro cuestionario', type: 'button', variant: 'primary', size: 'sm', onClick: { otroQuiz } }
+                    //             [{ label: 'Finalizar', type: 'button', variant: 'secondary', size: 'sm', onClick: { createAnswer } },
+                    //             { label: 'Hacer otro cuestionario', type: 'button', variant: 'primary', size: 'sm', onClick: { otherQuiz } }
                     //             ]
                     //         }>
                     //     </Buttons>
@@ -168,14 +191,32 @@ function UserQuiz() {
                     show={questions.length === 0}
                     onHide={closed}
                     footerButtons={
-                        [{ label: 'Finalizar', type: 'button', variant: 'secondary', size: 'sm', onClick: crearRespuesta },
-                        { label: 'Hacer otro cuestionario', type: 'button', variant: 'primary', size: 'sm', onClick: otroQuiz }]
+                        [
+                            { label: 'Finalizar', type: 'button', variant: 'secondary', size: 'sm', onClick: createAnswer },
+                            { label: 'Hacer otro cuestionario', type: 'button', variant: 'primary', size: 'sm', onClick: otherQuiz }
+                        ]
                     }
                 >
                     <h2>¡Enhorabuena Quiz completado!</h2>
                     <p>Ha finalizado el cuestionario debería <b>repasar estas áreas,
                         para volverse todo un experto</b> en Prácticas Basadas en la evidencia(PBE).
                     </p>
+                    <div id='results'>
+                        <Row>
+                            {/* {dispatch(getResults()).unwrap().then((r) => {
+                                r.area.forEach(area => {
+                                    return (
+                                        <span >area.toString()</span>
+                                        , <MyButton type='span'>Prueba</MyButton>
+                                    )
+                                });
+                            })} */}
+                        </Row>
+                        <Row>
+                            <p>Número de preguntas correctas:{ }</p>
+                            <p>Número de preguntas incorrectas:{ }</p>
+                        </Row>
+                    </div>
                 </MyVerticallyCenteredModal>
             </div>
         </Container >

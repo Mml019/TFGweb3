@@ -1,14 +1,5 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
+import { createAsyncThunk, createSlice, current } from '@reduxjs/toolkit'
 import { api } from '../../api/api';
-
-// export const getQuestionsByQuiz = createAsyncThunk('quiz/getQuestions',
-//   async () =>{
-//     const response = await fetch(`${import.meta.env.VITE_REACT_API_URL}/questions`);
-//     if (!response.ok) throw new Error('Error fetching questions');
-//     const data = await response.json();
-//     console.log(data)
-//     return data;
-//   })
 
 // Returns a json with a list of ids and random quiz with their questions and options
 export const getQuizUnOrderQuestions = createAsyncThunk('quiz/getQuestionsUnOrder',
@@ -33,45 +24,36 @@ export const getQuizUnOrderQuestions = createAsyncThunk('quiz/getQuestionsUnOrde
 //     }
 //   })
 
+
+
 // Slice
 export const questionSlice = createSlice({
   name: 'questionSlice',
   initialState: {
     questions: [],
-    questions_done: [],
+    // questions_done: [],
     currentQuestion: null,
     currentQuestionIndex: 0,
-    currentOption: 
+    currentOption: null,
     status: 'idle', // 'idle', 'loading', 'succeeded', 'failed'
     error: null,
   },
   reducers: {
     nextQuestion: (state) => {
       if (state.currentQuestionIndex < state.questions.length - 1) {
-        
         state.currentQuestionIndex += 1;
 
-
         // shift retunrs the first object of the array and modify others positions
-
-        state.currentQuestion = state.questions[currentQuestionIndex]
+        state.currentQuestion = state.questions[state.currentQuestionIndex]
       }
     },
-
+    setOption(state){
+      // action.payload is option value passed to action dispatch funtion
+      state.currentOption = action.payload
+    },
   },
   extraReducers: (builder) => {
     builder
-      // .addCase(getQuestionsByQuiz.pending, (state) => {
-      //   state.status = 'loading';
-      // })
-      // .addCase(getQuestionsByQuiz.fulfilled, (state, action) => {
-      //   state.status = 'succeeded';
-      //   state.questions = action.payload;
-      // })
-      // .addCase(getQuestionsByQuiz.rejected, (state, action) => {
-      //   state.status = 'failed';
-      //   state.error = action.error.message;
-      // })
       .addCase(getQuizUnOrderQuestions.pending, (state) => {
         state.status = 'loading';
       })

@@ -16,7 +16,7 @@ import { createAsyncThunk, createSlice, current } from '@reduxjs/toolkit'
 //     }
 // );
 
-export const setAnswers = createAsyncThunk('answer/setAnswers',
+export const sendAnswers = createAsyncThunk('answer/setAnswers',
     async (answers, { rejectWithValue }) => {
         try {
             const response = await api.post(
@@ -37,39 +37,38 @@ export const setAnswers = createAsyncThunk('answer/setAnswers',
 export const answerSlice = createSlice({
     name: 'answer',
     initialState: {
+        results:[],
         answers: [],
         currentAnswer: null,
         responseTime: 0,
-        statusAnswer: 'idle'
+        statusAnswer: 'idle',
+        error: null
     },
     reducers: {
-        sendResponse(state) {
-            // action.payload it will be a ditionary time, optionSelect, questionId, userId
+        setAnswer(state, action) {
+            // action.payload it will be a Json object time, optionSelect, questionId, userId
+            state.currentAnswer = action.payload
             
-                currentAnswer = {
-                    question: action.payload.questionId,
-                    user: action.payload.userId,
-                    time: state.responseTime
-                }
-                console.log(currentAnswer);
-            if (currentAnswer !== null || currentAnswer !== undefined) {    
-                state.answers.push(currentAnswer);
+            if (state.currentAnswer) {    
+                state.answers.push(action.payload);
+                state.responseTime = 0;
             }
         },
-        setTime(state){
-            state.time = action.payload
+        setTime(state, action){
+            console.log(`setTime_val: ${action.payload}`)
+            state.responseTime = action.payload
         }
     },
     extraReducers: (builder) => {
         builder
-            .addCase(setAnswers.pending, (state) => {
+            .addCase(sendAnswers.pending, (state) => {
                 state.statusAnswer = 'loading'
             })
-            .addCase(setAnswers.fulfilled, (state, action) => {
+            .addCase(sendAnswers.fulfilled, (state, action) => {
                 state.statusAnswer = 'succeed';
-                state.answers = action.payload
+                state.results = action.payload
             })
-            .addCase(setAnswers.rejected, (state, action) => {
+            .addCase(sendAnswers.rejected, (state, action) => {
                 state.statusAnswer = 'failed';
                 state.error = action.error.message
             })
@@ -77,6 +76,6 @@ export const answerSlice = createSlice({
 })
 
 // export actions
-export const {sendResponse, setTime} = answerSlice.actions;
+export const {setAnswer, setTime} = answerSlice.actions;
 
 export default answerSlice.reducer

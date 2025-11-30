@@ -1,8 +1,12 @@
 import { useEffect, useRef, useState } from "react"
+import { useSelector, useDispatch } from "react-redux"
+import { setTime } from "../reduxToolkit/slices/answer"
 
-export default function Timer({ mytime, onTimeExpired }) {
-    const [time, setTime] = useState(obtainSeconds(mytime))
-    const interval = useRef(0)
+export default function Timer({ mytime, onTimeStop }) {
+    const [time, setTimer] = useState(obtainSeconds(mytime))
+    // const timeRef = useRef(null)
+    const interval = useRef(0);
+    const dispatch = useDispatch();
 
     function obtainSeconds(time_str) {
         let time_split = time_str.toString().split(':')
@@ -25,19 +29,43 @@ export default function Timer({ mytime, onTimeExpired }) {
 
         return (`${unaCifra(minutos)}:${unaCifra(segundos)}`)
     }
-    
-    useEffect(() => {
-        interval.current = setInterval(() => {
-            setTime(prevTime => prevTime - 1)
-        }, 1000)
 
+    const stopTimer = () => {
+        return clearInterval(interval.current);
+    }
+
+    useEffect(() => {
+        dispatch(setTime(time))
+        if (time === 0) {
+            stopTimer()
+        }
+        // if (onTimeStop) {
+        //     console.log(onTimeStop, interval.current)
+        //     dispatch(setTime(time))
+        //     stopTimer()
+        // }
+    }, [time])
+
+    useEffect(() => {
+
+        interval.current = setInterval(() => {
+            setTimer((prevTime) => prevTime - 5)
+        }, 1000)
+        
         // when finalice setInterval dismount to stop back counter
         return () => clearInterval(interval.current);
-    }, []);
+    }, [onTimeStop]);
+
+    if (!time) {
+        return (
+            <div className="clock">
+                <span>00:00</span>
+            </div>)
+    }
 
     return (
-        <div onTimeExpired={interval}>
-            {formatTime(time)}
+        <div className="clock">
+            <span>{formatTime(time)}</span>
         </div>
     )
 }

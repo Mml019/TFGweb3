@@ -8,7 +8,6 @@ import store from "./store";
 import StartQuiz from "./containers/pages/users/StartQuiz";
 import UserForm from "./containers/pages/users/UserForm";
 import UserQuiz from "./containers/pages/users/UserQuiz";
-import QuestionList from "./containers/pages/users/QuestionList";
 import UserResult from "./containers/pages/users/UserResult";
 import EticCondition from "./containers/pages/users/EticCondition";
 import Instructions from "./containers/pages/users/Instructions";

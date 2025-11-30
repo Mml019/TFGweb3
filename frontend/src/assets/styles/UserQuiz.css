@@ -15,6 +15,21 @@
 .card-footer:last-child {
     background-color: #0065BD;
     color: white;
+    display: inline-flex;
+    justify-items: center;
+    justify-content: center;
+    align-items: center;    
+}
+
+.card-header:first-child{
+  justify-content: space-between;
+}
+
+.clock{
+  background: white;
+  color: black;
+  font-size: large;
+  padding: 0.25rem; 
 }
 
 .flex-center{
