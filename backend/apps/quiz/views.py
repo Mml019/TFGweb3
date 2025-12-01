@@ -83,14 +83,15 @@ class RespondantViews(CreateAPIView):
     serializer_class = RespondantSerializer
 
     def create(self, request):
-        # activities_dic = ["Asistencial", "Investigación", "Docencia", "Administración", "Otra"]
+        
         # generate_random_id()
         data = request.data
-        # return Response({request.data}, HTTP_200_OK)
+
         with transaction.atomic():
             try:
-                print(data["happy_sas"])
+                
                 # sas_values = [data.happy_sas, data.calm_sas, data.active_sas, data.fresh_sas, data.interest_sas]
+                # Mapping satisfation and activity values
                 questions = {
                     "Me he sentido alegre y de buen humor": int(data["happy_sas"]),
                     "Me he sentido tranquilo/a y relajado/a": int(data["calm_sas"]),
@@ -98,6 +99,13 @@ class RespondantViews(CreateAPIView):
                     "Me he sentido fresco/a y renovado/a": int(data["fresh_sas"]),
                     "Me he sentido interesado/a y motivado/a": int(data["interest_sas"]),
                 }
+
+                activities_dic = {"Asistencial": float(data['activity_val_0']),
+                                   "Investigación": float(data['activity_val_1']), 
+                                   "Docencia": float(data['activity_val_2']), 
+                                   "Administración": float(data['activity_val_3']), 
+                                   "Otra": float(data['activity_val_4'])}
+
 
                 prof_list = []
                 for p in data["profarea"]:
@@ -206,14 +214,17 @@ class RespondantViews(CreateAPIView):
                 profesional.sectors.set(sec_list)
                 profesional.enviroments.set(env_list)
 
-                for index, a in enumerate(data["activity"]):
+                # Traverse activity array but is not equal activity_val index, map
+                for a in enumerate(data["activity"]):
                     activity, _ = Activity.objects.get_or_create(activity=a)
                     dedication, _ = Dedication.objects.get_or_create(
                         profesional=profesional,
                         activity=activity,
+                        percentatge = activities_dic[activity]
                     )
 
-                    dedication.percentatge = float(data[f"activity_val_{index}"])
+                    # dedication.percentatge = float(data[f"activity_val_{index}"])
+                    # dedication.save
 
                 # return user serializable
                 respondant_serial = RespondantSerializer(respondant)
@@ -222,16 +233,47 @@ class RespondantViews(CreateAPIView):
                 return Response({"error": f"{e}"}, HTTP_400_BAD_REQUEST)
             return Response(respondant_serial.data, HTTP_201_CREATED)
 
+class RespuestaView(CreateAPIView):
+    serializer_class = RespuestaSerializer
+    
+    def create(self, request):
+        data = request.data
+        print(data)
+        try:
+            with transaction.atomic:
+                for r in data['answers']:
+                    respuesta = Respuesta.objects.create(
+                        answer = r.option,
+                        time = r.time,
+                        respondant = r.user,
+                        question = r.question
+                    )
+            
+             
+                    
+        except ValidationError as ve:
+            return Response({'error': f'Error al crear las respuestas de {ve}'}, status=HTTP_400_BAD_REQUEST)
+        return Response({'success'}, status=HTTP_201_CREATED)
 
-class RespondantViewPrueba(APIView):
-    def post(self, request):
-        user = MyUser.objects.create()
-        user2 = MyUser.objects.create()
-        print(user)
-        group = create_group("interviewer")
-        group2 = create_group("respondant")
-        print(group)
-        print(group2)
-        user.groups.add(group)
-        user2.groups.add(group2)
-        return Response("success", status=HTTP_201_CREATED)
+class OptionQuestionView(CreateAPIView) :   
+    serializer_class = OptionQuestion
+
+    # count all correct and incorrects answer and send interest area list from incorrects
+    def create(self, request):
+        correct, incorrect = 0
+        list_area= set()
+        solutions = OptionQuestion.solutions.all()
+        data = request.data['answers']
+        for r in data['answers']:
+            if r in solutions:
+                correct += 1
+            else:
+                incorrect +=1
+                # and return int_area from question_dimension_idA.int_Area
+                #list_area.add()
+        return Response(solutions)
+        
+
+           
+
+

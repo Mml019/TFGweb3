@@ -205,6 +205,7 @@ export default function UserForm() {
       }
       // navigate to question form
       nav("/quiz/questions/");
+      // nav('/quiz/questions/', { replace: true })
     }
   }
 

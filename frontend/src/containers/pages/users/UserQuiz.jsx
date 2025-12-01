@@ -19,12 +19,11 @@ import Timer from '../../../components/Timer'
 import { IoIosArrowForward } from 'react-icons/io';
 
 function UserQuiz() {
-    // const [loading, setLoading] = useState(true)
     const nav = useNavigate()
     const dispatch = useDispatch();
     const { questions, questions_done, currentQuestion, currentQuestionIndex, currentOption, status, error } = useSelector((state) => state.question)
     const { quiz_ids, currentQuiz, currentQuizIndex, statusQRandom, errorQRandom, checkedList } = useSelector((state) => state.quiz)
-    const { answers, currentAnswer, responseTime } = useSelector(state => state.answers)
+    const { answers, currentAnswer, responseTime, statusAnswer } = useSelector(state => state.answers)
     const { currentUser } = useSelector((state) => state.user)
 
     const [optionSelected, selectOption] = useState(0)
@@ -37,6 +36,7 @@ function UserQuiz() {
         }
     }
 
+    // To create all the answers by one user in BD
     function createAnswer() {
         // POST to data base with data
         console.log("respuesta")
@@ -55,28 +55,18 @@ function UserQuiz() {
         // Stop time and save answer before pass to next question
         setStop(true)
 
-        if(optionSelected === null || optionSelected === 0){
-          selectOption(JSON.stringify(currentQuestion.idO[2]).idO)
-          console.log(optionSelected)
-        }
-
         // store answers until all quiz is submitted´
-        console.log(currentQuestion.idP,optionSelected,responseTime)
         let answer = {
             questionId: currentQuestion.idP,
             // userId: currentUser.respondant,
             option: optionSelected,
             time: responseTime
         }
-        console.log(JSON.stringify(answer))
+
         dispatch(setAnswer(answer))
 
+        selectOption(0)
         dispatch(nextQuestion())
-
-        // restart values to next question
-        // setTimeout(() => {
-        //     setStop(false);  // Reiniciamos el temporizador
-        // }, 1000);
     }
 
     const fetchQuestions = () => {
@@ -94,9 +84,38 @@ function UserQuiz() {
         }
     }
 
+    // To stablize by default optionSelected as "No lo sé" if question isn't respond
+    useEffect(() => {
+        if (currentQuestion) {
+            if (optionSelected === 0) {
+                selectOption(currentQuestion.idO[2].idO)
+            }
+        }
+    }, [currentQuestion]);
+
     useEffect(() => {
         fetchQuestions()
     }, []);
+
+    //delete back navigation history
+    useEffect(() => {
+        // Cuando el componente PageC se monta, reemplaza la entrada en el historial
+        window.history.replaceState(null, '', window.location.href);
+
+        // Opcional: escuchar el evento popstate (si el usuario presiona retroceder)
+        const handlePopState = () => {
+            // Redirigir a una nueva página si el usuario intenta retroceder
+            //   nav('/quiz/questions/', { replace: true });
+            nav('/quiz/questions/')
+        };
+
+        window.addEventListener('popstate', handlePopState);
+
+        return () => {
+            // Limpiar el event listener cuando el componente se desmonte
+            window.removeEventListener('popstate', handlePopState);
+        };
+    }, [nav]);
 
     if (status === 'idle' || status === 'loading') {
         return (
@@ -106,6 +125,17 @@ function UserQuiz() {
             >
                 <Spinner animation="border" size="lg" />
                 <p className="text-center">Cargando...</p>
+            </div>)
+    }
+
+    if (statusAnswer === 'pending' || statusAnswer === 'loading') {
+        return (
+            <div
+                className="d-flex flex-column justify-content-center align-items-center"
+                style={{ height: '100vh' }}
+            >
+                <Spinner animation="border" size="lg" />
+                <p className="text-center">Enviando...</p>
             </div>)
     }
 
@@ -143,7 +173,7 @@ function UserQuiz() {
                                         index={ind}
                                         label={op.option}
                                         value={op.idO}
-                                        // checked={e === op.value}
+                                        checked={optionSelected === op.idO}
                                         onChange={(e) => {
                                             selectOption(e.target.value)
                                         }}

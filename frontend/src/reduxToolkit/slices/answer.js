@@ -16,13 +16,13 @@ import { createAsyncThunk, createSlice, current } from '@reduxjs/toolkit'
 //     }
 // );
 
-export const sendAnswers = createAsyncThunk('answer/setAnswers',
+export const sendAnswers = createAsyncThunk('answer/sendAnswers',
     async (answers, { rejectWithValue }) => {
         try {
             const response = await api.post(
                 '/uib/PEBquiz/answer',
                 answers, {
-                // method: 'POST',
+                method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 // body: JSON.stringify(answers)
             });
@@ -55,7 +55,6 @@ export const answerSlice = createSlice({
             }
         },
         setTime(state, action){
-            console.log(`setTime_val: ${action.payload}`)
             state.responseTime = action.payload
         }
     },

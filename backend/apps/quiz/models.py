@@ -84,7 +84,8 @@ class OptionQuestion(models.Model):
     # get only the solutions for each question id of all options
     class OptionQuestionManager(models.Manager):
         def get_queryset(self):
-            return super().get_queryset().values('idP').annotate('idP').exclude(Q(motive__isnull=True)|Q(motive='')|Q(motive=' ')).values('idP', 'idO', 'motive')
+            return super().get_queryset().values('idP').exclude(Q(motive__isnull=True)|Q(motive='')|Q(motive=' ')).values('idP', 'idO', 'motive')
+
 
     idP =       models.ForeignKey(Question, on_delete=models.CASCADE, related_name='option_value_to_question')
     idO =       models.ForeignKey(Option, on_delete=models.CASCADE, related_name='option_value') # this id of the value
