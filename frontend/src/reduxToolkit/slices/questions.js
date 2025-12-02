@@ -45,6 +45,11 @@ export const questionSlice = createSlice({
 
         // shift retunrs the first object of the array and modify others positions
         state.currentQuestion = state.questions[state.currentQuestionIndex]
+      }else{
+        // currentQuestionIndex now is equal to questions.lenght 
+        // and reference any questions
+        state.currentQuestionIndex += 1
+        state.currentQuestion = null
       }
     },
     setOption(state){

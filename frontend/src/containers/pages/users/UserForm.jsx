@@ -156,8 +156,6 @@ export default function UserForm() {
   const arrEnviroment = useWatch({ name: 'enviroment', control })
   const otherEnviroment = Array.isArray(arrEnviroment) ? arrEnviroment : arrEnviroment ? [arrEnviroment] : [];
   const nationality = useWatch({ name: 'nationality', control })
-  // const province = useWatch({ name: 'province', control })
-  // const arrActivitiesVals = useWatch({name: 'activi' })
 
   // return true if activities percentage sum more than 100%
   const moreThan100 = () => {

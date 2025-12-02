@@ -51,7 +51,7 @@ function UserQuiz() {
 
     // To pass nextQuestion and save answers into redux global variables
     function handleClick() {
-
+       
         // Stop time and save answer before pass to next question
         setStop(true)
 
@@ -64,9 +64,13 @@ function UserQuiz() {
         }
 
         dispatch(setAnswer(answer))
-
         selectOption(0)
         dispatch(nextQuestion())
+
+        // if is final question send al answer POST
+        if (currentQuestionIndex === questions.length) {
+            createAnswer()
+        }
     }
 
     const fetchQuestions = () => {
@@ -95,7 +99,7 @@ function UserQuiz() {
 
     useEffect(() => {
         fetchQuestions()
-    }, []);
+    }, [currentQuizIndex]);
 
     //delete back navigation history
     useEffect(() => {
@@ -145,7 +149,7 @@ function UserQuiz() {
                 <h1>{`Quiz ${currentQuizIndex}`}</h1>
             </div>
             <div id='content'>
-                <Card className="text-center" key={currentQuestion.idP} >
+                <Card className="text-center" key={currentQuestion.idQ} >
                     <Card.Header>
                         <h2>{`Pregunta ${currentQuestionIndex + 1} de ${questions.length}`}</h2>
                         <Timer mytime={currentQuestion.time} onTimeStop={stopTime}></Timer>
@@ -173,8 +177,9 @@ function UserQuiz() {
                                         index={ind}
                                         label={op.option}
                                         value={op.idO}
-                                        checked={optionSelected === op.idO}
+                                        // checked={optionSelected === op.idO}
                                         onChange={(e) => {
+                                            console.log(optionSelected)
                                             selectOption(e.target.value)
                                         }}
                                     />
@@ -191,7 +196,7 @@ function UserQuiz() {
                                 type='button'
                                 variant='secondary'
                                 size='sm'
-                                onClick={createAnswer}
+                                onClick={""}
                             >
                                 Enviar todo
                             </MyButton>)
@@ -206,19 +211,9 @@ function UserQuiz() {
                         }
                     </Card.Footer>
                 </Card>
-                {/* //
-                    // (<>
-                    //     <Buttons
-                    //         btns={
-                    //             [{ label: 'Finalizar', type: 'button', variant: 'secondary', size: 'sm', onClick: { createAnswer } },
-                    //             { label: 'Hacer otro cuestionario', type: 'button', variant: 'primary', size: 'sm', onClick: { otherQuiz } }
-                    //             ]
-                    //         }>
-                    //     </Buttons>
-                    // </>)*/}
                 < MyVerticallyCenteredModal
                     // show={questions.length === 0 && dispatch(getInterestArea())}
-                    show={questions.length === 0}
+                    show={currentQuestionIndex === questions.length}
                     onHide={closed}
                     footerButtons={
                         [

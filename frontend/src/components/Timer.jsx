@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react"
 import { useSelector, useDispatch } from "react-redux"
 import { setTime } from "../reduxToolkit/slices/answer"
+import { nextQuestion } from "../reduxToolkit/slices/questions"
 
 export default function Timer({ mytime, onTimeStop }) {
     const [time, setTimer] = useState(obtainSeconds(mytime))
@@ -31,29 +32,25 @@ export default function Timer({ mytime, onTimeStop }) {
     }
 
     const stopTimer = () => {
-        return clearInterval(interval.current);
+        return () => clearInterval(interval.current);
     }
 
     useEffect(() => {
         dispatch(setTime(time))
         if (time === 0) {
             stopTimer()
+            dispatch(nextQuestion())
         }
-        // if (onTimeStop) {
-        //     console.log(onTimeStop, interval.current)
-        //     dispatch(setTime(time))
-        //     stopTimer()
-        // }
     }, [time])
 
     useEffect(() => {
 
-        interval.current = setInterval(() => {
-            setTimer((prevTime) => prevTime - 5)
-        }, 1000)
-        
-        // when finalice setInterval dismount to stop back counter
-        return () => clearInterval(interval.current);
+            interval.current = setInterval(() => {
+                setTimer((prevTime) => prevTime - 1)
+            }, 1000)
+
+            // when finalice setInterval dismount to stop back counter
+            return () => clearInterval(interval.current);
     }, [onTimeStop]);
 
     if (!time) {
