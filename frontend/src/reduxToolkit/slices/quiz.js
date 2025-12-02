@@ -52,7 +52,7 @@ const quizSlice = createSlice({
       }else{
         state.currentQuizIndex = null
         state.quiz_ids = []
-        state
+        state.currentQuiz= null
       }
     },
     getQuiz:(state) =>{

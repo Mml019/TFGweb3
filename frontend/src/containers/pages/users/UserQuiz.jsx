@@ -68,7 +68,7 @@ function UserQuiz() {
         dispatch(nextQuestion())
 
         // if is final question send al answer POST
-        if (currentQuestionIndex === questions.length) {
+        if (currentQuestionIndex == questions.length) {
             createAnswer()
         }
     }
@@ -152,7 +152,7 @@ function UserQuiz() {
                 <Card className="text-center" key={currentQuestion.idQ} >
                     <Card.Header>
                         <h2>{`Pregunta ${currentQuestionIndex + 1} de ${questions.length}`}</h2>
-                        <Timer mytime={currentQuestion.time} onTimeStop={stopTime}></Timer>
+                        <Timer mytime={currentQuestion?.time} onTimeStop={stopTime}></Timer>
                     </Card.Header>
                     <Card.Body>
                         <Card.Title>
@@ -196,7 +196,7 @@ function UserQuiz() {
                                 type='button'
                                 variant='secondary'
                                 size='sm'
-                                onClick={""}
+                                onClick={handleClick}
                             >
                                 Enviar todo
                             </MyButton>)

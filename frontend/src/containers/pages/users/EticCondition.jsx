@@ -9,7 +9,7 @@ export default function EticCondition() {
   const nav = useNavigate();
   const location = useLocation();
   const dispatch = useDispatch();
-  const checkedList = useSelector((state) => state.quizReducer.checkedList);
+  const checkedList = useSelector((state) => state.quiz.checkedList);
 
   const handleAcept = () => {
     let index = location.state?.checkIndex;
