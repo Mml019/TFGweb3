@@ -51,7 +51,7 @@ function UserQuiz() {
 
     // To pass nextQuestion and save answers into redux global variables
     function handleClick() {
-       
+
         // Stop time and save answer before pass to next question
         setStop(true)
 
@@ -149,86 +149,86 @@ function UserQuiz() {
                 <h1>{`Quiz ${currentQuizIndex}`}</h1>
             </div>
             <div id='content'>
-                <Card className="text-center" key={currentQuestion.idQ} >
-                    <Card.Header>
-                        <h2>{`Pregunta ${currentQuestionIndex + 1} de ${questions.length}`}</h2>
-                        <Timer mytime={currentQuestion?.time} onTimeStop={stopTime}></Timer>
-                    </Card.Header>
-                    <Card.Body>
-                        <Card.Title>
-                            <Row className="d-flex justify-center align-items-center">
-                                <Col xs={1}></Col>
-                                <Col xs={10} key='statement' >{currentQuestion.statement}</Col>
-                                <Col xs={1} key={`arrowRight_${currentQuestion.idP}`}>
-                                    <IoIosArrowForward className='arrow' onClick={handleClick} />
+                {currentQuestionIndex !== questions.length ?
+                    (<Card className="text-center" key={currentQuestion.idP} >
+                        <Card.Header>
+                            <h2>{`Pregunta ${currentQuestionIndex + 1} de ${questions.length}`}</h2>
+                            <Timer mytime={currentQuestion.time} onTimeStop={stopTime}></Timer>
+                        </Card.Header>
+                        <Card.Body>
+                            <Card.Title>
+                                <Row className="d-flex justify-center align-items-center">
+                                    <Col xs={1}></Col>
+                                    <Col xs={10} key='statement' >{currentQuestion.statement}</Col>
+                                    <Col xs={1} key={`arrowRight_${currentQuestion.idP}`}>
+                                        <IoIosArrowForward className='arrow' onClick={handleClick} />
+                                    </Col>
+                                </Row>
+                            </Card.Title>
+                            <Row className="d-flex justify-center">
+                                <Col xs={2}></Col>
+                                <Col xs={8} className="flex-center" key={`options_${currentQuestion.idP}`}>
+                                    {currentQuestion.idO.map((op, ind) => (
+                                        <Form.Check
+                                            inline
+                                            type='radio'
+                                            key={`radio_${currentQuestion.idP}_${op.idO}`}
+                                            // item={op.option}
+                                            name={'options_questions'}
+                                            index={ind}
+                                            label={op.option}
+                                            value={op.idO}
+                                            checked={parseInt(optionSelected) === parseInt(op.idO)}
+                                            onChange={(e) => {
+                                                selectOption(e.target.value)
+                                            }}
+                                        />
+                                    ))}
                                 </Col>
+                                <Col xs={2}></Col>
                             </Row>
-                        </Card.Title>
-                        <Row className="d-flex justify-center">
-                            <Col xs={2}></Col>
-                            <Col xs={8} className="flex-center" key={`options_${currentQuestion.idP}`}>
-                                {currentQuestion.idO.map((op, ind) => (
-                                    <Form.Check
-                                        inline
-                                        type='radio'
-                                        key={`radio_${currentQuestion.idP}_${op.idO}`}
-                                        // item={op.option}
-                                        name={'options_questions'}
-                                        index={ind}
-                                        label={op.option}
-                                        value={op.idO}
-                                        // checked={optionSelected === op.idO}
-                                        onChange={(e) => {
-                                            console.log(optionSelected)
-                                            selectOption(e.target.value)
-                                        }}
-                                    />
-                                ))}
-                            </Col>
-                            <Col xs={2}></Col>
-                        </Row>
-                    </Card.Body>
-                    <Card.Footer>
-                        {(currentQuestionIndex === (questions.length - 1))
-                            ?
-                            (<MyButton
-                                className='btn'
-                                type='button'
-                                variant='secondary'
-                                size='sm'
-                                onClick={handleClick}
-                            >
-                                Enviar todo
-                            </MyButton>)
-                            : (<MyButton
-                                type='submit'
-                                className='btn'
-                                onClick={handleClick}
-                                {...disabled}
-                            >
-                                Siguiente
-                            </MyButton>)
+                        </Card.Body>
+                        <Card.Footer>
+                            {(currentQuestionIndex === (questions.length - 1))
+                                ?
+                                (<MyButton
+                                    className='btn'
+                                    type='button'
+                                    variant='secondary'
+                                    size='sm'
+                                    onClick={handleClick}
+                                >
+                                    Enviar todo
+                                </MyButton>)
+                                : (<MyButton
+                                    type='submit'
+                                    className='btn'
+                                    onClick={handleClick}
+                                    {...disabled}
+                                >
+                                    Siguiente
+                                </MyButton>)
+                            }
+                        </Card.Footer>
+                    </Card>
+                    ) : (< MyVerticallyCenteredModal
+                        // show={questions.length === 0 && dispatch(getInterestArea())}
+                        show={currentQuestionIndex === questions.length}
+                        onHide={closed}
+                        footerButtons={
+                            [
+                                { label: 'Finalizar', type: 'button', variant: 'secondary', size: 'sm', onClick: createAnswer },
+                                { label: 'Hacer otro cuestionario', type: 'button', variant: 'primary', size: 'sm', onClick: otherQuiz }
+                            ]
                         }
-                    </Card.Footer>
-                </Card>
-                < MyVerticallyCenteredModal
-                    // show={questions.length === 0 && dispatch(getInterestArea())}
-                    show={currentQuestionIndex === questions.length}
-                    onHide={closed}
-                    footerButtons={
-                        [
-                            { label: 'Finalizar', type: 'button', variant: 'secondary', size: 'sm', onClick: createAnswer },
-                            { label: 'Hacer otro cuestionario', type: 'button', variant: 'primary', size: 'sm', onClick: otherQuiz }
-                        ]
-                    }
-                >
-                    <h2>¡Enhorabuena Quiz completado!</h2>
-                    <p>Ha finalizado el cuestionario debería <b>repasar estas áreas,
-                        para volverse todo un experto</b> en Prácticas Basadas en la evidencia(PBE).
-                    </p>
-                    <div id='results'>
-                        <Row>
-                            {/* {dispatch(getResults()).unwrap().then((r) => {
+                    >
+                        <h2>¡Enhorabuena Quiz completado!</h2>
+                        <p>Ha finalizado el cuestionario debería <b>repasar estas áreas,
+                            para volverse todo un experto</b> en Prácticas Basadas en la evidencia(PBE).
+                        </p>
+                        <div id='results'>
+                            <Row>
+                                {/* {dispatch(getResults()).unwrap().then((r) => {
                                 r.area.forEach(area => {
                                     return (
                                         <span >area.toString()</span>
@@ -236,14 +236,14 @@ function UserQuiz() {
                                     )
                                 });
                             })} */}
-                        </Row>
-                        <Row>
-                            <p>Número de preguntas correctas:{ }</p>
-                            <p>Número de preguntas incorrectas:{ }</p>
-                        </Row>
-                    </div>
-                </MyVerticallyCenteredModal>
-            </div>
+                            </Row>
+                            <Row>
+                                <p>Número de preguntas correctas:{ }</p>
+                                <p>Número de preguntas incorrectas:{ }</p>
+                            </Row>
+                        </div>
+                    </MyVerticallyCenteredModal>)
+                }</div>
         </Container >
     )
 }
