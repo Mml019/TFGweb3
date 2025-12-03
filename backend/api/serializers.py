@@ -11,7 +11,7 @@ from datetime import datetime
 class DimensionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Dimension
-        fields = "__all__"
+        fields = ["idD", "orden", "dimension"]
 
     def validate(self, attrs):
         return super().validate(attrs)
@@ -73,7 +73,7 @@ class OptionQuestionSerializer(serializers.ModelSerializer):
 
 
 class QuestionSerializer(serializers.ModelSerializer):
-    idD = DimensionSerializer
+    idD = DimensionSerializer()
     idO = OptionSerializer(source="question_values.all", many=True, read_only=True)
 
     class Meta:

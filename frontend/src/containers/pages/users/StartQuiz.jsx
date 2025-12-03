@@ -71,7 +71,7 @@ export default function StartQuiz() {
   return (
     <LayoutUser>
       <div id="header">
-        <MyNavbar></MyNavbar>
+        <MyNavbar type='admin'></MyNavbar>
       </div>
       <div id="content">
         {/* <MyVerticallyCenteredModal show={!cookie} onHide={isAcceptedCookie}>

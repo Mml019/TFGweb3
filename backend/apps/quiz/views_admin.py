@@ -247,11 +247,10 @@ class QuizViews(APIView):
                         
                         '''optionQ = OptionQuestion(idO=option, idP=question, motive=None)
                         optionQ.full_clean'''
-                        
                         optionQ = oqm.objects.create(idP=question, idO=option, motive=None)
                         if op == df_normal.iloc[i]["solucion"]:
                             optionQ.motive = df_normal.iloc[i]["motivo"]
-                            optionQ.save
+                            optionQ.save()
                        
                         # optionQ_BD.append(optionQ)
 

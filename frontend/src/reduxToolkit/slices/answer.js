@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice, current } from '@reduxjs/toolkit'
-
+import { api } from '../../api/api';
 // export const setAnswers = createAsyncThunk('answer/setAnswers',
 //     async (answers, { rejectWithValue }) => {
 //         try {

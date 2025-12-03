@@ -44,6 +44,12 @@ a.nav-link {
     color: white;
 }
 
+.navbar-text {
+    padding-top: .5rem;
+    padding-bottom: .5rem;
+    color: white /*var(--bs-navbar-color)*/;
+}
+
 /*Styles for a scroll bar*/
 /* Works on Firefox */
 /* body {

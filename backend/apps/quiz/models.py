@@ -48,9 +48,9 @@ class CoreContent(models.Model):
         return (f'ID {self.idC}, Contenido Nuclear {self.core_cont }, Área de interés  {self.idA.int_area}')
 
 class Question(models.Model):
-    class QuestionManager(models.Manager):
-        def get_queryset(self):
-            return super().get_queryset().values().annotate()
+    # class QuestionManager(models.Manager):
+    #     def get_queryset(self):
+    #         return super().get_queryset().values().annotate()
 
     idP =               models.BigAutoField(primary_key=True)
     numero =            models.PositiveIntegerField(default=1)

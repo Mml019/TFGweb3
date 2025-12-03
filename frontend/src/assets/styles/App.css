@@ -17,7 +17,7 @@ root {
 #layoutUser {
     height: 100vh;
     width: 100%;
-    overflow: auto;
+    /* overflow: auto; */
 }
 
 .header {
@@ -37,7 +37,7 @@ root {
     overflow: auto;
     height: 90%;
     padding-bottom: 60px;
-    padding-top: 20px;
+    margin-top: 60px;
     margin-left: 2%;
     padding-right: 2%;
 }

@@ -44,11 +44,13 @@ const quizSlice = createSlice({
     checkedList: [],
   },
   reducers: {
-    nextQuiz: (state) => {
-      if (state.quiz_ids.length > 0) {
-        state.currentQuiz = action.payload.quiz;
-        state.currentQuizIndex +=1;
-        state.quiz_ids = action.payload.ids;
+    nextQuiz: (state, action) => {
+      if (state.currentQuizIndex < state.quiz_ids.lenght) {
+        state.currentQuiz += 1
+        state.currentQuiz = state.quiz_ids[state.currentQuizIndex];
+
+        // state.currentQuizIndex +=1;
+        // state.quiz_ids = action.payload.ids;
       }else{
         state.currentQuizIndex = null
         state.quiz_ids = []

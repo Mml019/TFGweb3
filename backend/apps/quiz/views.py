@@ -240,6 +240,7 @@ class RespuestaView(CreateAPIView):
         data = request.data
         print(data)
         try:
+            
             with transaction.atomic:
                 for r in data['answers']:
                     respuesta = Respuesta.objects.create(
@@ -248,7 +249,6 @@ class RespuestaView(CreateAPIView):
                         respondant = r.user,
                         question = r.question
                     )
-            
              
                     
         except ValidationError as ve:
