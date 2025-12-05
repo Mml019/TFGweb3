@@ -1,4 +1,4 @@
-import { Container } from "react-bootstrap";
+import { Container, Row } from "react-bootstrap";
 import LayoutUser from "../../hocs/LayoutUser"
 
 export default function ErrorTimeoutBadR({error}) {

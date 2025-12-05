@@ -25,9 +25,6 @@ export default function MyNavbar({ style = { backgroundColor: '#0065BD'}, type =
                         ) : null}
                     </Nav>
                     <Nav>
-                        <Navbar.Text className='justify-content-end'>
-                                Eres Admin
-                            </Navbar.Text>
                         {type === 'admin' ? (
                             <Navbar.Text className='justify-content-end'>
                                 Eres Admin

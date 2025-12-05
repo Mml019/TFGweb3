@@ -24,7 +24,7 @@ import Spinner from "../../../components/Spinner.jsx";
 import MyNavbar from "../../../components/navigation/MyNavbar.jsx";
 import { useDispatch, useSelector } from "react-redux";
 import { createUser } from "../../../reduxToolkit/slices/user.js";
-import { getQuizRandomAndList } from "../../../reduxToolkit/slices/quiz.js";
+import { getQuizzesRandom } from "../../../reduxToolkit/slices/quiz.js";
 
 export default function UserForm() {
   const [loading, setLoading] = useState(true);
@@ -169,7 +169,7 @@ export default function UserForm() {
 
         values.push(Math.round(parseFloat(getValues([`activity_val_${i}`])) * 100) / 100)
         suma += values[i]
-
+        console.log(suma, positions)
       }
       // setTotal((suma <= 100 || suma <= 100.00))
       return ((suma > 100 || suma > 100.00))
@@ -189,13 +189,11 @@ export default function UserForm() {
         console.log(data)
         // JSON Stringify is in POST request in dispatcher
         // unwrap to manage request errors or payload
-        // const userCreated = dispatch(createUser(data)).unwrap();
-        // console.log(userCreated);
+        dispatch(createUser(data));
         // put in localstorage user id is in REDUX not necessary
         // localStorage.setItem('userCreated', JSON.stringify(userCreated));
         //get random quiz to show quiz
-        // quizList = dispatch(getQuizRandomAndList).unwrap();
-        // console.log(quizList)
+        // dispatch(getQuizzesRandom());
       } catch (err) {
         toast.error(`Error al crear el usuario y enviar el form. ${err.message}`)
       } finally {
@@ -221,9 +219,9 @@ export default function UserForm() {
 
   return (
     <Container fluid id="user_form">
-      <div id="header">
+      {/* <div id="header"> */}
         <MyNavbar nameBrand={"Datos demográficos"}></MyNavbar>
-      </div>
+      {/* </div> */}
       <div id="content">
         <form onSubmit={handleSubmit(onSubmit)}>
           <div id="basic-data">

@@ -1,7 +1,7 @@
-import { Container } from "react-bootstrap";
+import { Container, Row } from "react-bootstrap";
 import LayoutUser from "../../hocs/LayoutUser";
 
-export default function Error404(error) {
+export default function Error404({error}) {
 
     return (
         <LayoutUser>

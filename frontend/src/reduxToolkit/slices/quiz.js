@@ -1,9 +1,9 @@
 import { createAsyncThunk, createSlice, current } from "@reduxjs/toolkit";
 import { api } from "../../api/api";
 
-// Returns a json with a list of ids and random quiz with their questions and options
-export const getQuizRandomAndList = createAsyncThunk(
-  "quiz/getQuizRandomAndList",
+// Returns a json with a list of object quiz (allQuiz()) with their questions
+export const getQuizzesRandom = createAsyncThunk(
+  "quiz/getQuizzesRandom",
   async () => {
     const response = await fetch(
       `${import.meta.env.VITE_REACT_API_URL}/uib/PEBquiz/quiz/`
@@ -14,8 +14,8 @@ export const getQuizRandomAndList = createAsyncThunk(
   }
 );
 
-// export const getQuizRandomAndList = createAsyncThunk(
-//   "quiz/getQuizRandomAndList",
+// export const getQuizzesRandom = createAsyncThunk(
+//   "quiz/getQuizzesRandom",
 //   async (_, {rejectWithValue}) => {
 //     try {
 //       console.log('hola')
@@ -44,23 +44,20 @@ const quizSlice = createSlice({
     checkedList: [],
   },
   reducers: {
-    nextQuiz: (state, action) => {
-      if (state.currentQuizIndex < state.quiz_ids.lenght) {
-        state.currentQuiz += 1
-        state.currentQuiz = state.quiz_ids[state.currentQuizIndex];
-
-        // state.currentQuizIndex +=1;
-        // state.quiz_ids = action.payload.ids;
-      }else{
-        state.currentQuizIndex = null
-        state.quiz_ids = []
-        state.currentQuiz= null
-      }
+    getQuiz: (state) => {
+      state.currentQuiz = action.payload.quiz;
+      state.currentQuizIndex = action.payload.quiz["idQ"];
+      state.quiz_ids = action.payload.ids;
     },
-    getQuiz:(state) =>{
-        state.currentQuiz = action.payload.quiz;
-        state.currentQuizIndex = action.payload.quiz["idQ"];
-        state.quiz_ids = action.payload.ids;
+    nextQuiz: (state) => {
+      if (state.currentQuizIndex < state.quiz_ids.length-1) {
+        state.currentQuizIndex += 1
+        state.currentQuiz = state.quiz_ids[state.currentQuizIndex]
+      } else {
+        state.currentQuizIndex = null
+        state.currentQuiz = null
+        state.quiz_ids = []
+      }
     },
     initChecks: (state, action) => {
       state.checkedList = action.payload;
@@ -72,16 +69,17 @@ const quizSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(getQuizRandomAndList.pending, (state) => {
+      .addCase(getQuizzesRandom.pending, (state) => {
         state.statusQRandom = "loading";
       })
-      .addCase(getQuizRandomAndList.fulfilled, (state, action) => {
+      .addCase(getQuizzesRandom.fulfilled, (state, action) => {
         state.statusQRandom = "succeeded";
-        state.currentQuiz = action.payload.quiz;
-        state.currentQuizIndex = action.payload.quiz["idQ"];
-        state.quiz_ids = action.payload.ids;
+        // state.currentQuizIndex = action.payload.quizzes[0].idQ;
+        state.currentQuizIndex = 0;
+        state.currentQuiz = action.payload.quizzes[state.currentQuizIndex];
+        state.quiz_ids = action.payload.quizzes;
       })
-      .addCase(getQuizRandomAndList.rejected, (state, action) => {
+      .addCase(getQuizzesRandom.rejected, (state, action) => {
         state.statusQRandom = "failed";
         state.errorQRandom = action.error.message;
       });

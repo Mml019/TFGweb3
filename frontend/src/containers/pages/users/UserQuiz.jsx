@@ -8,7 +8,7 @@ import Col from "react-bootstrap/Col"
 import Row from "react-bootstrap/Row"
 import Spinner from "../../../components/Spinner"
 import { getQuizUnOrderQuestions, nextQuestion, setOption } from "../../../reduxToolkit/slices/questions"
-import { getQuizRandomAndList, nextQuiz } from "../../../reduxToolkit/slices/quiz"
+import { getQuizzesRandom, nextQuiz } from "../../../reduxToolkit/slices/quiz"
 import { setAnswer, sendAnswers } from "../../../reduxToolkit/slices/answer";
 import { Form } from "react-bootstrap"
 import MyButton from '../../../components/MyButton'
@@ -52,7 +52,6 @@ function UserQuiz() {
 
     function otherQuiz() {
         // POST to data base with data
-        console.log("otherQuiz")
         dispatch(nextQuiz())
         // prove that
         //dispatch(getQuizUnOrderQuestions(currentQuizIndex))
@@ -83,21 +82,6 @@ function UserQuiz() {
         }
     }
 
-    const fetchQuestions = () => {
-        try {
-            if (currentQuiz === undefined || currentQuiz === null) {
-                dispatch(getQuizRandomAndList()).unwrap()
-                    .then(((quizData) => {
-                        dispatch(getQuizUnOrderQuestions(quizData.quiz.idQ)).unwrap()
-                    }))
-            } else {
-                dispatch(getQuizUnOrderQuestions(currentQuizIndex))
-            }
-        } catch (e) {
-            toast.error(`Error al mostrar las preguntas del quiz ${currentQuiz}. ${e}`)
-        }
-    }
-
     // To stablize by default optionSelected as "No lo sé" if question isn't respond
     useEffect(() => {
         if (currentQuestion) {
@@ -108,8 +92,20 @@ function UserQuiz() {
     }, [currentQuestion]);
 
     useEffect(() => {
+        const fetchQuestions = () => {
+            try {
+                if (currentQuiz === undefined || currentQuiz === null) {
+                    dispatch(getQuizzesRandom()).unwrap()
+                }else{
+                    console.log(currentQuiz)
+                    dispatch(getQuizUnOrderQuestions(currentQuiz.idQ))
+                }
+            } catch (e) {
+                toast.error(`Error al mostrar las preguntas del quiz ${currentQuiz}. ${e}`)
+            }
+        }
         fetchQuestions()
-    }, [currentQuizIndex]);
+    }, [currentQuiz]);
 
     //delete back navigation history
     useEffect(() => {
@@ -153,7 +149,7 @@ function UserQuiz() {
             </div>)
     }
 
-    if (currentQuestionIndex === questions.length){
+    if (currentQuestionIndex === questions.length) {
         return (
             < MyVerticallyCenteredModal
                 // show={questions.length === 0 && dispatch(getInterestArea())}
@@ -195,9 +191,9 @@ function UserQuiz() {
                 <h1>{`${currentQuestion.idD.dimension}`}</h1>
             </div> */}
 
-            <div id="header">
+            {/* <div id="header"> */}
                 <MyNavbar nameBrand={`${currentQuestion.idD.dimension}`}></MyNavbar>
-            </div>
+            {/* </div> */}
             <div id='content'>
                 <Card className="text-center" key={currentQuestion.idP} >
                     <Card.Header>

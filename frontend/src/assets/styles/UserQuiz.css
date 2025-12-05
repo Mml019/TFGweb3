@@ -18,7 +18,7 @@
     display: inline-flex;
     justify-items: center;
     justify-content: center;
-    align-items: center;    
+    align-items: center;  
 }
 
 .card-header:first-child{
