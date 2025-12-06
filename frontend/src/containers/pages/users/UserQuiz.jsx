@@ -42,7 +42,6 @@ function UserQuiz() {
     // To create all the answers by one user in BD
     function createAnswer() {
         // POST to data base with data
-        console.log("respuesta")
         dispatch(sendAnswers(answers))
         nav("/quiz/congratulations/")
         // delete history of navigation
@@ -90,44 +89,25 @@ function UserQuiz() {
         }
     }, [currentQuestion]);
 
-    useEffect(() => {
-        const fetchQuestions = () => {
-            try {
-                if (currentQuiz === undefined || currentQuiz === null) {
-                    dispatch(getQuizzesRandom()).unwrap()
-                } else {
-                    dispatch(getQuizUnOrderQuestions(currentQuiz.idQ))
-                }
-            } catch (e) {
-                toast.error(`Error al mostrar las preguntas del quiz ${currentQuiz}. ${e}`)
+    const fetchQuestions = async () => {
+        try {
+            if (currentQuiz === undefined || currentQuiz === null) {
+                await dispatch(getQuizzesRandom()).unwrap()
+            } else {
+                await dispatch(getQuizUnOrderQuestions(currentQuiz.idQ))
             }
+        } catch (e) {
+            toast.error(`Error al mostrar las preguntas del quiz ${currentQuiz}. ${e}`)
         }
+    }
+
+    useEffect(() => {
         if (currentQuizIndex === -1) {
             nav("/quiz/congratulations/", { replace: true })
         } else {
             fetchQuestions()
         }
     }, [currentQuiz]);
-
-    //delete back navigation history
-    useEffect(() => {
-        // replaceState
-        window.history.replaceState(null, '', window.location.href);
-
-        // Listening if user press back
-        const handlePopState = () => {
-            // Redirigir a una nueva página si el usuario intenta retroceder
-            //   nav('/quiz/questions/', { replace: true });
-            nav('/quiz/questions/')
-        };
-
-        window.addEventListener('popstate', handlePopState);
-
-        return () => {
-            // Clean and dismount component
-            window.removeEventListener('popstate', handlePopState);
-        };
-    }, [nav]);
 
     if (status === 'idle' || status === 'loading') {
         return (

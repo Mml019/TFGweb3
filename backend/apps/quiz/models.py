@@ -278,7 +278,7 @@ class Enviroment(models.Model):
     enviroment = models.CharField(max_length=125)
 
     def __str__(self):
-        return (f'ID: {self.idEnv}, environ {self.environ}')
+        return (f'ID: {self.idEnv}, environ {self.enviroment}')
 
 class Sector(models.Model):
     idSec = models.AutoField(primary_key=True)

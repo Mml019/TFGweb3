@@ -131,11 +131,13 @@ class RespondantViews(CreateAPIView):
                         obj_ok = obj.strip().capitalize()
                         env, _ = Enviroment.objects.get_or_create(enviroment=obj_ok)
                         env_list.append(env)
+                    
 
                 sec_list = []
                 for s in data["sector"]:
                     sector, _ = Sector.objects.get_or_create(sector=s)
                     sec_list.append(sector)
+               
                 # if i have other check
                 if (
                     "other_sec" in data
@@ -146,8 +148,8 @@ class RespondantViews(CreateAPIView):
                     for obj in arr_other:
                         obj_ok = obj.strip().capitalize()
                         sector, _ = Sector.objects.get_or_create(sector=obj_ok)
-                        sec_list.append(obj_ok)
-
+                        sec_list.append(sector)
+                    
                 act_list = []
                 for a in data["activity"]:
                     activity, _ = Activity.objects.get_or_create(activity=a)
@@ -213,7 +215,9 @@ class RespondantViews(CreateAPIView):
                     )
 
                 # profesional.activities.set(act_list)
+                print(sec_list)
                 profesional.sectors.set(sec_list)
+                print(env_list)
                 profesional.enviroments.set(env_list)
 
                 # Traverse activity array but is not equal activity_val index, map

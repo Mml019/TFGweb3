@@ -38,7 +38,7 @@ export default function UserForm() {
   const dispatch = useDispatch();
   let [total, setTotal] = useState(false)
 
-  const {currentUser,statusUser ,errorUser} = useSelector((state) => state.user)
+  const { currentUser, statusUser, errorUser } = useSelector((state) => state.user)
 
   const basic_data = [
     { placeholder: "Sexo", label: "Sexo", type: "text", name: "sex" },
@@ -80,11 +80,16 @@ export default function UserForm() {
   // Load all data before showing the quiz
   useEffect(() => {
     setLoading(true)
-     if (currentUser) { nav('quiz/questions')
+    if (currentUser) {
+      nav('quiz/questions')
       return toast.error('Ya ha rellenado un formulario de usuario continúe con las preguntas, por favor')
-    }else{
-      if (loading) { fetchAllData() };
-    }
+    } else if (loading) {
+      fetchAllData()
+    } else {
+      if (statusUser === 'failed') {
+        return nav('/quiz/time-out-response/')
+      }
+    };
   }, []);
 
   const yupLoadData = yup.object({
@@ -166,12 +171,13 @@ export default function UserForm() {
   // return true if activities percentage sum more than 100%
   const not100 = () => {
     // Show message total sum 100 of percentage activity
-    if (activitiesChecked !== undefined || activitiesChecked !== null || activitiesChecked.length !== 0) {console.log(activitiesChecked)
+    if (activitiesChecked !== undefined || activitiesChecked !== null || activitiesChecked.length !== 0) {
+      console.log(activitiesChecked)
       const positions = activitiesChecked.map(act_check => activities.indexOf(act_check));
       getValues([''])
       let suma = 0
       let values = []
-      for (let i=0; i < positions.length; i++) {
+      for (let i = 0; i < positions.length; i++) {
 
         values.push(Math.round(parseFloat(getValues([`activity_val_${positions[i]}`])) * 100) / 100)
         suma += values[i]
@@ -198,8 +204,9 @@ export default function UserForm() {
         // put in localstorage user id is in REDUX not necessary
         // localStorage.setItem('userCreated', JSON.stringify(userCreated));
       } catch (err) {
-        if(statusUser === 'failed'){
-          nav('/quiz/error/', {replace: true})
+        if (statusUser === 'failed') {
+          nav('/quiz/error/', { replace: true })
+          statusUser = null
         }
         toast.error(`Error ${err} al crear el usuario y enviar el form. ${err.message}`)
       } finally {
@@ -222,15 +229,12 @@ export default function UserForm() {
       </div>
     )
   }
- 
-  if (statusUser === 'failed'){
-    return nav('/quiz/time-out-response/', {replace: true})
-  }
+
 
   return (
     <LayoutUser>
       {/* <div id="header"> */}
-        <MyNavbar nameBrand={"Datos demográficos"}></MyNavbar>
+      <MyNavbar nameBrand={"Datos demográficos"}></MyNavbar>
       {/* </div> */}
       <div id="content">
         <form onSubmit={handleSubmit(onSubmit)}>
