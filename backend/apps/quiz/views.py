@@ -126,7 +126,7 @@ class RespondantViews(CreateAPIView):
                     and data["other_env"] is not None
                     and len(data["other_env"]) > 0
                 ):
-                    arr_other = str(data["other_env"]).string.split(",")
+                    arr_other = str(data["other_env"]).split(",")
                     for obj in arr_other:
                         obj_ok = obj.strip().capitalize()
                         env, _ = Enviroment.objects.get_or_create(enviroment=obj_ok)
@@ -142,7 +142,7 @@ class RespondantViews(CreateAPIView):
                     and data["other_sec"] is not None
                     and len(data["other_sec"]) > 0
                 ):
-                    arr_other = str(data["other_sec"]).string.split(",")
+                    arr_other = str(data["other_sec"]).split(",")
                     for obj in arr_other:
                         obj_ok = obj.strip().capitalize()
                         sector, _ = Sector.objects.get_or_create(sector=obj_ok)
