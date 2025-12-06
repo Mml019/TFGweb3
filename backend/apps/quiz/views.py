@@ -1,4 +1,5 @@
 import random
+from datetime import time
 
 from api.serializers import *
 from django.db import transaction
@@ -260,38 +261,62 @@ class OptionQuestionView(CreateAPIView):
 
     # count all correct and incorrects answer and send interest area list from incorrects
     def create(self, request):
-        correct, incorrect = 0
+        correct = 0
+        incorrect = 0
         list_area = set()
 
+        # get all solutions with motive
         solutions = OptionQuestion.solutions.all()
-        print(solutions)
+        answers = request.data
 
-        data = request.data["answers"]
-        with transaction.atomic:
-            for index, r in data["answers"]:
+        with transaction.atomic():
+            for i, r in enumerate(answers):
                 # create answer in BD
                 try:
-                    answer, _ = Respuesta.objects.create(
-                        user=r.user, question=r.question, time=r.time, option=int(r.option)
+
+                            # transform seconds to hh:mm:ss
+                    seconds = int(r['time'])
+
+                    # Calcula horas, minutos y segundos
+                    hours = seconds // 3600
+                    minutes = (seconds % 3600) // 60
+                    seconds = seconds % 60
+
+                    # Crea un objeto 'time' con el resultado
+                    time_value = time(hour=hours, minute=minutes, second=seconds)
+                    
+                    user=Respondant.objects.get(respondant=str(r['user']))
+                    question = Question.objects.get(idP=int(r['question']))
+                    option = Option.objects.get(idO=int(r['option']))
+                    print(user.respondant, question.idP)
+                    answer = Respuesta.objects.create(
+                        answer=option,
+                        time=time_value,
+                        respondant=user,
+                        question=question
                     )
                 except ValidationError as ve:
                     return Response(
-                        {"error": f"Error al crear respuesta ${index}"},
+                        {"error": f"Error al crear respuesta ${i}"},
                         status=HTTP_400_BAD_REQUEST,
                     )
 
-                if r in solutions:
+                if question in solutions:
                     correct += 1
 
                 else:
                     incorrect += 1
                     # and return int_area from question_dimension_idA.int_Area
                     # list_area.add()
-                    list_area.add(r.idA.area)
+                    print(question)
+                    areas = InterestArea.objects.filter(idD=question.idD)
+                    for area in areas:
+                        area_serial= InterestAreaSerializer(area)
+                        list_area.add(InterestAreaSerializer(area_serial.data))
         return Response(
             {
                 "success": {
-                    "num_correctes": correct,
+                    "num_correct": correct,
                     "num_incorrect": incorrect,
                     "areas": list_area,
                 }

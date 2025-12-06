@@ -38,10 +38,11 @@ root {
     overflow: auto;
     height: 90%;
     padding-bottom: 60px;
-    /* margin-top: 60px; */
-    margin-top: 3%;  
-    margin-left: 2%;
+    padding-top: 60px;
+    /* margin-top: 3%;  
+    margin-left: 2%;*/
     padding-right: 2%;
+    padding-left: 2%;
 }
 
 #footer {

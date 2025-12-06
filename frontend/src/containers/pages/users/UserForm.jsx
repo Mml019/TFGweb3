@@ -6,10 +6,11 @@ import React from "react";
 import toast from "react-hot-toast";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
+import LayoutUser from "../../../hocs/LayoutUser";
 import { Container } from "react-bootstrap";
 import Button from "react-bootstrap/Button";
 import { useForm, useWatch, Controller } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
+import { replace, useNavigate } from "react-router-dom";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 
@@ -24,7 +25,6 @@ import Spinner from "../../../components/Spinner.jsx";
 import MyNavbar from "../../../components/navigation/MyNavbar.jsx";
 import { useDispatch, useSelector } from "react-redux";
 import { createUser } from "../../../reduxToolkit/slices/user.js";
-import { getQuizzesRandom } from "../../../reduxToolkit/slices/quiz.js";
 
 export default function UserForm() {
   const [loading, setLoading] = useState(true);
@@ -37,6 +37,8 @@ export default function UserForm() {
   const [citiesAll, setCitiesAll] = useState([])
   const dispatch = useDispatch();
   let [total, setTotal] = useState(false)
+
+  const {currentUser,statusUser ,errorUser} = useSelector((state) => state.user)
 
   const basic_data = [
     { placeholder: "Sexo", label: "Sexo", type: "text", name: "sex" },
@@ -78,7 +80,11 @@ export default function UserForm() {
   // Load all data before showing the quiz
   useEffect(() => {
     setLoading(true)
-    if (loading) { fetchAllData() };
+     if (currentUser) { nav('quiz/questions')
+      return toast.error('Ya ha rellenado un formulario de usuario continúe con las preguntas, por favor')
+    }else{
+      if (loading) { fetchAllData() };
+    }
   }, []);
 
   const yupLoadData = yup.object({
@@ -158,30 +164,29 @@ export default function UserForm() {
   const nationality = useWatch({ name: 'nationality', control })
 
   // return true if activities percentage sum more than 100%
-  const moreThan100 = () => {
+  const not100 = () => {
     // Show message total sum 100 of percentage activity
-    if (activitiesChecked !== undefined || activitiesChecked !== null || activitiesChecked.length !== 0) {
+    if (activitiesChecked !== undefined || activitiesChecked !== null || activitiesChecked.length !== 0) {console.log(activitiesChecked)
       const positions = activitiesChecked.map(act_check => activities.indexOf(act_check));
       getValues([''])
       let suma = 0
       let values = []
-      for (let i = 0; i < positions.length; i++) {
+      for (let i=0; i < positions.length; i++) {
 
-        values.push(Math.round(parseFloat(getValues([`activity_val_${i}`])) * 100) / 100)
+        values.push(Math.round(parseFloat(getValues([`activity_val_${positions[i]}`])) * 100) / 100)
         suma += values[i]
-        console.log(suma, positions)
       }
       // setTotal((suma <= 100 || suma <= 100.00))
-      return ((suma > 100 || suma > 100.00))
+      return ((suma !== 100 || suma !== 100.00))
     }
   }
 
   const onSubmit = (data) => {
     setLoadingSpin(true);
     // Show alert if sum total more than 100
-    if (moreThan100()) {
+    if (not100()) {
       setLoadingSpin(false)
-      return toast.error("Deben sumar las actividades un total de 100%")
+      return toast.error("Deben sumar las actividades un total de 100% ni más ni menos")
     } else {
       // nav("/quiz/questions/");
       // POST to make User in database
@@ -192,10 +197,11 @@ export default function UserForm() {
         dispatch(createUser(data));
         // put in localstorage user id is in REDUX not necessary
         // localStorage.setItem('userCreated', JSON.stringify(userCreated));
-        //get random quiz to show quiz
-        // dispatch(getQuizzesRandom());
       } catch (err) {
-        toast.error(`Error al crear el usuario y enviar el form. ${err.message}`)
+        if(statusUser === 'failed'){
+          nav('/quiz/error/', {replace: true})
+        }
+        toast.error(`Error ${err} al crear el usuario y enviar el form. ${err.message}`)
       } finally {
         setLoadingSpin(false)
       }
@@ -216,9 +222,13 @@ export default function UserForm() {
       </div>
     )
   }
+ 
+  if (statusUser === 'failed'){
+    return nav('/quiz/time-out-response/', {replace: true})
+  }
 
   return (
-    <Container fluid id="user_form">
+    <LayoutUser>
       {/* <div id="header"> */}
         <MyNavbar nameBrand={"Datos demográficos"}></MyNavbar>
       {/* </div> */}
@@ -811,6 +821,6 @@ export default function UserForm() {
           </div>
         </form>
       </div>
-    </Container>
+    </LayoutUser>
   );
 }

@@ -54,7 +54,7 @@ const quizSlice = createSlice({
         state.currentQuizIndex += 1
         state.currentQuiz = state.quiz_ids[state.currentQuizIndex]
       } else {
-        state.currentQuizIndex = null
+        state.currentQuizIndex = -1
         state.currentQuiz = null
         state.quiz_ids = []
       }

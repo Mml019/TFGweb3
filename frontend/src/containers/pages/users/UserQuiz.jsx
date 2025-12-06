@@ -25,7 +25,7 @@ function UserQuiz() {
     const dispatch = useDispatch();
     const { questions, questions_done, currentQuestion, currentQuestionIndex, currentOption, status, error } = useSelector((state) => state.question)
     const { quiz_ids, currentQuiz, currentQuizIndex, statusQRandom, errorQRandom, checkedList } = useSelector((state) => state.quiz)
-    const { answers, currentAnswer, responseTime, statusAnswer } = useSelector(state => state.answers)
+    const { answers, currentAnswer, responseTime, statusAnswer, corrects, incorrects, areas } = useSelector(state => state.answers)
     const { currentUser } = useSelector((state) => state.user)
 
     const [optionSelected, selectOption] = useState(0)
@@ -44,7 +44,7 @@ function UserQuiz() {
         // POST to data base with data
         console.log("respuesta")
         dispatch(sendAnswers(answers))
-        nav("/quiz/congratulations/", { replace: true })
+        nav("/quiz/congratulations/")
         // delete history of navigation
         // Reemplaza el historial para eliminar la entrada actual
         // window.history.replaceState(null, '', '/quiz/congratulations/');
@@ -53,8 +53,6 @@ function UserQuiz() {
     function otherQuiz() {
         // POST to data base with data
         dispatch(nextQuiz())
-        // prove that
-        //dispatch(getQuizUnOrderQuestions(currentQuizIndex))
     }
 
     // To pass nextQuestion and save answers into redux global variables
@@ -63,10 +61,10 @@ function UserQuiz() {
         // Stop time and save answer before pass to next question
         setStop(true)
 
-        // store answers until all quiz is submitted´
+        // store answers until all quiz is submitted´ sends instances
         let answer = {
-            questionId: currentQuestion.idP,
-            // userId: currentUser.respondant,
+            question: currentQuestion.idP,
+            user: currentUser.respondant,
             option: optionSelected,
             time: responseTime
         }
@@ -86,7 +84,8 @@ function UserQuiz() {
     useEffect(() => {
         if (currentQuestion) {
             if (optionSelected === 0) {
-                selectOption(currentQuestion.idO[2].idO)
+                // selectOption(currentQuestion.idO[2].idO)
+                selectOption(currentQuestion.idO.find(item => item.option === 'No lo sé').idO)
             }
         }
     }, [currentQuestion]);
@@ -96,23 +95,26 @@ function UserQuiz() {
             try {
                 if (currentQuiz === undefined || currentQuiz === null) {
                     dispatch(getQuizzesRandom()).unwrap()
-                }else{
-                    console.log(currentQuiz)
+                } else {
                     dispatch(getQuizUnOrderQuestions(currentQuiz.idQ))
                 }
             } catch (e) {
                 toast.error(`Error al mostrar las preguntas del quiz ${currentQuiz}. ${e}`)
             }
         }
-        fetchQuestions()
+        if (currentQuizIndex === -1) {
+            nav("/quiz/congratulations/", { replace: true })
+        } else {
+            fetchQuestions()
+        }
     }, [currentQuiz]);
 
     //delete back navigation history
     useEffect(() => {
-        // Cuando el componente PageC se monta, reemplaza la entrada en el historial
+        // replaceState
         window.history.replaceState(null, '', window.location.href);
 
-        // Opcional: escuchar el evento popstate (si el usuario presiona retroceder)
+        // Listening if user press back
         const handlePopState = () => {
             // Redirigir a una nueva página si el usuario intenta retroceder
             //   nav('/quiz/questions/', { replace: true });
@@ -122,7 +124,7 @@ function UserQuiz() {
         window.addEventListener('popstate', handlePopState);
 
         return () => {
-            // Limpiar el event listener cuando el componente se desmonte
+            // Clean and dismount component
             window.removeEventListener('popstate', handlePopState);
         };
     }, [nav]);
@@ -149,12 +151,18 @@ function UserQuiz() {
             </div>)
     }
 
-    if (currentQuestionIndex === questions.length) {
+
+    // if (statusQRandom === 'failed' || statusAnswer === 'failed') {
+    //     return nav('/quiz/time-out-response/', { replace: true })
+    // }
+
+
+    if ((currentQuestionIndex === questions.length) && currentQuizIndex !== null) {
         return (
             < MyVerticallyCenteredModal
                 // show={questions.length === 0 && dispatch(getInterestArea())}
                 show={currentQuestionIndex === questions.length}
-                onHide={closed}
+                // onHide={}
                 footerButtons={
                     [
                         { label: 'Finalizar', type: 'button', variant: 'secondary', size: 'sm', onClick: createAnswer },
@@ -167,7 +175,13 @@ function UserQuiz() {
                     para volverse todo un experto</b> en Prácticas Basadas en la evidencia(PBE).
                 </p>
                 <div id='results'>
-                    <Row>
+                    <Row id='areas'>
+                        {areas.map((area) => {
+                            return (
+                                <span >{area.toString()}</span>
+                                , <MyButton type='span'>Prueba</MyButton>
+                            )
+                        })}
                         {/* {dispatch(getResults()).unwrap().then((r) => {
                                 r.area.forEach(area => {
                                     return (
@@ -178,8 +192,8 @@ function UserQuiz() {
                             })} */}
                     </Row>
                     <Row>
-                        <p>Número de preguntas correctas:{ }</p>
-                        <p>Número de preguntas incorrectas:{ }</p>
+                        <p>Número de preguntas correctas:{corrects}</p>
+                        <p>Número de preguntas incorrectas:{incorrects}</p>
                     </Row>
                 </div>
             </MyVerticallyCenteredModal>)
@@ -192,7 +206,8 @@ function UserQuiz() {
             </div> */}
 
             {/* <div id="header"> */}
-                <MyNavbar nameBrand={`${currentQuestion.idD.dimension}`}></MyNavbar>
+
+            <MyNavbar nameBrand={`${currentQuestion.idD.dimension}`}></MyNavbar>
             {/* </div> */}
             <div id='content'>
                 <Card className="text-center" key={currentQuestion.idP} >

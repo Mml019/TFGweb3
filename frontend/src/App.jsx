@@ -47,6 +47,7 @@ function App() {
           <Route path="/quiz/congratulations/" element={<Congratulations />} />       
           <Route path="/quiz/time-out-response/" element={<ErrorTimeoutBadR/>} />   
           {/* <Route path='quiz-admin/' element={<AdminPage/>} /> */}
+          <Route path="/quiz/error/" element={<Error404 error={"No existe la url a la que se dirige"}/>} />
           <Route path="*" element={<Error404 error={"No existe la url a la que se dirige"}/>} />
         </Routes>
       </BrowserRouter>

@@ -39,7 +39,8 @@ export const userSlice = createSlice({
   name: 'user',
   initialState: {
     currentUser: null,
-    statusUser: 'idle'
+    statusUser: 'idle',
+    errorUser: null,
   },
   reducers: {
 
@@ -55,7 +56,7 @@ export const userSlice = createSlice({
       })
       .addCase(createUser.rejected, (state, action) => {
         state.statusUser = 'failed';
-        state.error = action.error.message;
+        state.errorUser = action.error.message;
       });
   }
 })
