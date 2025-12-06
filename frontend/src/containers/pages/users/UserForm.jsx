@@ -81,7 +81,7 @@ export default function UserForm() {
   useEffect(() => {
     setLoading(true)
     if (currentUser) {
-      nav('quiz/questions')
+      nav('/quiz/questions/')
       return toast.error('Ya ha rellenado un formulario de usuario continúe con las preguntas, por favor')
     } else if (loading) {
       fetchAllData()
@@ -206,7 +206,6 @@ export default function UserForm() {
       } catch (err) {
         if (statusUser === 'failed') {
           nav('/quiz/error/', { replace: true })
-          statusUser = null
         }
         toast.error(`Error ${err} al crear el usuario y enviar el form. ${err.message}`)
       } finally {

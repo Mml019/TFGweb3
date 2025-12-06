@@ -39,6 +39,24 @@ function UserQuiz() {
         }
     }
 
+    // NOT RETURN BACK
+    useEffect(() => {
+        const handlePopState = (e) => {
+            window.history.pushState(null, null, window.location.href); 
+            return toast.error('Ya ha empezado el quiz no puede volver a registrarse')
+        };
+
+        // History
+        window.history.pushState(null, null, window.location.href);
+
+        // event to postback
+        window.addEventListener('popstate', handlePopState);
+
+        return () => {
+            window.removeEventListener('popstate', handlePopState);
+        };
+    }, [nav])
+
     // To create all the answers by one user in BD
     function createAnswer() {
         // POST to data base with data
