@@ -43,8 +43,8 @@ export default function SelectField({ name, ariaLabel, options = [], register, e
                             ))}
                         </Form.Select>
                 )}
-            {errors[name] &&
-                <Form.Control.Feedback type={!!errors[name]}>{errors[name].message}</Form.Control.Feedback>
+            {!!errors[name] &&
+                <Form.Control.Feedback type='invalid'>{errors[name].message}</Form.Control.Feedback>
             }
         </Form.Group>
     );

@@ -72,7 +72,7 @@ export default function EticCondition() {
             Responder <strong>100 preguntas de verdadero/falso</strong> asignadas aleatoriamente por el sistema.
           </li>
           <li>
-            <strong>Duración aproximada:</strong> 55 minutos en una única sesión
+            <strong>Duración aproximada:</strong> 15-20 minutos en una única sesión
             en línea.
           </li>
         </ul>

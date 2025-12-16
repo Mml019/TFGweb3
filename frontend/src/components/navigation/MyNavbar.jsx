@@ -4,7 +4,7 @@ import NavItem from "react-bootstrap/NavItem";
 import Nav from "react-bootstrap/Nav";
 import NavBrand from "./NavBrand";
 
-export default function MyNavbar({ style = { backgroundColor: '#0065BD'}, type = 'user', items = [], nameBrand = 'QuizPEB' }) {
+export default function MyNavbar({ style = { backgroundColor: '#0065BD', height:'10%'}, type = 'user', items = [], nameBrand = 'QuizPEB' }) {
     return (
         <Navbar collapseOnSelect expand="md" style={style}>
             {/* className="bg-body-tertiary" */}

@@ -297,8 +297,8 @@ class Activity(models.Model):
 class  Profesional(models.Model):
     profesional =   models.OneToOneField(Respondant, on_delete=models.CASCADE, primary_key=True)
     supervisor =    models.BooleanField(default=False)
-    dedicationW =   models.PositiveSmallIntegerField(default=0)
-    years =         models.PositiveSmallIntegerField(default=0)
+    dedicationW =   models.FloatField(default=0)
+    years =         models.FloatField(default=0)
 
     activities =  models.ManyToManyField(Activity, through='Dedication', related_name='activities_by_profesional')
     sectors =     models.ManyToManyField(Sector, through='Secprof', related_name='sectors_on_works')

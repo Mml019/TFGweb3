@@ -73,7 +73,7 @@ export default function StartQuiz() {
       {/* <div id="header"> */}
         <MyNavbar type='admin'></MyNavbar>
       {/* </div> */}
-      <div id="content">
+      <div id="content-start">
         {/* <MyVerticallyCenteredModal show={!cookie} onHide={isAcceptedCookie}>
                     <h2>Uso de cookies 🍪</h2>
                     <p>Utilizamos cookies para asegurarnos de que tengas la mejor experiencia en nuestro sitio web.
@@ -90,7 +90,6 @@ export default function StartQuiz() {
                     </MyButton>
                 </MyVerticallyCenteredModal> */}
         <Row>
-          <Col />
           <Col xs={10}>
             <Stack direction="vertical" gap={2} className="mx-auto centered">
               <h2>Bienvenid@</h2>
@@ -126,7 +125,6 @@ export default function StartQuiz() {
               </div>
             </Stack>
           </Col>
-          <Col />
         </Row>
       </div>
       <div id="footer">

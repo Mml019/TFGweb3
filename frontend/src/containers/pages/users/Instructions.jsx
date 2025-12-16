@@ -13,7 +13,7 @@ export default function Instructions() {
       <div id="header">
         <MyNavbar nameBrand={"Instrucciones del cuestionario"} />
       </div>
-      <div id="content" className="pt-2 pb-2">
+      <div id="content">
         <div id="secction1">
           <h2>En qué consiste su participación:</h2>
           <br />
@@ -47,7 +47,7 @@ export default function Instructions() {
               {/* Solo se le guardará durante  20 primeros minutos desde donde se quedó, apsado ese intervalo de tiempo volverá a empezar con nuevas preguntas*/}
             </li><br/>
             <li>
-              <strong>Duración aproximada:</strong> 55 minutos en una única
+              <strong>Duración aproximada:</strong> 15-20 minutos en una única
               sesión en línea.
             </li>
           </ul>

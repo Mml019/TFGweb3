@@ -42,7 +42,7 @@ function UserQuiz() {
     // NOT RETURN BACK
     useEffect(() => {
         const handlePopState = (e) => {
-            window.history.pushState(null, null, window.location.href); 
+            window.history.pushState(null, null, window.location.href);
             return toast.error('Ya ha empezado el quiz no puede volver a registrarse')
         };
 
@@ -169,8 +169,8 @@ function UserQuiz() {
                 }
             >
                 <h2>¡Enhorabuena Quiz completado!</h2>
-                <p>Ha finalizado el cuestionario debería <b>repasar estas áreas,
-                    para volverse todo un experto</b> en Prácticas Basadas en la evidencia(PBE).
+                <p>Ha completado este cuestionario.
+                    <b>Si dispone de tiempo, puede participar en alguno de los otros cuestionarios disponibles.</b>
                 </p>
                 <div id='results'>
                     <Row id='areas'>

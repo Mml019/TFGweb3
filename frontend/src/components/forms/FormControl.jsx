@@ -18,7 +18,7 @@ export default function FormControlFloatingLabel({ label, type = "text", placeho
           className='mb-3'
           size='sm'
         />
-        {errors[name] &&
+        {!!errors[name] &&
           <Form.Control.Feedback type="invalid">
             {errors[name].message}
             {/* {errors[name] && errors[name]?.message}  */}
