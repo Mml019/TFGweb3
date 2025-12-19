@@ -388,27 +388,30 @@ export const yupSchema = yup.object({
     then: schema => schema.required("Debe responder Sí o No"),
     otherwise: schema => schema.notRequired()
   }),
-  dedicationW: yup.number("Debe ser un número")
-    .positive('Mayor a 0')
-    .integer('Sin decimales')
-    .test('isPositive', 'Debe ser mayot o igual a 0', val => val > 0)
-    .transform(v => isNaN(v) ? undefined : v)
+  dedicationW: yup.number("Debe ser un número").transform(v => isNaN(v) ? undefined : v)
     .when('profile', {
-      is: val => val && val === 'Profesional',
-      then: schema => schema.required("Debe completar la dedicación en horas"),
+      is: val => console.log(val) && val && val === 'Profesional',
+      then: schema => schema.required("Debe completar la dedicación en horas")
+        .positive('Mayor a 0')
+        .integer('Sin decimales')
+        .test('isPositive', 'Debe ser mayot o igual a 0', val => val > 0),
       // .positive('Debe ser mayor a 0')
       // .integer('Sin decimales').test('', 'Debe ser mayot o igual a 0', val => val > 0),
       // .matches(val => /^\d+(\.\d{1,2})?$/, 'Puede poner un número separado por punto y 2 decimales máximo',)
       otherwise: schema => schema.notRequired()
     }),
-  years: yup.number("Debe ser un número")
-    .positive('Mayor a 0')
-    .integer('Sin decimales')
-    .test('isGreater', 'Debe ser mayot o igual a 0', val => val > 0)
-    .transform(v => isNaN(v) ? undefined : v)
+  years: yup.number("Debe ser un número").transform(v => isNaN(v) ? undefined : v)
+    // .positive('Mayor a 0')
+    // .integer('Sin decimales')
+    // .test('isGreater', 'Debe ser mayot o igual a 0', val => val > 0)
+    // .transform(v => isNaN(v) ? undefined : v)
     .when('profile', {
       is: val => val && val === 'Profesional',
-      then: schema => schema.required("Debe completar los años en activo"),
+      then: schema => schema.required("Debe completar los años en activo")
+        .positive('Mayor a 0')
+        .integer('Sin decimales')
+        .test('isPositive', 'Debe ser mayot o igual a 0', val => val > 0),
+        // .transform(v => isNaN(v) ? undefined : v),
       // .positive('Debe ser mayor a 0')
       // .integer('Sin decimales').test('', 'Debe ser mayot o igual a 0', val => val > 0),
       // .matches(val => /^\d+(\.\d{1,2})?$/, 'Puede poner un número separado por punto y 2 decimales máximo',)
