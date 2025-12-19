@@ -102,7 +102,6 @@ class LogoutView(APIView):
         except:
             return Response({"error": user}, status=HTTP_404_NOT_FOUND)
 
-
 # ----------- QUIZ APP----------------
 class QuizViews(APIView):
     parser_classes = [MultiPartParser]

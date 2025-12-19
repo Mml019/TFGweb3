@@ -3,6 +3,7 @@ import LayoutUser from "../../../hocs/LayoutUser";
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 import MyNavbar from "../../../components/navigation/MyNavbar";
 import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 
 export default function Congratulations() {
     const nav = useNavigate()

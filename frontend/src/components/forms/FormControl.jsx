@@ -18,6 +18,7 @@ export default function FormControlFloatingLabel({ label, type = "text", placeho
           className='mb-3'
           size='sm'
         />
+        {console.log(errors['name'])}
         {!!errors[name] &&
           <Form.Control.Feedback type="invalid">
             {errors[name].message}
