@@ -390,11 +390,11 @@ export const yupSchema = yup.object({
   }),
   dedicationW: yup.number("Debe ser un número").transform(v => isNaN(v) ? undefined : v)
     .when('profile', {
-      is: val => console.log(val) && val && val === 'Profesional',
+      is: val => val && val === 'Profesional',
       then: schema => schema.required("Debe completar la dedicación en horas")
         .positive('Mayor a 0')
         .integer('Sin decimales')
-        .test('isPositive', 'Debe ser mayot o igual a 0', val => val > 0),
+        .test('isPositiveDed', 'Debe ser mayot o igual a 0', val => val > 0),
       // .positive('Debe ser mayor a 0')
       // .integer('Sin decimales').test('', 'Debe ser mayot o igual a 0', val => val > 0),
       // .matches(val => /^\d+(\.\d{1,2})?$/, 'Puede poner un número separado por punto y 2 decimales máximo',)
