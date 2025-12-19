@@ -119,7 +119,6 @@ export default function UserForm() {
       city: '',
       province: '',
       profile: '',
-      academic_level: "",
       description: "",
       // year_academic_lvl: new Date().getFullYear(),
       speciality: '',
@@ -167,34 +166,32 @@ export default function UserForm() {
     console.log(data)
     setLoadingSpin(true);
     // Show alert if sum total more than 100
-    console.log(profesional)
     if (profesional === 'Profesional') {
       if (not100()) {
         setLoadingSpin(false)
         return toast.error("Deben sumar las actividades un total de 100% ni más ni menos")
       }
-    } else {
-      // nav("/quiz/questions/");
-      // POST to make User in database
-      try {
-        console.log(data)
-        // JSON Stringify is in POST request in dispatcher
-        // unwrap to manage request errors or payload
-        dispatch(createUser(data));
-        // put in localstorage user id is in REDUX not necessary
-        // localStorage.setItem('userCreated', JSON.stringify(userCreated));
-      } catch (err) {
-        if (statusUser === 'failed') {
-          nav('/quiz/error/', { replace: true })
-        }
-        toast.error(`Error ${err} al crear el usuario y enviar el form. ${err.message}`)
-      } finally {
-        setLoadingSpin(false)
-      }
-      // navigate to question form
-      nav("/quiz/questions/");
-      // nav('/quiz/questions/', { replace: true })
     }
+    // nav("/quiz/questions/");
+    // POST to make User in database
+    try {
+      console.log(`create ${data}`)
+      // JSON Stringify is in POST request in dispatcher
+      // unwrap to manage request errors or payload
+      dispatch(createUser(data));
+      // put in localstorage user id is in REDUX not necessary
+      // localStorage.setItem('userCreated', JSON.stringify(userCreated));
+    } catch (err) {
+      if (statusUser === 'failed') {
+        nav('/quiz/error/', { replace: true })
+      }
+      toast.error(`Error ${err} al crear el usuario y enviar el form. ${err.message}`)
+    } finally {
+      setLoadingSpin(false)
+    }
+    // navigate to question form
+    nav("/quiz/questions/");
+    // nav('/quiz/questions/', { replace: true })
   }
 
   if (loading) {
@@ -208,7 +205,6 @@ export default function UserForm() {
       </div>
     )
   }
-
 
   return (
     <LayoutUser>
@@ -466,7 +462,6 @@ export default function UserForm() {
                           index={index}
                         />
                       ))}
-                      {console.log(errors['description'])}
                       {!!errors['description'] && (
                         <Form.Control.Feedback type="invalid" style={{ display: 'block' }}>
                           {errors['description'].message}
@@ -653,9 +648,9 @@ export default function UserForm() {
                       name="years" //active years from profesional
                       label="¿Cuántos años lleva usted en activo? (relacionado con la profesión sanitaria):"
                       placeholder=""
-                      // type="number"
-                      // min="0"
-                      // max="80"
+                    // type="number"
+                    // min="0"
+                    // max="80"
                     //value={e.value}
                     />
                   </Row>
@@ -671,8 +666,8 @@ export default function UserForm() {
                       name="dedicationW" //active years from profesional
                       label="¿Cuál es su dedicación laboral semanal en horas en el momento actual?"
                       placeholder=""
-                      // min="5"
-                      // max="150"
+                    // min="5"
+                    // max="150"
                     //value={e.value}
                     />
                   </Row>

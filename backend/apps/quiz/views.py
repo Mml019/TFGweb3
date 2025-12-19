@@ -14,14 +14,14 @@ from .models import *
 
 
 class QuizViews(APIView):
-
     """Get a random Quizzes and returns them"""
+
     def get(self, request):
 
         if Quiz.objects.all().exists:
-            quizzes_ids = list(Quiz.objects.all().values_list('idQ', flat=True))
+            quizzes_ids = list(Quiz.objects.all().values_list("idQ", flat=True))
             random.shuffle(quizzes_ids)
-           
+
             quizzes = []
 
             for q in quizzes_ids:
@@ -82,11 +82,48 @@ class QuestionViewSet(ModelViewSet):
 # I can't use create apiview cause is a personalize creation
 class RespondantViews(CreateAPIView):
     serializer_class = RespondantSerializer
+    schema = [
+        "age",
+        "sex",
+        "nationality",
+        "city",
+        "province",
+        "level_PBE",
+        "profile",
+        "PBE_knownledge",
+        "PBE_training",
+        "academic_level",
+        "description",
+        "year_academic_lvl",
+        "speciality",
+        "profarea",
+        "active_sas",
+        "calm_sas",
+        "fresh_sas",
+        "happy_sas",
+        "interest_sas",
+        "satisfation",
+        "activity",
+        "activity_val_0",
+        "activity_val_1",
+        "activity_val_2",
+        "activity_val_3",
+        "activity_val_4",
+        "enviroment",
+        "sector",
+        "dedicationW",
+        "supervisor",
+        "years",
+    ]
 
     def create(self, request):
-
         # generate_random_id()
         data = request.data
+
+        for key in self.schema:
+            if key not in data.keys():
+                data[key] = None
+                print(data[key])
 
         with transaction.atomic():
             try:
@@ -101,13 +138,13 @@ class RespondantViews(CreateAPIView):
                     "Me he sentido interesado/a y motivado/a": int(data["interest_sas"]),
                 }
 
-                activities_dic = {
-                    "Asistencial": float(data["activity_val_0"]),
-                    "Investigación": float(data["activity_val_1"]),
-                    "Docencia": float(data["activity_val_2"]),
-                    "Administración": float(data["activity_val_3"]),
-                    "Otra": float(data["activity_val_4"]),
-                }
+                # activities_dic = {
+                #     "Asistencial": float(data["activity_val_0"]),
+                #     "Investigación": float(data["activity_val_1"]),
+                #     "Docencia": float(data["activity_val_2"]),
+                #     "Administración": float(data["activity_val_3"]),
+                #     "Otra": float(data["activity_val_4"]),
+                # }
 
                 prof_list = []
                 for p in data["profarea"]:
@@ -119,8 +156,8 @@ class RespondantViews(CreateAPIView):
                 for e in data["enviroment"]:
                     env, _ = Enviroment.objects.get_or_create(enviroment=e)
                     env_list.append(env)
-                # if i have other check
 
+                # if i have other check
                 if (
                     "other_env" in data
                     and data["other_env"] is not None
@@ -131,13 +168,12 @@ class RespondantViews(CreateAPIView):
                         obj_ok = obj.strip().capitalize()
                         env, _ = Enviroment.objects.get_or_create(enviroment=obj_ok)
                         env_list.append(env)
-                    
 
                 sec_list = []
                 for s in data["sector"]:
                     sector, _ = Sector.objects.get_or_create(sector=s)
                     sec_list.append(sector)
-               
+
                 # if i have other check
                 if (
                     "other_sec" in data
@@ -149,23 +185,28 @@ class RespondantViews(CreateAPIView):
                         obj_ok = obj.strip().capitalize()
                         sector, _ = Sector.objects.get_or_create(sector=obj_ok)
                         sec_list.append(sector)
-                    
+
                 act_list = []
                 for a in data["activity"]:
                     activity, _ = Activity.objects.get_or_create(activity=a)
                     act_list.append(activity)
 
-                year, _ = YearAcademicLevel.objects.get_or_create(
-                    year=int(data["year_academic_lvl"])
-                )
-                academic_level = AcademicLevel(
-                    academic_lvl=data["academic_level"], description=None, year=year
-                )
+                # academic_level = AcademicLevel(academic_lvl=None, description=None, year=YearAcademicLevel(year=2025))
+                academic_level = None
+              
+                if data["year_academic_lvl"] is not None:
+                    year, _ = YearAcademicLevel.objects.get_or_create(
+                        year=int(data["year_academic_lvl"])
+                    )
+                
+                    academic_level = AcademicLevel(
+                        academic_lvl=data["academic_level"], description=None, year=year
+                    )
 
-                if data["academic_level"] == "Máster":
-                    academic_level.description = data["description"]
-                # create and save Academic level
-                academic_level.save()
+                    if data["academic_level"] == "Máster":
+                        academic_level.description = data["description"]
+                    # create and save Academic level
+                    academic_level.save()
 
                 satisfation_list = []
                 for question, val in questions.items():
@@ -180,8 +221,13 @@ class RespondantViews(CreateAPIView):
                     username=None, password=None, is_staff=False, is_superuser=False
                 )
                 # add group and perms to user
+                
+                # pbe_training =None
+                # # only if is true
+                # if data["PBE_training"] == "Sí":
+                #     pbe_training = data["PBE_training"]
 
-                respondant = Respondant.objects.create(
+                respondant = Respondant(
                     respondant=myuser,
                     age=int(data["age"]),
                     sex=data["sex"],
@@ -194,10 +240,9 @@ class RespondantViews(CreateAPIView):
                     speciality=data["speciality"],
                     academic_level=academic_level,
                     grade=int(data["satisfation"]),
-                    # question=None,
-                    # profarea=prof_list,
-                    # satisfation=satisfation_list,
                 )
+                respondant.save()
+
                 # add many to many fields,
                 respondant.profarea.set(prof_list)
                 respondant.satisfation.set(satisfation_list)
@@ -209,27 +254,23 @@ class RespondantViews(CreateAPIView):
                         supervisor=bool(data["supervisor"]),
                         dedicationW=int(data["dedicationW"]),
                         years=int(data["years"]),
-                        # actvities=act_list,
-                        # sectors=sec_list,
-                        # enviroments =env_list
                     )
 
-                # profesional.activities.set(act_list)
-                print(sec_list)
-                profesional.sectors.set(sec_list)
-                print(env_list)
-                profesional.enviroments.set(env_list)
+                    # profesional.activities.set(act_list)
+                    profesional.sectors.set(sec_list)
+                    profesional.enviroments.set(env_list)
 
-                # Traverse activity array but is not equal activity_val index, map
-                for a in act_list:
-                    dedication, _ = Dedication.objects.get_or_create(
-                        profesional=profesional,
-                        activity=a,
-                        percentatge=activities_dic[a.activity],
-                    )
+                    # Traverse activity array but is not equal activity_val index, map
+                    for i, a in enumerate(act_list):
+                        dedication, _ = Dedication.objects.get_or_create(
+                            profesional=profesional,
+                            activity=a,
+                            percentatge=data[f"activity_val_{i}"],
+                            # percentatge=activities_dic[a.activity],
+                        )
 
-                    # dedication.percentatge = float(data[f"activity_val_{index}"])
-                    # dedication.save
+                        # dedication.percentatge = float(data[f"activity_val_{index}"])
+                        # dedication.save
 
                 # return user serializable
                 respondant_serial = RespondantSerializer(respondant)
@@ -260,11 +301,41 @@ class RespuestaView(CreateAPIView):
         return Response({"success"}, status=HTTP_201_CREATED)
 
 
-class OptionQuestionView(CreateAPIView):
+class OptionQuestionView(APIView):
     serializer_class = OptionQuestion
 
+    # Return an array from
+    def getIncorrects(self, request):
+        solutions = OptionQuestion.solutions.all()
+        if solutions:
+            answers = request.data
+            incorrects = []
+            print(solutions)
+            for a in answers:
+                print(a)
+                if a.idO not in solutions:
+                    incorrects.append(a.question)
+            return Response(incorrects, status=HTTP_200_OK)
+        return Response({"error": solutions}, status=HTTP_404_NOT_FOUND)
+
+    # return answer's areas from incorrects questions passed by param
+    def listAreas(self, request, incorrects):
+        list_area = set()
+        for qId in incorrects:
+
+            q = Question.objects.get(idQ=qId)
+            if q is not None:
+                area = InterestArea.objects.get(idD=q.idD)
+                area_serial = InterestAreaSerializer(area)
+                list_area.add(InterestAreaSerializer(area_serial.data))
+            else:
+                return Response(
+                    {"error": f"Pregunta ${qId} no existe"},
+                )
+        return Response({"areas": list_area.data}, status=HTTP_200_OK)
+
     # count all correct and incorrects answer and send interest area list from incorrects
-    def create(self, request):
+    def listAreasShowCorrectIncorrects(self, request):
         correct = 0
         incorrect = 0
         list_area = set()
@@ -272,51 +343,27 @@ class OptionQuestionView(CreateAPIView):
         # get all solutions with motive
         solutions = OptionQuestion.solutions.all()
         answers = request.data
-
-        with transaction.atomic():
-            for i, r in enumerate(answers):
-                # create answer in BD
-                try:
-
-                            # transform seconds to hh:mm:ss
-                    seconds = int(r['time'])
-
-                    # Calcula horas, minutos y segundos
-                    hours = seconds // 3600
-                    minutes = (seconds % 3600) // 60
-                    seconds = seconds % 60
-
-                    # Crea un objeto 'time' con el resultado
-                    time_value = time(hour=hours, minute=minutes, second=seconds)
-                    
-                    user=Respondant.objects.get(respondant=str(r['user']))
-                    question = Question.objects.get(idP=int(r['question']))
-                    option = Option.objects.get(idO=int(r['option']))
-                    print(user.respondant, question.idP)
-                    answer = Respuesta.objects.create(
-                        answer=option,
-                        time=time_value,
-                        respondant=user,
-                        question=question
-                    )
-                except ValidationError as ve:
-                    return Response(
-                        {"error": f"Error al crear respuesta ${i}"},
-                        status=HTTP_400_BAD_REQUEST,
-                    )
+        for i, r in enumerate(answers):
+            # create answer in BD
+            try:
+                question = Question.objects.get(idP=int(r["question"]))
+                print(question.idP)
 
                 if question in solutions:
                     correct += 1
 
                 else:
                     incorrect += 1
-                    # and return int_area from question_dimension_idA.int_Area
-                    # list_area.add()
                     print(question)
-                    areas = InterestArea.objects.filter(idD=question.idD)
-                    for area in areas:
-                        area_serial= InterestAreaSerializer(area)
-                        list_area.add(InterestAreaSerializer(area_serial.data))
+                    area = InterestArea.objects.get(idD=question.idD)
+                    area_serial = InterestAreaSerializer(area)
+                    list_area.add(InterestAreaSerializer(area_serial.data))
+
+            except ValidationError as ve:
+                return Response(
+                    {"error": f"Error pregunta ${i} no existe: ${question}"},
+                    status=HTTP_400_BAD_REQUEST,
+                )
         return Response(
             {
                 "success": {

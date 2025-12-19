@@ -170,7 +170,7 @@ function UserQuiz() {
             >
                 <h2>¡Enhorabuena Quiz completado!</h2>
                 <p>Ha completado este cuestionario.
-                    <b>Si dispone de tiempo, puede participar en alguno de los otros cuestionarios disponibles.</b>
+                    Si dispone de tiempo, puede participar en alguno de los otros cuestionarios disponibles.
                 </p>
                 <div id='results'>
                     <Row id='areas'>
