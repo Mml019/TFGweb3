@@ -389,23 +389,28 @@ export const yupSchema = yup.object({
     otherwise: schema => schema.notRequired()
   }),
   dedicationW: yup.number("Debe ser un número")
-    .transform((v) => isNaN(v) ? 0 : v)
+    .positive('Mayor a 0')
+    .integer('Sin decimales')
+    .test('isPositive', 'Debe ser mayot o igual a 0', val => val > 0)
+    .transform(v => isNaN(v) ? undefined : v)
     .when('profile', {
       is: val => val && val === 'Profesional',
-      then: schema => schema
-        .integer('Sin decimales')
-        .positive('Debe ser mayor a 0')
-        .required("Debe indicar las horas semanales"),
+      then: schema => schema.required("Debe completar la dedicación en horas"),
+      // .positive('Debe ser mayor a 0')
+      // .integer('Sin decimales').test('', 'Debe ser mayot o igual a 0', val => val > 0),
+      // .matches(val => /^\d+(\.\d{1,2})?$/, 'Puede poner un número separado por punto y 2 decimales máximo',)
       otherwise: schema => schema.notRequired()
     }),
   years: yup.number("Debe ser un número")
-    .transform(v => isNaN(v) ? null : v)
+    .positive('Mayor a 0')
+    .integer('Sin decimales')
+    .test('isGreater', 'Debe ser mayot o igual a 0', val => val > 0)
+    .transform(v => isNaN(v) ? undefined : v)
     .when('profile', {
       is: val => val && val === 'Profesional',
-      then: schema => schema
-        .integer('Sin decimales')
-        .positive('Debe ser mayor a 0')
-        .required("Debe completar los años en activo"),
+      then: schema => schema.required("Debe completar los años en activo"),
+      // .positive('Debe ser mayor a 0')
+      // .integer('Sin decimales').test('', 'Debe ser mayot o igual a 0', val => val > 0),
       // .matches(val => /^\d+(\.\d{1,2})?$/, 'Puede poner un número separado por punto y 2 decimales máximo',)
       otherwise: schema => schema.notRequired()
     }),

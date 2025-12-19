@@ -671,7 +671,6 @@ export default function UserForm() {
                       name="dedicationW" //active years from profesional
                       label="¿Cuál es su dedicación laboral semanal en horas en el momento actual?"
                       placeholder=""
-                      // type="number"
                       // min="5"
                       // max="150"
                     //value={e.value}
