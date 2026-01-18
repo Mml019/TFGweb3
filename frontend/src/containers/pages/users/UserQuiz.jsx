@@ -9,7 +9,7 @@ import Row from "react-bootstrap/Row"
 import Spinner from "../../../components/Spinner"
 import { getQuizUnOrderQuestions, nextQuestion, setOption } from "../../../reduxToolkit/slices/questions"
 import { getQuizzesRandom, nextQuiz } from "../../../reduxToolkit/slices/quiz"
-import { setAnswer, sendAnswers, getSolutions } from "../../../reduxToolkit/slices/answer";
+import { setAnswer, sendAnswers, getSolutions, resetAnswers } from "../../../reduxToolkit/slices/answer";
 import { Form } from "react-bootstrap"
 import MyButton from '../../../components/MyButton'
 import MyVerticallyCenteredModal from "../../../components/Modal"
@@ -61,7 +61,7 @@ function UserQuiz() {
         dispatch(sendAnswers(answers))
         nav("/quiz/congratulations/")
         // delete history of navigation
-        // Reemplaza el historial para eliminar la entrada actual
+        // Replace history to delete recent enter
         // window.history.replaceState(null, '', '/quiz/congratulations/');
     }
 
@@ -140,6 +140,7 @@ function UserQuiz() {
     }
 
     useEffect(() => {
+        resetAnswers()
         fetchQuestions()
     }, [currentQuiz]);
 

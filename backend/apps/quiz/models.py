@@ -66,10 +66,7 @@ class CoreContent(models.Model):
 
 
 class Question(models.Model):
-    # class QuestionManager(models.Manager):
-    #     def get_queryset(self):
-    #         return super().get_queryset().values().annotate()
-
+ 
     idP = models.BigAutoField(primary_key=True)
     numero = models.PositiveIntegerField(default=1)
     statement = models.CharField(max_length=500, unique=True)
@@ -88,7 +85,6 @@ class Question(models.Model):
         return str(
             f"ID: {self.idP}, Número: {self.numero}, Version: {self.version}, Enunciado: {self.statement}"
         )
-
 
 # Class that represents the solution at all the options, relathinship many to one with question
 class Option(models.Model):
@@ -132,7 +128,6 @@ class OptionQuestion(models.Model):
 
     def __str__(self):
         return f"Pregunta {self.idP} Valor {self.idO}"
-
 
 # ------------- QUIZ CLASS --------------------
 class Quiz(models.Model):
@@ -203,22 +198,8 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
 
     USERNAME_FIELD = "username"
 
-    # def save(self, force_insert = ..., force_update = ..., using = ..., update_fields = ...):
-    #     if (self.is_staff==False and self.is_superuser==False):
-    #         group = Group.objects.get(name='respondant')
-    #         print(group.permissions.exists())
-    #         if not group.permissions.exists():
-    #             print('entró')
-    #             assign_permissions('respondant')
-    #     else:
-    #         group = Group.objects.get(name='interviewer')
-    #         if not group.permissions.exists():
-    #             assign_permissions('interviewer')
-    #     return super().save(force_insert, force_update, using, update_fields)
-
     def __str__(self):
         return f"ID: {str(self.id)} usuario: {self.username} password: {self.password}"
-
 
 # ------------- RESPONDANT --------------------
 class ProfesionalArea(models.Model):
@@ -299,13 +280,8 @@ class Respondant(models.Model):
         Satisfation, through="SatisfationRes", related_name="satisfation_per_user"
     )
 
-    # def save(self, force_insert = ..., force_update = ..., using = ..., update_fields = ...):
-    #     group = create_group('respondant')
-    #     self.respondant.groups().add(group)
-    #     return super().save(force_insert, force_update, using, update_fields)
-
-    # def __str__(self):
-    #     return f"ID: {self.respondant.id} Edad: {str(self.age)} Sexo: {self.sex} Nacionalidad: {self.nationality } Ciudad: {self.city} Región:  {self.region} Nivel académico: {self.academic_level.academic_lvl} Año del nivel académico: {self.academic_level.year} Area profesional/estudio:{self.profarea.values_list(flat=True)} Nivel de PBE: {self.level_PBE} Conocimiento en PBE {self.PBE_knownledge}  Especialidad: {self.speciality}"
+    def __str__(self):
+        return f"ID: {self.respondant.id} Edad: {str(self.age)} Sexo: {self.sex} Nacionalidad: {self.nationality } Ciudad: {self.city} Región:  {self.region} Nivel académico: {self.academic_level.academic_lvl} Año del nivel académico: {self.academic_level.year} Area profesional/estudio:{self.profarea.values_list(flat=True)} Nivel de PBE: {self.level_PBE} Conocimiento en PBE {self.PBE_knownledge}  Especialidad: {self.speciality}"
 
 
 class SatisfationRes(models.Model):
@@ -313,13 +289,11 @@ class SatisfationRes(models.Model):
     idRes = models.ForeignKey(Respondant, on_delete=models.CASCADE)
     pk = models.CompositePrimaryKey("idS", "idRes")
 
-
 # ------------- ANSWER CLASS --------------
 # The class name is in spanish cause django don't permit other
 class Respuesta(models.Model):
-    answer = models.ForeignKey(
-        Option, on_delete=models.CASCADE, null=True
-    )  # models.CharField(max_length=25, editable=False, blank=False)
+    answer = models.ForeignKey(Option, on_delete=models.CASCADE, null=True)
+      # models.CharField(max_length=25, editable=False, blank=False)
     time = models.TimeField(editable=False, blank=False)
     date = models.DateTimeField(auto_now_add=True)
     respondant = models.ForeignKey(Respondant, on_delete=models.CASCADE)

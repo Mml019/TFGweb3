@@ -13,7 +13,7 @@ export default function Congratulations() {
     useEffect(() => {
         const handlePopState = (e) => {
             window.history.pushState(null, null, window.location.href);
-            return toast.error('Ya ha terminado el quiz puede hacer más si quiere pero desde el inicio.')
+            return toast.error('Ya ha terminado el quiz puede hacer más si quiere, pero desde el inicio.')
         };
 
         // History

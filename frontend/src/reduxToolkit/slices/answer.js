@@ -62,7 +62,6 @@ export const answerSlice = createSlice({
         responseTime: 0,
         statusAnswer: 'idle',
         errorAnswer: null,
-        results: [],
         corrects: 0,
         incorrects: 0,
         areas: []
@@ -79,6 +78,13 @@ export const answerSlice = createSlice({
         },
         setTime(state, action) {
             state.responseTime = action.payload
+        },
+        resetAnswers(state){
+            state.answers = []
+            state.currentAnswer= null
+            state.responseTime= 0
+            state.statusAnswer= 'idle'
+            state.errorAnswer= null
         }
     },
     extraReducers: (builder) => {
@@ -101,7 +107,6 @@ export const answerSlice = createSlice({
                 state.areas = action.payload.areas
                 state.corrects = action.payload.num_correct
                 state.incorrects = action.payload.num_incorrect
-                state.results = action.payload.results
             })
             .addCase(getSolutions.rejected, (state, action) => {
                 state.statusAnswer = 'failed';
@@ -111,6 +116,6 @@ export const answerSlice = createSlice({
 })
 
 // export actions
-export const { setAnswer, setTime } = answerSlice.actions;
+export const { setAnswer, setTime, resetAnswers } = answerSlice.actions;
 
 export default answerSlice.reducer
