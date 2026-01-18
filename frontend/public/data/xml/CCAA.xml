@@ -1,5 +1,5 @@
 <response>
-    <row>
+    <rows>
         <row _id="row-ju7e-jjau_3yqc" _uuid="00000000-0000-0000-C301-84EABC61BE03" _position="0"
             _address="https://analisi.transparenciacatalunya.cat/resource/wkyq-jzxq/row-ju7e-jjau_3yqc">
             <codi>15</codi>
@@ -416,5 +416,5 @@
             <ccaa_codi>02</ccaa_codi>
             <ccaa_nom_en_catal>Aragó</ccaa_nom_en_catal>
         </row>
-    </row>
+    </rows>
 </response>

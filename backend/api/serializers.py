@@ -3,7 +3,8 @@ from rest_framework.serializers import ValidationError
 from apps.quiz.models import *
 
 import re
-from datetime import datetime
+from datetime import datetime, time
+
 
 # The intermediary classes don't have a serializer
 
@@ -74,6 +75,8 @@ class OptionQuestionSerializer(serializers.ModelSerializer):
 
 class QuestionSerializer(serializers.ModelSerializer):
     idD = DimensionSerializer()
+    idA = InterestAreaSerializer()
+    idC = CoreContentSerializer()
     idO = OptionSerializer(source="question_values.all", many=True, read_only=True)
 
     class Meta:
@@ -87,6 +90,8 @@ class QuestionSerializer(serializers.ModelSerializer):
             "version",
             "date",
             "idD",
+            "idA",
+            "idC",
             "idO",
         ]
 
@@ -149,13 +154,13 @@ class MyUserSerializer(serializers.ModelSerializer):
 class ProfesionalAreaSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProfesionalArea
-        field = "__all__"
+        fields= "__all__"
 
 
 class SatisfationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Satisfation
-        field = "__all__"
+        fields= "__all__"
 
     def validate_value(self, value):
         if value < 0 or value > 5:
@@ -166,7 +171,7 @@ class SatisfationSerializer(serializers.ModelSerializer):
 class YearAcademicLevelSerializer(serializers.ModelSerializer):
     class Meta:
         model = YearAcademicLevel
-        field = "__all__"
+        fields= "__all__"
 
 
 class AcademicLevelSerializer(serializers.ModelSerializer):
@@ -174,7 +179,7 @@ class AcademicLevelSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = AcademicLevel
-        field = "__all__"
+        fields= "__all__"
 
         def validate_year(self, value):
             # if attrs['tittle'] not in TITTLE_CHOICES:
@@ -221,33 +226,69 @@ class RespondantSerializer(serializers.ModelSerializer):
 
         return super().validate(attrs)
 
-
 class RespuestaSerializer(serializers.ModelSerializer):
-    respondant = RespondantSerializer
-    question = QuestionSerializer
-    answer = OptionSerializer
+
+    option = serializers.PrimaryKeyRelatedField(
+        queryset=Option.objects.all(),
+        source="answer",
+        write_only=True
+    )
+    question = serializers.PrimaryKeyRelatedField(
+        queryset=Question.objects.all(),
+        write_only=True
+    )
+    user = serializers.UUIDField(
+        source="respondant",
+        write_only=True
+    )
+    time = serializers.IntegerField(write_only=True)
+
+    def validate_time(self, value):
+        seconds = int(value)
+
+        # Calcula horas, minutos y segundos
+        hours = seconds // 3600
+        minutes = (seconds % 3600) // 60
+        seconds = seconds % 60
+        
+        # Crea un objeto 'time' con el resultado
+        value = time(hour=hours, minute=minutes, second=seconds)
+        # print(f"values: {value}")
+        return value        
 
     class Meta:
         model = Respuesta
-        field = ["answer", "time", "date", "respondant", "question", "pk"]
+        fields = ['option', 'time', 'user', 'question', 'is_correct']# is_correct, pk]
+        read_only_fields = ["is_correct"]
 
+    def create(self, validated_data):
+        user_uuid = validated_data['respondant']
+        respondant = Respondant.objects.get(respondant_id=user_uuid)
+        validated_data['respondant'] = respondant
+
+        validated_data['is_correct'] = OptionQuestion.solutions.filter(
+        idO=validated_data['answer'],
+        idP=validated_data['question']
+        ).exists()
+        
+        return super().create(validated_data)
 
 class EnviromentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Enviroment
-        field = ["idEnv", "enviroment"]
+        fields= ["idEnv", "enviroment"]
 
 
 class ActivitySerializer(serializers.ModelSerializer):
     class Meta:
         model = Activity
-        field = ["idAct", "activity"]
+        fields= ["idAct", "activity"]
 
 
 class SectorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Sector
-        field = ["idSec", "sector"]
+        fields= ["idSec", "sector"]
 
 
 class ProfesionalSerializer(serializers.ModelSerializer):
@@ -258,7 +299,7 @@ class ProfesionalSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Profesional
-        field = [
+        fields= [
             "profesional",
             "supervisor",
             "dedicationW",
@@ -274,4 +315,4 @@ class DedicationSerializer(serializers.ModelSerializer):
     # activity = ActivitySerializer
     class Meta:
         model = Sector
-        field = ["profesional", "activity", "percentatge", "pk"]
+        fields= ["profesional", "activity", "percentatge", "pk"]

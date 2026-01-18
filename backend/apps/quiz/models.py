@@ -1,4 +1,3 @@
-import datetime
 import uuid
 from enum import Enum
 
@@ -10,8 +9,9 @@ from django.contrib.auth.models import (
 )
 from django.db import models
 from django.db.models import Q
+from django.contrib.auth.models import Group, Permission
 
-from .utils.permissions import create_group
+# from apps.quiz.utils.permissions import assign_permissions
 
 
 # Create your models here.
@@ -78,6 +78,8 @@ class Question(models.Model):
     version = models.PositiveIntegerField(default=0)
     date = models.DateTimeField(auto_now=True)
     idD = models.ForeignKey(Dimension, on_delete=models.CASCADE, null=True)
+    idA = models.ForeignKey(InterestArea, on_delete=models.CASCADE, null=True)
+    idC = models.ForeignKey(CoreContent, on_delete=models.CASCADE, null=True)
 
     class Meta:
         indexes = [models.Index(fields=["statement", "numero", "version"])]
@@ -168,6 +170,17 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
 
             user = self.model(username, password, is_staff=is_staff, **extra_fields)
             user.save()
+            # if user.is_staff or user.is_superuser:
+            #     type = 'interviewer'
+            # else:
+            #     type = 'respondant'
+
+            # group, bool = Group.objects.get_or_create(name=type)
+            # # user.groups.add(group)
+
+            # if bool:# group.permissions.exists():
+            #     assign_permissions(type)
+
             return user
 
         def create_superuser(self, username, password, **extra_fields):
@@ -177,6 +190,7 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
             user.set_password(password)
 
             user.save()
+
             return user
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False, auto_created=True)
@@ -189,24 +203,17 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
 
     USERNAME_FIELD = "username"
 
-    # def save(self, *args, **kwargs):
-    #     if self.is_staff is True:
-    #         group = Group
-
-    #     else:
-    #         group = create_group('respondant')
-    #     print(group)
-    #     if group is not None:
-    #         self.groups.add(group, using='default')
-
-    #     return super().save(*args, **kwargs)
-
     # def save(self, force_insert = ..., force_update = ..., using = ..., update_fields = ...):
-
-    #     if self.is_staff is True:
-    #         group = create_group('interviewer')
-    #         self.groups.add(group)
-
+    #     if (self.is_staff==False and self.is_superuser==False):
+    #         group = Group.objects.get(name='respondant')
+    #         print(group.permissions.exists())
+    #         if not group.permissions.exists():
+    #             print('entró')
+    #             assign_permissions('respondant')
+    #     else:
+    #         group = Group.objects.get(name='interviewer')
+    #         if not group.permissions.exists():
+    #             assign_permissions('interviewer')
     #     return super().save(force_insert, force_update, using, update_fields)
 
     def __str__(self):
@@ -297,8 +304,8 @@ class Respondant(models.Model):
     #     self.respondant.groups().add(group)
     #     return super().save(force_insert, force_update, using, update_fields)
 
-    def __str__(self):
-        return f"ID: {self.respondant.id} Edad: {str(self.age)} Sexo: {self.sex} Nacionalidad: {self.nationality } Ciudad: {self.city} Región:  {self.region} Nivel académico: {self.academic_level.academic_lvl} Año del nivel académico: {self.academic_level.year} Area profesional/estudio:{self.profarea.values_list(flat=True)} Nivel de PBE: {self.level_PBE} Conocimiento en PBE {self.PBE_knownledge}  Especialidad: {self.speciality}"
+    # def __str__(self):
+    #     return f"ID: {self.respondant.id} Edad: {str(self.age)} Sexo: {self.sex} Nacionalidad: {self.nationality } Ciudad: {self.city} Región:  {self.region} Nivel académico: {self.academic_level.academic_lvl} Año del nivel académico: {self.academic_level.year} Area profesional/estudio:{self.profarea.values_list(flat=True)} Nivel de PBE: {self.level_PBE} Conocimiento en PBE {self.PBE_knownledge}  Especialidad: {self.speciality}"
 
 
 class SatisfationRes(models.Model):
@@ -317,13 +324,19 @@ class Respuesta(models.Model):
     date = models.DateTimeField(auto_now_add=True)
     respondant = models.ForeignKey(Respondant, on_delete=models.CASCADE)
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
+    is_correct = models.BooleanField(default=False, null=True, blank=True)
     pk = models.CompositePrimaryKey("respondant", "question")
 
     class Meta:
         ordering = ["-date"]
+        constraints = [
+            models.UniqueConstraint(
+                fields=["respondant", "question"], name="unique_answer_per_question"
+            )
+        ]
 
     def __str__(self):
-        return f"ID {self.pk} Enunciado  {self.answer}"
+        return f"ID {self.pk} Option  {self.answer}, Time{self.time}, question {self.question}"
 
 
 # ------------------- PROFESIONALS --------------------

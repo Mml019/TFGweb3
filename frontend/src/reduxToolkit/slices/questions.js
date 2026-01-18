@@ -3,13 +3,17 @@ import { api } from '../../api/api';
 
 // Returns a json with a list of ids and random quiz with their questions and options
 export const getQuizUnOrderQuestions = createAsyncThunk('quiz/getQuestionsUnOrder',
-  async (idQ) =>{
-    parseInt(idQ)
-    const response = await fetch(`${import.meta.env.VITE_REACT_API_URL}/uib/PEBquiz/questions/listByQuiz/?quiz=${idQ}`);
-    if (!response.ok) throw new Error('Error fetching questions');
-    const data = await response.json();
-    // console.log(data)
-    return data;
+  async (idQ, { rejectWithValue }) => {
+    try {
+      parseInt(idQ)
+      const response = await fetch(`${import.meta.env.VITE_REACT_API_URL}/uib/PEBquiz/questions/listByQuiz/?quiz=${idQ}`);
+      if (!response.ok) throw new Error('Error fetching questions');
+      const data = await response.json();
+      // console.log(data)
+      return data;
+    } catch (err) {
+      return rejectWithValue(err.message);
+    }
   })
 
 // // Returns a json with a list of ids and random quiz with their questions and options
@@ -33,7 +37,7 @@ export const questionSlice = createSlice({
     questions: [],
     // questions_done: [],
     currentQuestion: null,
-    currentQuestionIndex: 0,
+    currentQuestionIndex: -1,
     currentOption: null,
     status: 'idle', // 'idle', 'loading', 'succeeded', 'failed'
     error: null,
@@ -45,14 +49,14 @@ export const questionSlice = createSlice({
 
         // shift retunrs the first object of the array and modify others positions
         state.currentQuestion = state.questions[state.currentQuestionIndex]
-      }else{
+      } else {
         // currentQuestionIndex now is equal to questions.lenght 
         // and reference any questions
         state.currentQuestionIndex += 1
         state.currentQuestion = null
       }
     },
-    setOption(state){
+    setOption(state, action) {
       // action.payload is option value passed to action dispatch funtion
       state.currentOption = action.payload
     },
@@ -76,7 +80,7 @@ export const questionSlice = createSlice({
 });
 
 // export actions
-export const { nextQuestion, setOption} = questionSlice.actions;
+export const { nextQuestion, setOption } = questionSlice.actions;
 
 // export the reducer
 export default questionSlice.reducer

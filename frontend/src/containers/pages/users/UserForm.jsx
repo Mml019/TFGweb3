@@ -1,7 +1,6 @@
 import "../../../assets/styles/UserForm.css";
 import { useEffect, useState } from "react";
 import { Form } from "react-bootstrap";
-import Image from "react-bootstrap/Image";
 import React from "react";
 import toast from "react-hot-toast";
 import Row from "react-bootstrap/Row";
@@ -9,7 +8,7 @@ import Col from "react-bootstrap/Col";
 import LayoutUser from "../../../hocs/LayoutUser";
 import { Container } from "react-bootstrap";
 import Button from "react-bootstrap/Button";
-import { useForm, useWatch, Controller } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { replace, useNavigate } from "react-router-dom";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
@@ -36,16 +35,12 @@ export default function UserForm() {
   const [cities, setCities] = useState([])
   const [citiesAll, setCitiesAll] = useState([])
   const dispatch = useDispatch();
-  let [total, setTotal] = useState(false)
 
   const { currentUser, statusUser, errorUser } = useSelector((state) => state.user)
 
   const basic_data = [
     { placeholder: "Sexo", label: "Sexo", type: "text", name: "sex" },
     { placeholder: 18, label: "Edad(años)", type: "number", name: "age" },
-    // { placeholder: "Nacionalidad", label: "Nacionalidad", type: "text", name: "nationality", },
-    // { placeholder: "Ciudad", label: "Ciudad de residencia", type: "text", name: "city", },
-    // { placeholder: "Provincia", label: "Provincia/Región", type: "text", name: "province", },
   ];
 
   async function fetchAllData() {
@@ -87,7 +82,7 @@ export default function UserForm() {
       fetchAllData()
     } else {
       if (statusUser === 'failed') {
-        return nav('/quiz/time-out-response/')
+        return nav('/quiz/time-out-response/', { state: { errorUser } })
       }
     };
   }, []);
@@ -96,11 +91,6 @@ export default function UserForm() {
     nationality: yup.string().required("Debe seleccionar uno de los valores disponibles"),
     city: yup.string().required("Debe escribir una ciudad de residencia o seleccionar uno de los valores disponibles"),
     province: yup.string().required("Debe escribir una provincia o región o seleccionar uno de los valores disponibles"),
-    // province: yup.string().when("nationality", {
-    //   is: "Española",
-    //   then: yup.string().oneOf(provincia_names, "Debe seleccionar uno de los valores disponibles").required(),
-    //   otherwise: yup.string().required("Debe escribir una provincia o región de residencia")
-    // }),
     ...yupSchema.fields
   })
 
@@ -162,8 +152,7 @@ export default function UserForm() {
     }
   }
 
-  const onSubmit = (data) => {
-    console.log(data)
+  const onSubmit = async (data) => {
     setLoadingSpin(true);
     // Show alert if sum total more than 100
     if (profesional === 'Profesional') {
@@ -172,26 +161,22 @@ export default function UserForm() {
         return toast.error("Deben sumar las actividades un total de 100% ni más ni menos")
       }
     }
-    // nav("/quiz/questions/");
     // POST to make User in database
     try {
-      console.log(`create ${data}`)
       // JSON Stringify is in POST request in dispatcher
       // unwrap to manage request errors or payload
-      dispatch(createUser(data));
+      await dispatch(createUser(data)).unwrap();
       // put in localstorage user id is in REDUX not necessary
       // localStorage.setItem('userCreated', JSON.stringify(userCreated));
+      // navigate to question form
+      nav("/quiz/questions/");
+      // nav('/quiz/questions/', { replace: true })
     } catch (err) {
-      if (statusUser === 'failed') {
-        nav('/quiz/error/', { replace: true })
-      }
+      nav('/quiz/error/', { replace: true, state: `Error ${err} al crear el usuario y enviar el form. ${err.message}` })
       toast.error(`Error ${err} al crear el usuario y enviar el form. ${err.message}`)
     } finally {
       setLoadingSpin(false)
     }
-    // navigate to question form
-    nav("/quiz/questions/");
-    // nav('/quiz/questions/', { replace: true })
   }
 
   if (loading) {
@@ -243,8 +228,6 @@ export default function UserForm() {
                   options={nationalities}
                   register={register}
                   errors={errors}
-                //onChange={(e)=>{ nationality = e.target.value}}
-                // onChange={handleSelect}
                 />
               </div>
             </Col>
@@ -256,7 +239,6 @@ export default function UserForm() {
                 <Row className="mb-3 align-items-center">
                   <Col>
                     <div id="provinces">
-
                       <SelectField
                         name='province'
                         ariaLabel='Provincia/Región'
@@ -264,11 +246,13 @@ export default function UserForm() {
                         register={register}
                         errors={errors}
                         onChange={async (e) => {
-                          if (e.target.value !== ('Seleccione una Provincia/Región')) {
+                          if (e.target.value!=='' && e.target.value!==null && e.target.value!== undefined && e.target.value !== ('Seleccione una Provincia/Región')) {
                             let code = (provincia.find(item => item.nom_oficial === e.target.value)).codi
                             let arr = []
                             arr = await loadCitiesByCCAA('municipios.xml', code)
                             setCities(arr)
+                          }else{
+                            setCities([])
                           }
                         }}
                       />
@@ -281,7 +265,7 @@ export default function UserForm() {
                       <SelectField
                         name='city'
                         ariaLabel='Ciudad de residencia'
-                        options={cities.length > 0 ? cities : all_cities}
+                        options={cities.length > 0 ? cities :citiesAll}
                         register={register}
                         errors={errors}
                       />
@@ -343,8 +327,6 @@ export default function UserForm() {
                     label={e}
                     value={e}
                     index={index}
-                  // checked={checkedList[index]}
-                  // handleOnChange={handleOnChange}
                   />
                 ))}
               </Col>
@@ -370,7 +352,6 @@ export default function UserForm() {
                     label={val}
                     value={key}
                     index={index}
-                  //onChange={isTypeSelected}
                   />
                 ))}
               </Col>
@@ -407,12 +388,10 @@ export default function UserForm() {
                   register={register}
                   errors={errors}
                   key="speciality"
-                  // id={`basic_data_${index}`}
                   name="speciality"
                   label="Especialidad (si procede)"
                   placeholder="Especialidad (si procede)"
                   type="text"
-                //value={e.value}
                 />
               </Col>
             </Row>
@@ -437,8 +416,6 @@ export default function UserForm() {
                     label={val}
                     value={key}
                     index={index}
-                  //onChange={isTypeSelected}
-                  //onCheck={handleOnCheck}
                   />
                 ))}
                 {master === "Máster" && (
@@ -476,11 +453,6 @@ export default function UserForm() {
           {master && (
             <div id="year_academic_lvl">
               <Row className="mb-3">
-                {/* <Form.Group
-                as={Row}
-                className="mb-3"
-                controlId="academic_lvl_form"
-              > */}
                 <Form.Label column sm="6" className="pr-0 fw-bold">
                   Año de obtención de dicho nivel académico obtenido:
                 </Form.Label>
@@ -498,11 +470,9 @@ export default function UserForm() {
                   {errors["year_academic_lvl"] && (
                     <Form.Control.Feedback type="invalid">
                       {errors["year_academic_lvl"].message}
-                      {/* {errors[name] && errors[name]?.message} */}
                     </Form.Control.Feedback>
                   )}
                 </Col>
-                {/* </Form.Group> */}
               </Row>
             </div>
           )}
@@ -527,7 +497,6 @@ export default function UserForm() {
                     label={(e === true ? 'Sí' : 'No')}
                     value={e}
                     index={index}
-                  // onChange={isTypeSelected}
                   />
                 ))}
               </Col>
@@ -662,13 +631,9 @@ export default function UserForm() {
                       register={register}
                       errors={errors}
                       key="dedicationW"
-                      // id={`basic_data_${index}`}
                       name="dedicationW" //active years from profesional
                       label="¿Cuál es su dedicación laboral semanal en horas en el momento actual?"
                       placeholder=""
-                    // min="5"
-                    // max="150"
-                    //value={e.value}
                     />
                   </Row>
                 </div>
@@ -735,7 +700,6 @@ export default function UserForm() {
                           index={index}
                         //onCheck={handleOnCheck}
                         />
-
                       ))}
                       {otherSector.includes("Otros") && (
                         <OtherCheck
@@ -747,7 +711,6 @@ export default function UserForm() {
                     </Col>
                   </Row>
                 </div>
-
                 <div id="profesional_activities">
                   <Row className="mb-3">
                     <h3 className="tittle-quest">
@@ -781,9 +744,6 @@ export default function UserForm() {
                               name={`activity_val_${index}`}
                               key={`activity_val_${index}`}
                               index={index}
-                            // onChange = {(e) =>{
-
-                            // }}
                             />
                           )}
                         </React.Fragment>

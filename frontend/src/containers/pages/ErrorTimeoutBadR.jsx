@@ -1,10 +1,13 @@
 import { Container, Row } from "react-bootstrap";
 import LayoutUser from "../../hocs/LayoutUser"
 import MyButton from "../../components/MyButton";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
-export default function ErrorTimeoutBadR({ error }) {
+export default function ErrorTimeoutBadR() {
     const nav = useNavigate()
+    const location = useLocation();
+    const error = location.state || 'Error desconocido'
+
     return (
         <LayoutUser>
             <div className="header">

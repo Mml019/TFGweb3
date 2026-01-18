@@ -4,6 +4,7 @@ import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 import MyNavbar from "../../../components/navigation/MyNavbar";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
+import toast from "react-hot-toast";
 
 export default function Congratulations() {
     const nav = useNavigate()
@@ -12,7 +13,7 @@ export default function Congratulations() {
     useEffect(() => {
         const handlePopState = (e) => {
             window.history.pushState(null, null, window.location.href);
-            return toast.error('Ya ha no ha terminado el quiz puede hacer más si quiere pero desde el inicio.')
+            return toast.error('Ya ha terminado el quiz puede hacer más si quiere pero desde el inicio.')
         };
 
         // History

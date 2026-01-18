@@ -2,11 +2,15 @@ import Container from "react-bootstrap/esm/Container"
 import MyButton from "../../../components/MyButton"
 import { useNavigate } from "react-router-dom"
 import MyNavbar from '../../../components/navigation/MyNavbar'
+import { useDispatch, useSelector } from "react-redux";
 import Image from "react-bootstrap/Image"
 import { Col } from "react-bootstrap"
 
 export default function Instructions() {
   const nav = useNavigate();
+  const dispatch = useDispatch();
+
+  const { currentUser, statusUser, errorUser } = useSelector((state) => state.user)
 
   return (
     <Container fluid id="instructions">
@@ -26,7 +30,7 @@ export default function Instructions() {
             </li>
             <li>
               Dispone de <strong>30 segundos para responder</strong> la pregunta, sino se <strong>responderá automáticamente
-              como No sé/No contesto(NS/NC)</strong>.
+                como No sé/No contesto(NS/NC)</strong>.
             </li>
             <li>
               <strong>No puede volver hacía atrás</strong> una vez avance a la siguiente pregunta.
@@ -39,13 +43,13 @@ export default function Instructions() {
           <ul>
             <li>
               <strong>Buena conexión:</strong>
-              <br/><br />
+              <br /><br />
               Asegúrese de tener buena conexión, porque una vez empieza el
               cuestionario, si no lo envía y termina,
               <br /> no se guardarán sus respuestas, le aparecerá otro
               cuestionario o lo empezará desde el inicio.
               {/* Solo se le guardará durante  20 primeros minutos desde donde se quedó, apsado ese intervalo de tiempo volverá a empezar con nuevas preguntas*/}
-            </li><br/>
+            </li><br />
             <li>
               <strong>Duración aproximada:</strong> 15-20 minutos en una única
               sesión en línea.
@@ -53,16 +57,23 @@ export default function Instructions() {
           </ul>
         </div>
         <div className="d-flex justify-content-end pe-3">
-            <MyButton type="button" variant="secondary" onClick={() => nav(-1)}>
-              Atrás
-            </MyButton>
-            <MyButton
-              type="button"
-              variant="primary"
-              onClick={() => nav("/quiz/form/")}
-            >
-              Aceptar y continuar
-            </MyButton>
+          <MyButton type="button" variant="secondary" onClick={() => nav(-1)}>
+            Atrás
+          </MyButton>
+          <MyButton
+            type="button"
+            variant="primary"
+            onClick={() => {
+              if (currentUser !== null) {
+                nav("/quiz/questions/")
+              
+              } else {
+                nav("/quiz/form/")
+              }
+            }}
+          >
+            Aceptar y continuar
+          </MyButton>
         </div>
       </div>
     </Container>

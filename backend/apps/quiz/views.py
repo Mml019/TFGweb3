@@ -1,8 +1,9 @@
 import random
 from datetime import time
+import uuid
 
 from api.serializers import *
-from django.db import transaction
+from django.db import transaction, IntegrityError
 from rest_framework.decorators import action
 from rest_framework.generics import *
 from rest_framework.response import Response
@@ -123,7 +124,6 @@ class RespondantViews(CreateAPIView):
         for key in self.schema:
             if key not in data.keys():
                 data[key] = None
-                print(data[key])
 
         with transaction.atomic():
             try:
@@ -193,12 +193,12 @@ class RespondantViews(CreateAPIView):
 
                 # academic_level = AcademicLevel(academic_lvl=None, description=None, year=YearAcademicLevel(year=2025))
                 academic_level = None
-              
+
                 if data["year_academic_lvl"] is not None:
                     year, _ = YearAcademicLevel.objects.get_or_create(
                         year=int(data["year_academic_lvl"])
                     )
-                
+
                     academic_level = AcademicLevel(
                         academic_lvl=data["academic_level"], description=None, year=year
                     )
@@ -220,8 +220,10 @@ class RespondantViews(CreateAPIView):
                 myuser = MyUser.objects.create(
                     username=None, password=None, is_staff=False, is_superuser=False
                 )
-                # add group and perms to user
-                
+                # add group and perms to user 
+                # group = Group.objects.get(name='respondant')              
+                # myuser.groups.add(group)
+
                 # pbe_training =None
                 # # only if is true
                 # if data["PBE_training"] == "Sí":
@@ -279,30 +281,149 @@ class RespondantViews(CreateAPIView):
                 return Response({"error": f"{e}"}, HTTP_400_BAD_REQUEST)
             return Response(respondant_serial.data, HTTP_201_CREATED)
 
-
 class RespuestaView(CreateAPIView):
     serializer_class = RespuestaSerializer
 
     def create(self, request):
-        data = request.data
-        print(data)
+        
+        # data = request.data
+        # # data is a list of dict from user's answers
+        # print(data)
+        # # print(data["answers"])
+        # try:
+        #     with transaction.atomic():
+        #         for r in data["answers"]:
+                    
+        #             respuesta = Respuesta.objects.create(
+        #                 # answer_id=r['option'], time=r['time'], respondant_id=r['user'], question_id=r['question']
+        #                 answer_id=r['option'], time=r['time'], respondant_id=r['user'], question_id=r['question']
+        #             )
+        answers = request.data["answers"]
+        list_area = set()
+        correct = 0
+        total = len(answers)
+        print(total)
+        if not answers:
+            return Response(
+                {"error": "No se enviaron respuestas"},
+                status=HTTP_400_BAD_REQUEST
+            )
+    
         try:
+            with transaction.atomic():
 
-            with transaction.atomic:
-                for r in data["answers"]:
-                    respuesta = Respuesta.objects.create(
-                        answer=r.option, time=r.time, respondant=r.userId, question=r.questionId
-                    )
+                for r in answers:
+                     # user_uuid = r["user"]
+                    # try:
+                    #     respondant = Respondant.objects.get(respondant_id=user_uuid)
+                    # except Respondant.DoesNotExist:
+                    #     raise serializers.ValidationError("Respondant no encontrado.")
 
+                    # # r["is_correct"] = OptionQuestion.solutions.get(idP=int(r["question"], idO=(r["option"])).exists()
+                    # r['user'] = uuid.UUID(r['user'])
+                    solution = (int(r["question"]), int(r["option"]))
+                    solutions = set(OptionQuestion.solutions.values_list("idP_id", "idO_id"))   
+                    serializer = RespuestaSerializer(data=r) # Deserializa y valida
+                    if serializer.is_valid():
+                        serializer.save() # Llama al método create() interno o personalizado
+                    
+                    # respuesta = Respuesta.objects.create(
+                    #     answer_id=int(r["option"]),
+                    #     time=time_value,
+                    #     respondant_id=uuid.UUID(r["user"]),
+                    #     question_id=(r["question"]),
+                    #     # is_correct= (int(r["option"]) == False) #solution['idO'])
+                    # )
+                    # respuestas_creadas.append(respuesta.pk)
+                    
+                    if solution in solutions:
+                        correct += 1
+                        # # results.append({'answer': r, 'correct':'true'})
+                        # respuesta.is_correct = True
+                        # respuesta.save()
+                    else:
+                        # incorrect += 1
+                        # results.append({'answer': r, 'correct':'false'})
+                        # respuesta.is_correct = False
+                        # respuesta.save()
+                        # area_serial = (InterestAreaSerializer(question.idA))
+                        list_area.add(InterestArea.objects.get(question__idP=r['question']).int_area)   
+                
+            # return Response(
+            #     {"success": serializer.data},
+            #     status=HTTP_201_CREATED
+            # )
+            return Response(
+            {
+                "success": {
+                    "num_correct": correct,
+                    "num_incorrect": total-correct,
+                    "areas": list_area,
+                    # 'results': results
+                }
+            },
+           status=HTTP_200_OK,
+        )
         except ValidationError as ve:
             return Response(
                 {"error": f"Error al crear las respuestas de {ve}"}, status=HTTP_400_BAD_REQUEST
             )
-        return Response({"success"}, status=HTTP_201_CREATED)
-
+        # return Response({"success": serializer.data}, status=HTTP_201_CREATED)
 
 class OptionQuestionView(APIView):
-    serializer_class = OptionQuestion
+
+    serializer_class = OptionQuestionSerializer
+
+    def post(self, request):
+        # list of tuples (question, option)
+        solutions = OptionQuestion.solutions.values_list("idP_id", "idO_id")
+        # solution_ids = solutions.values_list('idP', flat=True)
+        answers = request.data
+        correct = 0
+        incorrect = 0
+        list_area = set()
+        results = []
+        
+        for r in answers:
+            # create answer in BD
+            solution = (r["question"], r["option"])
+            try:
+                # i f i don't create answer get answer created before and add if is correct or not
+                respuesta = Respuesta.objects.get(question_id=r['question'], respondant_id=r['user'])
+                question = Question.objects.get(idP=r['question'])
+
+            except Respuesta.DoesNotExist:
+                return Response(
+                    {"error": f"Error respuesta no encontrada {r['question']}"}, status=HTTP_400_BAD_REQUEST
+                )
+            except Question.DoesNotExist:
+                return Response(
+                    {"error": f"Error pregunta no encontrada {r['question']}"}, status=HTTP_400_BAD_REQUEST
+                )
+            if solution in solutions:
+                correct += 1
+                # # results.append({'answer': r, 'correct':'true'})
+                # respuesta.is_correct = True
+                # respuesta.save()
+            else:
+                incorrect += 1
+                # results.append({'answer': r, 'correct':'false'})
+                respuesta.is_correct = False
+                respuesta.save()
+                area_serial = (InterestAreaSerializer(question.idA))
+                list_area.add(area_serial.data['int_area'])   
+        # return Response({"success"}, status=HTTP_201_CREATED)
+        return Response(
+            {
+                "success": {
+                    "num_correct": correct,
+                    "num_incorrect": incorrect,
+                    "areas": list_area,
+                    # 'results': results
+                }
+            },
+           status=HTTP_200_OK,
+        )
 
     # Return an array from
     def getIncorrects(self, request):
@@ -343,21 +464,21 @@ class OptionQuestionView(APIView):
         # get all solutions with motive
         solutions = OptionQuestion.solutions.all()
         answers = request.data
+        print(answers)
         for i, r in enumerate(answers):
             # create answer in BD
+
             try:
                 question = Question.objects.get(idP=int(r["question"]))
-                print(question.idP)
 
                 if question in solutions:
                     correct += 1
 
                 else:
                     incorrect += 1
-                    print(question)
                     area = InterestArea.objects.get(idD=question.idD)
                     area_serial = InterestAreaSerializer(area)
-                    list_area.add(InterestAreaSerializer(area_serial.data))
+                    list_area.add(area_serial.data)
 
             except ValidationError as ve:
                 return Response(

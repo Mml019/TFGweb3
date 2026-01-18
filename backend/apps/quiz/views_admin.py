@@ -132,14 +132,13 @@ class QuizViews(APIView):
         return paginator.get_paginated_response({"quizzes": quiz_serial_paginated.data})
 
     def post(self, request):
-        env = environ.Env()
-
+        # env = environ.Env()
+        
         try:
             file = request.FILES.get("file")
         except:
             return Response({"error": "Not file in request.FILES"}, status=HTTP_400_BAD_REQUEST)
-        # print(file)
-        # print(file.name.endswith)
+        print(request)
         if file is None:
             return Response({"error": "Not file added"}, status=HTTP_400_BAD_REQUEST)
 
@@ -162,7 +161,6 @@ class QuizViews(APIView):
         elif file.name.endswith("xlsx"):
             df = pd.read_excel(file)
         else:
-            # print("else")
             return Response(
                 {"error": "Incorrect Format, only CSV or XLSX files permited"},
                 status=HTTP_400_BAD_REQUEST,
@@ -207,8 +205,10 @@ class QuizViews(APIView):
                         statement=df_normal.iloc[i]["enunciado"],
                         time=time(0,0,30),
                         difficult_level=df_normal.iloc[i]["dificultad"],
-                        version=i,
+                        version=0,
                         idD=dimensionN,
+                        idA = areaIntN,
+                        idC = coreCont
                     )
                     '''
                     question_BD.append(question)
@@ -232,7 +232,6 @@ class QuizViews(APIView):
                     try:
 
                         valor_op_mapeado = Opciones[op]
-                        # print(valor_op_mapeado)
                         '''
                         option = Option(valor_op_mapeado)
                         option.full_clean
@@ -329,10 +328,8 @@ def normalizeFile(df):
     # Manage NA values of all dataframe 
     # fill value as back or forward value
     # bfill is back fill with the next no NaN value
-    # df_bfill = df.bfill() 
-    # df_ffill = df_bfill.ffill()
-
-    # df=df_ffill
+    # df_bfill = df.bfill()
+    df=df.ffill()
 
     # Advertise NaN values
     nan_positions = df.isna()

@@ -136,12 +136,10 @@ export function loadCCAA(nameFile = "CCAA.xml") {
       let xml = parser.parseFromString(str, "application/xml");
       let rows = xml.getElementsByTagName("row");
       let CCAA = [];
-
       Array.from(rows).forEach((row) => {
         let ccaa = {};
         ccaa["nom_oficial"] = row.querySelector("nom_oficial").textContent;
         ccaa["codi"] = row.querySelector("codi").textContent;
-
         CCAA.push(ccaa);
       });
       return Promise.resolve(CCAA);
@@ -180,7 +178,6 @@ export function loadAllCities(nameFile = "municipios.xml") {
       let xml = parser.parseFromString(str, "application/xml");
       let rows = xml.getElementsByTagName("row");
       let cities = [];
-
       Array.from(rows).forEach((row) => {
         let city = {};
         city = row.querySelector("nom").textContent;
@@ -248,24 +245,6 @@ export function loadCitiesByCCAA(nameFile = "municipios.xml", code) {
 }
 
 // -------------------- SCHEMA --------------
-// const activities_schema = yup.object({
-//   activity_val_0: yup.number().transform(v => isNaN(v) ? 0 : ((parseFloat(v) * 100) / 100) || 0).min(0).max(100),
-//   activity_val_1: yup.number().transform(v => isNaN(v) ? 0 : ((parseFloat(v) * 100) / 100) || 0).min(0).max(100),
-//   activity_val_2: yup.number().transform(v => isNaN(v) ? 0 : ((parseFloat(v) * 100) / 100) || 0).min(0).max(100),
-//   activity_val_3: yup.number().transform(v => isNaN(v) ? 0 : ((parseFloat(v) * 100) / 100) || 0).min(0).max(100),
-//   activity_val_4: yup.number().transform(v => isNaN(v) ? 0 : ((parseFloat(v) * 100) / 100) || 0).min(0).max(100),
-// }).test(
-//     'sumar-100',
-//     'La suma de los valores debe ser 100',
-//     (val) =>{
-//       console.log(val)
-//       const { activity_val_0, activity_val_1, activity_val_2, activity_val_3, activity_val_4 } = val;
-//       const total = activity_val_0 + activity_val_1 + activity_val_2 + activity_val_3 + activity_val_4;
-//       console.log("Suma total:", total);
-//       return total <= 100 || total <=100.00;
-//     }
-//   );
-
 export const yupSchema = yup.object({
   sex: yup.string("Debe escribir su sexo").oneOf(sexs, "Solo puede ser Femenino o Masculino").required("Debe escribir su sexo"),
   age: yup.number("Debe ser un número").transform(v => isNaN(v) ? 0 : v).integer().max(120, "No puede superar los 120 años").min(16, "Debes tener al menos 16 años").required("Debe escribir su edad en números"),
@@ -280,11 +259,6 @@ export const yupSchema = yup.object({
       then: schema => schema
         .oneOf(Object.keys(training), "Debe seleccionar una de las opciones si marcó sí en la regunta anterior")
         .required("Debe seleccionar una de las opciones si marcó sí en la regunta anterior"),
-      // .test('hasPBE_knowledge', "Debe seleccionar una de las opciones si marcó sí en la regunta anterior",
-      //     (val)=>{
-      //       return Object.keys(training).includes(val)
-      //     }
-      //   ),
       otherwise: schema => schema.notRequired()
     }),
   academic_level: yup.string("Debe ser un texto")
@@ -294,13 +268,6 @@ export const yupSchema = yup.object({
         then: schema => schema.required(`Debe escoger entre ${Object.keys(academic_levels)}`),
         otherwise: schema => schema.notRequired()
       }),
-  // .test('hasAcademic', `Debe escoger entre ${Object.keys(academic_levels)}`,
-  //   (val) => {
-  //     if (val !== undefined) {
-  //       return (Object.keys(academic_levels).includes(val))
-  //     }
-  //     return true
-  //   }),
   description: yup.string().when('academic_level', {
     is: (val) => val && val == 'Máster',
     then: schema => schema.oneOf(descriptionTypes, `Debe escoger entre ${descriptionTypes}`).required(`Debe escoger entre ${descriptionTypes}`),
@@ -338,8 +305,7 @@ export const yupSchema = yup.object({
   interest_sas: yup.number("Debe valorar su satisfacción entre 0 y 5").transform(v => isNaN(v) ? 0 : v).integer().positive().min(0).max(5).required("Debe valorar su satisfacción entre 0 y 5"),
   activity: yup.array().when('profile', {
     is: val => val === 'Profesional',
-    then: schema => schema.min(1, "Debe seleccionar una actividad").required(),
-    //.of(yup.string().oneOf(activities, "Debe seleccionar al menos una actividad o marcar otros")).required("Debe seleccionar al menos una actividad o marcar otros"),
+    then: schema => schema.min(1, "Debe seleccionar al menos una actividad o marcar otros").required(),
     otherwise: schema => schema.notRequired()
   }),
   activity_val_0: yup.number().transform(v => isNaN(v) ? 0 : ((parseFloat(v) * 100) / 100) || 0).min(0, "Mínimo 0%").max(100, "Máximo 100%"),
@@ -396,26 +362,16 @@ export const yupSchema = yup.object({
         .positive('Mayor a 0')
         .integer('Sin decimales')
         .test('isPositiveDed', 'Debe ser mayor o igual a 0', val => val >= 0),
-      // .positive('Debe ser mayor a 0')
-      // .integer('Sin decimales').test('', 'Debe ser mayor o igual a 0', val => val > 0),
-      // .matches(val => /^\d+(\.\d{1,2})?$/, 'Puede poner un número separado por punto y 2 decimales máximo',)
       otherwise: schema => schema.notRequired()
     }),
   years: yup.number("Debe ser un número").transform(v => isNaN(v) ? undefined : v)
     .positive('Mayor a 0')
-    // .integer('Sin decimales')
-    // .test('isGreater', 'Debe ser mayor o igual a 0', val => val > 0)
-    // .transform(v => isNaN(v) ? undefined : v)
     .when('profile', {
       is: val => val && val === 'Profesional',
       then: schema => schema.required("Debe completar los años en activo")
-        // .positive('Mayor a 0')
+        .positive('Mayor a 0')
         .integer('Sin decimales')
         .test('isPositive', 'Debe ser mayor o igual a 0', val => val >= 0),
-      // .transform(v => isNaN(v) ? undefined : v),
-      // .positive('Debe ser mayor a 0')
-      // .integer('Sin decimales').test('', 'Debe ser mayot o igual a 0', val => val > 0),
-      // .matches(val => /^\d+(\.\d{1,2})?$/, 'Puede poner un número separado por punto y 2 decimales máximo',)
       otherwise: schema => schema.notRequired()
     }),
 })

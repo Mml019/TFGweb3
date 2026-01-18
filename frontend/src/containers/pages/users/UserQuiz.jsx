@@ -1,5 +1,5 @@
 import "../../../assets/styles/UserQuiz.css";
-import { useNavigate } from "react-router-dom"
+import { replace, useNavigate } from "react-router-dom"
 import { useDispatch, useSelector } from "react-redux"
 import { useEffect, useState } from "react"
 import Container from "react-bootstrap/Container"
@@ -9,7 +9,7 @@ import Row from "react-bootstrap/Row"
 import Spinner from "../../../components/Spinner"
 import { getQuizUnOrderQuestions, nextQuestion, setOption } from "../../../reduxToolkit/slices/questions"
 import { getQuizzesRandom, nextQuiz } from "../../../reduxToolkit/slices/quiz"
-import { setAnswer, sendAnswers } from "../../../reduxToolkit/slices/answer";
+import { setAnswer, sendAnswers, getSolutions } from "../../../reduxToolkit/slices/answer";
 import { Form } from "react-bootstrap"
 import MyButton from '../../../components/MyButton'
 import MyVerticallyCenteredModal from "../../../components/Modal"
@@ -23,18 +23,17 @@ import { IoIosArrowForward } from 'react-icons/io';
 function UserQuiz() {
     const nav = useNavigate()
     const dispatch = useDispatch();
-    const { questions, questions_done, currentQuestion, currentQuestionIndex, currentOption, status, error } = useSelector((state) => state.question)
+    const { questions, currentQuestion, currentQuestionIndex, currentOption, status, error } = useSelector((state) => state.question)
     const { quiz_ids, currentQuiz, currentQuizIndex, statusQRandom, errorQRandom, checkedList } = useSelector((state) => state.quiz)
-    const { answers, currentAnswer, responseTime, statusAnswer, corrects, incorrects, areas } = useSelector(state => state.answers)
+    const { answers, currentAnswer, responseTime, statusAnswer, errorAnswers, corrects, incorrects, areas, results } = useSelector(state => state.answers)
     const { currentUser } = useSelector((state) => state.user)
 
     const [optionSelected, selectOption] = useState(0)
     const [stopTime, setStop] = useState(false)
-    const [show, setShow] = useState()
 
     // to add prop to the button disable button if is final question
     const disabled = () => {
-        if ((currentQuestion === questions.length) || (loading)) {
+        if ((currentQuestion === questions.length-1)) {
             return disabled
         }
     }
@@ -51,14 +50,13 @@ function UserQuiz() {
 
         // event to postback
         window.addEventListener('popstate', handlePopState);
-
         return () => {
             window.removeEventListener('popstate', handlePopState);
         };
     }, [nav])
 
     // To create all the answers by one user in BD
-    function createAnswer() {
+    function createAnswers() {
         // POST to data base with data
         dispatch(sendAnswers(answers))
         nav("/quiz/congratulations/")
@@ -77,33 +75,53 @@ function UserQuiz() {
 
         // Stop time and save answer before pass to next question
         setStop(true)
-
+        
         // store answers until all quiz is submitted´ sends instances
         let answer = {
             question: currentQuestion.idP,
             user: currentUser.respondant,
-            option: optionSelected,
+            option: parseInt(optionSelected),
             time: responseTime
         }
 
         dispatch(setAnswer(answer))
-        if (currentQuestion !== questions.length - 1) {
+        // if not is the last cuestion
+        if (currentQuestionIndex !== questions.length - 1) {
             selectOption(0)
+            dispatch(setOption(0))
             dispatch(nextQuestion())
-        } else {
-            console.log('create')
-            // if is final question send al answer POST
-            createAnswer()
-        }
+            console.log('nextQuiz')
+        } 
+        // else {
+        //      console.log('lastQuiz')
+        //     dispatch(getSolutions(answers))
+        //     // if is final question send all answer POST
+        //     createAnswers()
+        // }
     }
+
+    useEffect(() => {
+        // // if is the last cuestion
+        if (currentQuestionIndex == questions.length) {
+            console.log('solutions')
+            dispatch(getSolutions(answers))
+            // if is final question send all answer POST
+            createAnswers() //no se hace creo
+        }
+
+    }, [currentQuestionIndex])
 
     // To stablize by default optionSelected as "No lo sé" if question isn't respond
     useEffect(() => {
-        if (currentQuestion) {
-            if (optionSelected === 0) {
-                // selectOption(currentQuestion.idO[2].idO)
-                selectOption(currentQuestion.idO.find(item => item.option === 'No lo sé').idO)
+        if (currentQuestion && (optionSelected === 0|| currentOption ===0)) {
+            const defaultOption = currentQuestion.idO.find(item => item.option === 'No lo sé');
+            if (defaultOption) {
+                selectOption(defaultOption.idO);
+                // assign option to currentOption
+                dispatch(setOption(defaultOption.idO))
             }
+            // // Always have .idO 
+            // selectOption(currentQuestion.idO.find(item => item.option === 'No lo sé').idO)
         }
     }, [currentQuestion]);
 
@@ -112,19 +130,17 @@ function UserQuiz() {
             if (currentQuiz === undefined || currentQuiz === null) {
                 await dispatch(getQuizzesRandom()).unwrap()
             } else {
-                await dispatch(getQuizUnOrderQuestions(currentQuiz.idQ))
+                await dispatch(getQuizUnOrderQuestions(currentQuiz.idQ)).unwrap()
             }
         } catch (e) {
+            let error = `Error al mostrar las preguntas del quiz ${currentQuiz}. ${e}`
             toast.error(`Error al mostrar las preguntas del quiz ${currentQuiz}. ${e}`)
+            nav('/quiz/time-out-response/', { replace: true, state: error })
         }
     }
 
     useEffect(() => {
-        if (currentQuizIndex === -1) {
-            nav("/quiz/congratulations/", { replace: true })
-        } else {
-            fetchQuestions()
-        }
+        fetchQuestions()
     }, [currentQuiz]);
 
     if (status === 'idle' || status === 'loading') {
@@ -149,13 +165,12 @@ function UserQuiz() {
             </div>)
     }
 
+    if (statusQRandom === 'failed' || (statusAnswer === 'failed')) {
+        return nav('/quiz/time-out-response/', { replace: true, state: (statusQRandom ? errorQRandom : errorAnswers) })
+    }
 
-    // if (statusQRandom === 'failed' || statusAnswer === 'failed') {
-    //     return nav('/quiz/time-out-response/', { replace: true })
-    // }
-
-
-    if ((currentQuestionIndex === questions.length) && currentQuizIndex !== null) {
+    // // if the last question getSolutions
+    if ((currentQuestionIndex === questions.length)) {
         return (
             < MyVerticallyCenteredModal
                 // show={questions.length === 0 && dispatch(getInterestArea())}
@@ -163,36 +178,31 @@ function UserQuiz() {
                 // onHide={}
                 footerButtons={
                     [
-                        { label: 'Finalizar', type: 'button', variant: 'secondary', size: 'sm', onClick: createAnswer },
+                        { label: 'Finalizar', type: 'button', variant: 'secondary', size: 'sm', onClick: createAnswers },
                         { label: 'Hacer otro cuestionario', type: 'button', variant: 'primary', size: 'sm', onClick: otherQuiz }
                     ]
                 }
             >
                 <h2>¡Enhorabuena Quiz completado!</h2>
-                <p>Ha completado este cuestionario.
-                    Si dispone de tiempo, puede participar en alguno de los otros cuestionarios disponibles.
-                </p>
-                <div id='results'>
-                    <Row id='areas'>
-                        {areas.map((area) => {
-                            return (
-                                <span >{area.toString()}</span>
-                                , <MyButton type='span'>Prueba</MyButton>
-                            )
-                        })}
-                        {/* {dispatch(getResults()).unwrap().then((r) => {
-                                r.area.forEach(area => {
-                                    return (
-                                        <span >area.toString()</span>
-                                        , <MyButton type='span'>Prueba</MyButton>
-                                    )
-                                });
-                            })} */}
-                    </Row>
+                <div>
+                    <p>Ha completado este cuestionario.
+                        Si dispone de tiempo, puede participar en alguno de los otros cuestionarios disponibles.
+                    </p>
                     <Row>
                         <p>Número de preguntas correctas:{corrects}</p>
                         <p>Número de preguntas incorrectas:{incorrects}</p>
+                        <p>Aciertos:{(corrects / answers.length) * 100}%</p>
                     </Row>
+                    <div id='results'>
+                        <Row id='areas'>
+                            {areas && areas.map((area) => {
+                                return (
+                                    <span >{area.toString()}</span>
+                                    , <MyButton type='span'>Prueba</MyButton>
+                                )
+                            })}
+                        </Row>
+                    </div>
                 </div>
             </MyVerticallyCenteredModal>)
     }
@@ -202,9 +212,7 @@ function UserQuiz() {
             {/* <div className="header">
                 <h1>{`${currentQuestion.idD.dimension}`}</h1>
             </div> */}
-
             {/* <div id="header"> */}
-
             <MyNavbar nameBrand={`${currentQuestion.idD.dimension}`}></MyNavbar>
             {/* </div> */}
             <div id='content'>
@@ -239,6 +247,7 @@ function UserQuiz() {
                                         checked={parseInt(optionSelected) === parseInt(op.idO)}
                                         onChange={(e) => {
                                             selectOption(e.target.value)
+                                            dispatch(setOption(e.target.value))
                                         }}
                                     />
                                 ))}
@@ -255,6 +264,7 @@ function UserQuiz() {
                                 variant='secondary'
                                 size='sm'
                                 onClick={handleClick}
+                                {...disabled}
                             >
                                 Enviar todo
                             </MyButton>)
