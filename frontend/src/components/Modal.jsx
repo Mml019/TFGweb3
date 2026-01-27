@@ -30,6 +30,7 @@ export default function MyVerticallyCenteredModal( props) {
             variant={btn.variant}
             size={btn.size}
             onClick={btn.onClick}
+            disabled={btn.disabled}
           >{btn.label}</MyButton>
         ))
         :

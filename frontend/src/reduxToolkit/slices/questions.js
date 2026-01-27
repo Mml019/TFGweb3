@@ -7,9 +7,9 @@ export const getQuizUnOrderQuestions = createAsyncThunk('quiz/getQuestionsUnOrde
     try {
       parseInt(idQ)
       const response = await fetch(`${import.meta.env.VITE_REACT_API_URL}/uib/PEBquiz/questions/listByQuiz/?quiz=${idQ}`);
-      if (!response.ok) throw new Error('Error fetching questions');
-      const data = await response.json();
-      // console.log(data)
+       const data = await response.json();
+      if (!response.ok) return rejectWithValue(`Error cargando preguntas del cuestionario ${idQ}. ${data.error}`);
+     
       return data;
     } catch (err) {
       return rejectWithValue(err.message);
@@ -27,7 +27,6 @@ export const getQuizUnOrderQuestions = createAsyncThunk('quiz/getQuestionsUnOrde
 //       return rejectWithValue(error.response?.data || `Error fecthing unorder questions form quiz ${idQ}. Error: ${error.message}`)
 //     }
 //   })
-
 
 
 // Slice
@@ -60,6 +59,14 @@ export const questionSlice = createSlice({
       // action.payload is option value passed to action dispatch funtion
       state.currentOption = action.payload
     },
+    resetQuestions(state){
+      state.questions= []
+      state.currentQuestion= null
+      state.currentQuestionIndex= -1
+      state.currentOption= null
+      state.status= 'idle'
+      state.error= null
+    }
   },
   extraReducers: (builder) => {
     builder
@@ -74,13 +81,14 @@ export const questionSlice = createSlice({
       })
       .addCase(getQuizUnOrderQuestions.rejected, (state, action) => {
         state.status = 'failed';
-        state.error = action.error.message;
+        state.error = action.payload || action.error.message;
+        
       });
   },
 });
 
 // export actions
-export const { nextQuestion, setOption } = questionSlice.actions;
+export const { nextQuestion, setOption, resetQuestions } = questionSlice.actions;
 
 // export the reducer
 export default questionSlice.reducer

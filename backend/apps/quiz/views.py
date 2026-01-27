@@ -220,8 +220,8 @@ class RespondantViews(CreateAPIView):
                 myuser = MyUser.objects.create(
                     username=None, password=None, is_staff=False, is_superuser=False
                 )
-                # add group and perms to user 
-                # group = Group.objects.get(name='respondant')              
+                # add group and perms to user
+                # group = Group.objects.get(name='respondant')
                 # myuser.groups.add(group)
 
                 # pbe_training =None
@@ -281,52 +281,58 @@ class RespondantViews(CreateAPIView):
                 return Response({"error": f"{e}"}, HTTP_400_BAD_REQUEST)
             return Response(respondant_serial.data, HTTP_201_CREATED)
 
+
 class RespuestaView(CreateAPIView):
     serializer_class = RespuestaSerializer
 
     def create(self, request):
-      
-        answers = request.data["answers"]
+
+        answers = request.data
         list_area = set()
         correct = 0
         total = len(answers)
 
-        solutions = set(OptionQuestion.solutions.values_list("idP_id", "idO_id")) 
+        solutions = set(OptionQuestion.solutions.values_list("idP_id", "idO_id"))
         if not answers:
-            return Response(
-                {"error": "No se enviaron respuestas"},
-                status=HTTP_400_BAD_REQUEST
-            )
-    
+            return Response({"error": "No se enviaron respuestas"}, status=HTTP_400_BAD_REQUEST)
+
         try:
             with transaction.atomic():
 
                 for r in answers:
-                
+
                     solution = (int(r["question"]), int(r["option"]))
-              
-                    serializer = RespuestaSerializer(data=r) 
+
+                    # # prove if exists before add the answer
+                    # if Respuesta.objects.filter(respondant_id=uuid.UUID(r['user']), question=r['question']).exists():
+                        # return Response({'error': f'El usuario {r['user']} ya ha respondido esta pregunta{r['question']}'}) 
+                                        
+                    serializer = RespuestaSerializer(data=r)
                     if serializer.is_valid():
-                        serializer.save() 
-                            
+                        serializer.save()
+
                     if solution in solutions:
                         correct += 1
                     else:
-                        list_area.add(InterestArea.objects.get(question__idP=r['question']).int_area)   
+                        list_area.add(
+                            InterestArea.objects.get(question__idP=r["question"]).int_area
+                        )
             return Response(
-            {
-                "success": {
+                {
                     "num_correct": correct,
-                    "num_incorrect": total-correct,
+                    "num_incorrect": total - correct,
                     "areas": list_area,
-                }
-            },
-           status=HTTP_200_OK,
-        )
+                },
+                status=HTTP_200_OK,
+            )
         except ValidationError as ve:
             return Response(
                 {"error": f"Error al crear las respuestas de {ve}"}, status=HTTP_400_BAD_REQUEST
             )
+        except IntegrityError as i:
+            return Response({'error': f'Conflicto de usuario ya respondió esa pregunta {i}: {serializer.errors}.'}
+                                        , status=HTTP_409_CONFLICT)
+
 
 class OptionQuestionView(APIView):
 
@@ -342,39 +348,43 @@ class OptionQuestionView(APIView):
         correct = 0
         total = len(answers)
         list_area = set()
-        
+
         if not answers:
-            return Response({"error": "No se enviaron respuestas"},status=HTTP_400_BAD_REQUEST)
-   
+            return Response({"error": "No se enviaron respuestas"}, status=HTTP_400_BAD_REQUEST)
+
         for r in answers:
             # create answer in BD
             solution = (r["question"], r["option"])
             try:
                 # deserialize JSON to answer
-                serializer = RespuestaSerializer(data=r) 
+                serializer = RespuestaSerializer(data=r)
                 if serializer.is_valid():
                     serializer.save()
 
             except Respuesta.DoesNotExist:
                 return Response(
-                    {"error": f"Error respuesta no encontrada {r['question']}"}, status=HTTP_400_BAD_REQUEST
+                    {"error": f"Error respuesta no encontrada {r['question']}"},
+                    status=HTTP_400_BAD_REQUEST,
                 )
 
             if solution in solutions:
                 correct += 1
             else:
                 try:
-                    area_serial = (InterestArea.objects.get(question__idP=r['question']))
-                    list_area.add(area_serial.data['int_area'])  
+                    area_serial = InterestArea.objects.get(question__idP=r["question"])
+                    list_area.add(area_serial.data["int_area"])
                 except InterestArea.DoesNotExist:
-                    return Response({'error':f'La área de interés no existe de la pregunta{r['question']}'}, status=HTTP_404_NOT_FOUND) 
+                    return Response(
+                        {"error": f"La área de interés no existe de la pregunta{r['question']}"},
+                        status=HTTP_404_NOT_FOUND,
+                    )
         return Response(
             {
                 "success": {
                     "num_correct": correct,
-                    "num_incorrect": total-correct,
+                    "num_incorrect": total - correct,
                     "areas": list_area,
                 }
             },
-           status=HTTP_200_OK,
+            status=HTTP_200_OK,
         )

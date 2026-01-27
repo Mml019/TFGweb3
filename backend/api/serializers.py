@@ -7,8 +7,6 @@ from datetime import datetime, time
 
 
 # The intermediary classes don't have a serializer
-
-
 class DimensionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Dimension
@@ -246,20 +244,30 @@ class RespuestaSerializer(serializers.ModelSerializer):
     def validate_time(self, value):
         seconds = int(value)
 
-        # Calcula horas, minutos y segundos
+        # Calculate hours, minutes and seconds
         hours = seconds // 3600
         minutes = (seconds % 3600) // 60
         seconds = seconds % 60
         
-        # Crea un objeto 'time' con el resultado
+        # Create object 'time' 
         value = time(hour=hours, minute=minutes, second=seconds)
-        # print(f"values: {value}")
         return value        
 
     class Meta:
         model = Respuesta
         fields = ['option', 'time', 'user', 'question', 'is_correct']# is_correct, pk]
         read_only_fields = ["is_correct"]
+
+    # Validate if answer exists before or not by this user
+    def validate(self, attrs):
+        if Respuesta.objects.filter(
+            respondant_id=attrs["respondant"],
+            question=attrs["question"]
+        ).exists():
+            raise serializers.ValidationError(
+                f"El usuario {attrs["respondant"]} ya respondió esa pregunta {attrs["question"]}."
+            )
+        return attrs
 
     def create(self, validated_data):
         user_uuid = validated_data['respondant']

@@ -9,8 +9,10 @@ export const getQuizzesRandom = createAsyncThunk(
       const response = await fetch(
         `${import.meta.env.VITE_REACT_API_URL}/uib/PEBquiz/quiz/`
       );
-      if (!response.ok) throw new Error("Error fetching quiz, we don't have any questions");
       const data = await response.json();
+      if (!response.ok){
+        return rejectWithValue(`Error obteniendo cuestionarios. ${data.error}`);
+      } 
       return data;
     } catch (err) {
       return rejectWithValue(err.message);
@@ -70,6 +72,13 @@ const quizSlice = createSlice({
       const index = action.payload;
       state.checkedList[index] = !state.checkedList[index];
     },
+    resetQuiz(state) {
+      state.quiz_ids = []
+      state.currentQuiz = null
+      state.currentQuizIndex = 0
+      state.statusQRandom = 'idle'
+      state.errorQRandom = null
+    }
   },
   extraReducers: (builder) => {
     builder
@@ -85,7 +94,7 @@ const quizSlice = createSlice({
       })
       .addCase(getQuizzesRandom.rejected, (state, action) => {
         state.statusQRandom = "failed";
-        state.errorQRandom = action.error.message;
+        state.errorQRandom = action.payload || action.error.message;
       });
   },
 });

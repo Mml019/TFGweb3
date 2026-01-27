@@ -7,29 +7,19 @@ export const sendAnswers = createAsyncThunk('answer/sendAnswers',
             const response = await fetch(`${import.meta.env.VITE_REACT_API_URL}/uib/PEBquiz/respuestas/`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: answers
-            });
-            if (!response.ok) throw new error("error post answers, answers not will be saved");
-            const data = await response.json();
-            return data;
-        } catch (err) {
-            return rejectWithValue(err.message);
-        }
-    }
-);
-
-export const getSolutions = createAsyncThunk('answer/getSolutions',
-    async (answers, { rejectWithValue }) => {
-        try {
-            const response = await fetch(`${import.meta.env.VITE_REACT_API_URL}/uib/PEBquiz/options/`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(answers)
             });
-            if (!response.ok) throw new error("error post answers to get solutions");
             const data = await response.json();
+            if (!response.ok) {
+                return rejectWithValue({
+                    status: response.status,   // 400, 409, etc.
+                    message: data.error || 'Error desconocido'
+                });
+                //throw new Error("error post answers, answers not will be saved");
+            }
             return data;
         } catch (err) {
+            console.log(err)
             return rejectWithValue(err.message);
         }
     }
@@ -61,6 +51,7 @@ export const answerSlice = createSlice({
         currentAnswer: null,
         responseTime: 0,
         statusAnswer: 'idle',
+        statusRequest: null,
         errorAnswer: null,
         corrects: 0,
         incorrects: 0,
@@ -79,12 +70,13 @@ export const answerSlice = createSlice({
         setTime(state, action) {
             state.responseTime = action.payload
         },
-        resetAnswers(state){
+        resetAnswers(state) {
             state.answers = []
-            state.currentAnswer= null
-            state.responseTime= 0
-            state.statusAnswer= 'idle'
-            state.errorAnswer= null
+            state.currentAnswer = null
+            state.responseTime = 0
+            state.statusAnswer = 'idle'
+            state.errorAnswer = null
+            state.statusRequest = null
         }
     },
     extraReducers: (builder) => {
@@ -94,23 +86,14 @@ export const answerSlice = createSlice({
             })
             .addCase(sendAnswers.fulfilled, (state, action) => {
                 state.statusAnswer = 'succeed';
-            })
-            .addCase(sendAnswers.rejected, (state, action) => {
-                state.statusAnswer = 'failed';
-                state.errorAnswer = action.error.message
-            })
-            .addCase(getSolutions.pending, (state) => {
-                state.statusAnswer = 'loading'
-            })
-            .addCase(getSolutions.fulfilled, (state, action) => {
-                state.statusAnswer = 'succeed';
                 state.areas = action.payload.areas
                 state.corrects = action.payload.num_correct
                 state.incorrects = action.payload.num_incorrect
             })
-            .addCase(getSolutions.rejected, (state, action) => {
+            .addCase(sendAnswers.rejected, (state, action) => {
                 state.statusAnswer = 'failed';
-                state.errorAnswer = action.error.message
+                state.errorAnswer = action.payload?.message || action.error.message
+                state.statusRequest = action.payload?.status
             })
     }
 })

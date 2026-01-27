@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react"
 import { useSelector, useDispatch } from "react-redux"
-import { getSolutions, setAnswer, setTime } from "../reduxToolkit/slices/answer"
+import { setAnswer, setTime } from "../reduxToolkit/slices/answer"
 import { nextQuestion, questionSlice, setOption } from "../reduxToolkit/slices/questions"
 
 export default function Timer({ mytime, onTimeStop }) {
