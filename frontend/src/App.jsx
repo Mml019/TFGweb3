@@ -25,8 +25,8 @@ import Questions from "./containers/pages/admin/Questions";
 import Users from "./containers/pages/admin/Users";
 import Results from "./containers/pages/admin/Results";
 
-import Error404 from "./containers/pages/Error404";
-import ErrorTimeoutBadR from "./containers/pages/ErrorTimeoutBadR";
+import Error404 from "./containers/errors/Error404";
+import ErrorTimeoutBadR from "./containers/errors/ErrorTimeoutBadR";
 
 function App() {
   return (
